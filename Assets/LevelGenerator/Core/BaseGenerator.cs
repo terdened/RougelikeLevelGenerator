@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public abstract class BaseGenerator<T, TParams>
 {
@@ -26,6 +27,9 @@ public abstract class BaseGenerator<T, TParams>
             result = Generate();
             attemptCount++;
         }
+
+        if (attemptCount > GeneratorConstants.MaxGenerationAttemts)
+            Debug.Log($"[Warning] Criteria doesn't pass for {GetType().ToString()}");
 
         return result;
     }

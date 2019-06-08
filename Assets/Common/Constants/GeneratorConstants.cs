@@ -1,4 +1,4 @@
 ﻿public static class GeneratorConstants
 {
-    public static int MaxGenerationAttemts = 20;
+    public static int MaxGenerationAttemts = 1000;
 }

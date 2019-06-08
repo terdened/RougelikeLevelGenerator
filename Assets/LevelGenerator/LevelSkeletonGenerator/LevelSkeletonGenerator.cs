@@ -21,7 +21,13 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
                 new Vector2(-11, 5)
             }
         };
-        _skeletonPointGenerator = new SkeletonPointGenerator(pointGeneratorParams);
+
+        var criterias = new List<IGeneratorCriteria<List<SkeletonPoint>>>
+        {
+            new AvoidNearSkeletonPointGeneratorCriteria()
+        };
+
+        _skeletonPointGenerator = new SkeletonPointGenerator(pointGeneratorParams, criterias);
     }
 
     protected override LevelSkeleton Generate()
