@@ -1,0 +1,80 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+public static class GraphExtension
+{
+    public static Graph<T> ToFullGraph<T>(this Graph<T> graph)
+    {
+        foreach(var vertex in graph.Vertexes)
+        {
+            var vertexesForEdges = graph.Vertexes.Where(_ => _ != vertex && !graph.Edges.Any(e =>
+                    (e.VertexA == vertex && e.VertexB == _) || (e.VertexB == vertex && e.VertexA == _)));
+
+            var newEdges = vertexesForEdges.Select(_ => new Edge<T>(vertex, _, 1));
+            graph.AddEdges(newEdges);
+        }
+
+        return graph;
+    }
+
+    public static Graph<T> AlgorithmByPrim<T>(this Graph<T> graph)
+    {
+        int numberV = graph.Vertexes.Count;
+
+        var result = new Graph<T>();
+        result.AddVertexes(graph.Vertexes.ToList().Select(_ =>
+        {
+            return new Vertex<T>(_.Id, _.Data);
+        }));
+
+        //неиспользованные ребра
+        var notUsedE = graph.Edges.ToList();
+        //использованные вершины
+        var usedV = new List<Vertex<T>>();
+        //неиспользованные вершины
+        var notUsedV = graph.Vertexes.ToList();
+
+        //выбираем случайную начальную вершину
+        usedV.Add(graph.Vertexes.ToList()[Random.Range(0, numberV)]);
+        notUsedV.Remove(usedV[0]);
+
+        while (notUsedV.Count > 0)
+        {
+            int minE = -1; //номер наименьшего ребра
+                           //поиск наименьшего ребра
+            for (int i = 0; i < notUsedE.Count; i++)
+            {
+                if (usedV.Any(_ => _ == notUsedE[i].VertexA) && notUsedV.Any(_ => _ == notUsedE[i].VertexB) ||
+                    usedV.Any(_ => _ == notUsedE[i].VertexB) && notUsedV.Any(_ => _ == notUsedE[i].VertexA))
+                {
+                    if (minE != -1)
+                    {
+                        if (notUsedE[i].Length < notUsedE[minE].Length)
+                            minE = i;
+                    }
+                    else
+                        minE = i;
+                }
+            }
+
+            //заносим новую вершину в список использованных и удаляем ее из списка неиспользованных
+            if (usedV.Any(_ => _ == notUsedE[minE].VertexA))
+            {
+                usedV.Add(notUsedE[minE].VertexB);
+                notUsedV.Remove(notUsedE[minE].VertexB);
+            }
+            else
+            {
+                usedV.Add(notUsedE[minE].VertexA);
+                notUsedV.Remove(notUsedE[minE].VertexA);
+            }
+            //заносим новое ребро в дерево и удаляем его из списка неиспользованных
+
+            result.AddEdge(new Edge<T>(notUsedE[minE].VertexA, notUsedE[minE].VertexB, notUsedE[minE].Length));
+            notUsedE.RemoveAt(minE);
+        }
+
+        return result;
+    }
+}
