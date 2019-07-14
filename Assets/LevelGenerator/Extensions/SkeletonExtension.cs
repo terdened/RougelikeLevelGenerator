@@ -19,6 +19,62 @@ public static class SkeletonExtension
         return new Graph<SkeletonPoint>(vertexDictionary.Values.ToList(), edges);
     }
 
+    public static LevelSkeleton ToTriangleSkeleton(this LevelSkeleton skeleton)
+    {
+        var fullSkeleton = new LevelSkeleton();
+        fullSkeleton.AddLines(skeleton.Lines);
+
+        var linesToRemove = new List<SkeletonLine>();
+        var isFirst = true;
+
+        while (isFirst || linesToRemove.Count > 0)
+        {
+            isFirst = false;
+            linesToRemove = new List<SkeletonLine>();
+            var lines = fullSkeleton.Lines.OrderBy(_ => _.Length).ToList();
+
+            foreach (var line in lines)
+            {
+                // linesToRemove.AddRange(fullSkeleton.Lines.Where(_ => _ != line && _.Intersect(line) != null && _.Length > line.Length));
+
+                var l = fullSkeleton.Lines.Except(new[] { line })
+                                          .Except(linesToRemove)
+                                          .Where(_ => _.FindIntersection(line) != null && _.Length > line.Length)
+                                          .ToList();
+
+                if (l.Count > 0)
+                {
+                    l = l.OrderBy(_ => _.Length).ToList();
+                    linesToRemove.Add(l.Last());
+                    break;
+                }
+
+                linesToRemove.AddRange(l.Except(linesToRemove));
+            }
+
+            if (linesToRemove.Count > 0)
+                fullSkeleton.RemoveLines(linesToRemove);
+        }
+
+        fullSkeleton.SetLineType(new EntityType(Color.red, "Additional"));
+
+        return fullSkeleton;
+    }
+
+    public static LevelSkeleton ToBasementSkeleton(this LevelSkeleton skeleton)
+    {
+        var basementSkeleton = new LevelSkeleton();
+
+        var newLines = skeleton.ToGraph().AlgorithmByPrim().Edges.ToList().Select(_ =>
+        {
+            return new SkeletonLine(_.Vertexes.ToList()[0].Data, _.Vertexes.ToList()[1].Data, new EntityType(Color.blue, "Basement"));
+        });
+
+        basementSkeleton.AddLines(newLines);
+
+        return basementSkeleton;
+    }
+
     public static void Draw(this LevelSkeleton skeleton)
     {
         skeleton.Lines.ToList().ForEach(_ =>

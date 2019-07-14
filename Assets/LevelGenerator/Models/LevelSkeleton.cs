@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 public class LevelSkeleton
 {
@@ -42,6 +43,16 @@ public class LevelSkeleton
                 point.AddLine(line);
             }
         }
+    }
+
+    public void RemoveLines(IEnumerable<SkeletonLine> lines)
+    {
+        _lines.RemoveAll(_ => lines.Any(l => _.Id == l.Id));
+    }
+
+    public void SetLineType(EntityType type)
+    {
+        _lines.ForEach(_ => _.Type = type);
     }
 
     public IReadOnlyCollection<SkeletonLine> Lines => new ReadOnlyCollection<SkeletonLine>(_lines);

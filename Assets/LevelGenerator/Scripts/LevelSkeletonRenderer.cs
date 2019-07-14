@@ -24,7 +24,7 @@ public class LevelSkeletonRenderer : MonoBehaviour
 
         levelSkeleton.Lines.ToList().ForEach(_ =>
         {
-            var lineRendererGameObject = CreateLine(_.Points.pointA.Position, _.Points.pointB.Position);
+            var lineRendererGameObject = CreateLine(_.Points.pointA.Position, _.Points.pointB.Position, _.Type);
             _lineRendererGameObjects.Add(lineRendererGameObject);
         });
 
@@ -35,13 +35,14 @@ public class LevelSkeletonRenderer : MonoBehaviour
         });
     }
 
-    private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition)
+    private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition, EntityType type)
     {
         var lineRendererGameObject = Instantiate(LineRendererPrefab, Vector3.zero, Quaternion.identity, gameObject.transform);
 
         LineRenderer lineRenderer = lineRendererGameObject.AddComponent<LineRenderer>();
         lineRenderer.startWidth = 0.05f;
         lineRenderer.endWidth = 0.05f;
+        lineRenderer.material.color = type.Color;
 
         lineRenderer.SetPosition(0, pointAPosition);
         lineRenderer.SetPosition(1, pointBPosition);
@@ -53,20 +54,8 @@ public class LevelSkeletonRenderer : MonoBehaviour
     {
         var pointPrefab = Instantiate(PointPrefab, point.Position, Quaternion.identity, gameObject.transform);
         var pointSpriteRenderer = pointPrefab.GetComponent<SpriteRenderer>();
+        pointSpriteRenderer.color = point.Type.Color;
 
-        switch(point.Type)
-        {
-            case PointType.Initial:
-                pointSpriteRenderer.color = Color.green;
-                break;
-            case PointType.Room:
-                pointSpriteRenderer.color = Color.yellow;
-                break;
-            case PointType.Other:
-                pointSpriteRenderer.color = Color.gray;
-                break;
-        }
-        
         return pointPrefab;
     }
 }

@@ -11,12 +11,12 @@ public class SkeletonPointGenerator : BaseGenerator<List<SkeletonPoint>, Skeleto
     {
         var result = new List<SkeletonPoint>();
 
-        _params.InitialPoints?.ForEach(_ => result.Add(new SkeletonPoint(_, PointType.Initial)));
+        _params.InitialPoints?.ForEach(_ => result.Add(new SkeletonPoint(_, new EntityType(Color.green, "Initial"))));
 
         for (var i = 0; i < _params.RandomPointsCount; i++)
         {
             var randomPosition = new Vector2(Random.Range(_params.MinimalX, _params.MaximalX), Random.Range(_params.MinimalY, _params.MaximalY));
-            result.Add(new SkeletonPoint(randomPosition, PointType.Room));
+            result.Add(new SkeletonPoint(randomPosition, new EntityType(Color.yellow, "Room")));
         }
 
         return result;
