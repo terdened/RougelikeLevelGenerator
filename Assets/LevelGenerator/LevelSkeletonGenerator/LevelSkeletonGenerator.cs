@@ -67,33 +67,61 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
 
         var linesToRemove = new List<SkeletonLine>();
 
-        result.Lines.ToList().ForEach(_ =>
+        if(_params.ReplaceMoreThan45)
         {
-            if (GetLineAngle(_) > 45)
+            result.Lines.ToList().ForEach(_ =>
             {
-                var point = new SkeletonPoint(new Vector2(_.Points.pointA.Position.x, _.Points.pointB.Position.y), new EntityType(Color.blue, "Additional"));
-                var line1 = new SkeletonLine(_.Points.pointA, point, new EntityType(Color.green, "Corrected"));
-                var line2 = new SkeletonLine(_.Points.pointB, point, new EntityType(Color.green, "Corrected"));
+                if (GetLineAngle(_) > 45)
+                {
+                    var point = new SkeletonPoint(new Vector2(_.Points.pointA.Position.x, _.Points.pointB.Position.y), new EntityType(Color.blue, "Additional"));
+                    var line1 = new SkeletonLine(_.Points.pointA, point, new EntityType(Color.green, "Corrected"));
+                    var line2 = new SkeletonLine(_.Points.pointB, point, new EntityType(Color.green, "Corrected"));
 
-                result.AddLine(line1);
-                result.AddLine(line2);
-                linesToRemove.Add(_);
-            }
-        });
+                    result.AddLine(line1);
+                    result.AddLine(line2);
+                    linesToRemove.Add(_);
+                }
+            });
 
-        result.RemoveLines(linesToRemove);
+            result.RemoveLines(linesToRemove);
+        }
+        
 
         //6. Merge points near with line
 
-        result.Points.ToList().ForEach(p =>
+        if(_params.MergeNearBy)
         {
-            result.Lines.Where(l => l.Points.pointA != p && l.Points.pointB != p).ToList().ForEach(l => {
-                if (GetDistanceBetweenLineAndPoint(l, p) < 0.5)
+            var isStart = true;
+
+            while (linesToRemove.Count > 0 || isStart)
+            {
+                isStart = false;
+                linesToRemove = new List<SkeletonLine>();
+
+                foreach (var point in result.Points)
                 {
-                    p.Type = new EntityType(Color.red, "NearByLine");
+                    var lineToRemove = result.Lines.Where(l => l.Points.pointA != point && l.Points.pointB != point && GetDistanceBetweenLineAndPoint(l, point) < 0.5)
+                        .FirstOrDefault();
+
+                    if (lineToRemove != null)
+                    {
+                        linesToRemove.Add(lineToRemove);
+
+                        var line1 = new SkeletonLine(point, lineToRemove.Points.pointA);
+                        var line2 = new SkeletonLine(point, lineToRemove.Points.pointB);
+
+                        result.AddLine(line1);
+                        result.AddLine(line2);
+                        point.Type = new EntityType(Color.red, "NearByLine");
+
+                        break;
+                    }
                 }
-            });
-        });
+
+                result.RemoveLines(linesToRemove);
+            }
+        }
+        
 
         return result;
     }

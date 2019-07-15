@@ -8,9 +8,15 @@ public class LevelSkeletonGeneratorParams
 
     public SkeletonPointGeneratorParams SkeletonPointGeneratorParams { get; set; }
 
+    public bool ReplaceMoreThan45 { get; set; }
+
+    public bool MergeNearBy { get; set; }
+
     public LevelSkeletonGeneratorParams()
     {
-        AdditionalLinesCount = 9;
+        ReplaceMoreThan45 = true;
+        MergeNearBy = true;
+        AdditionalLinesCount = 0;
         SkeletonPointGeneratorParams = new SkeletonPointGeneratorParams
         {
             RandomPointsCount = 25,

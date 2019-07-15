@@ -10,17 +10,22 @@ public class LevelGeneratorController : MonoBehaviour
     void Start()
     {
         var levelSkeletonGeneratorParams = new LevelSkeletonGeneratorParams();
-        var levelSkeletonGenerator = new LevelSkeletonGenerator(levelSkeletonGeneratorParams);
-
-        _levelSkeleton = levelSkeletonGenerator.Execute();
-
-        var levelSkeletonRenderer = GetComponent<LevelSkeletonRenderer>();
-        levelSkeletonRenderer.Draw(_levelSkeleton);
+        Generate(levelSkeletonGeneratorParams);
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void Generate(LevelSkeletonGeneratorParams levelSkeletonGeneratorParams)
+    {
+        var levelSkeletonGenerator = new LevelSkeletonGenerator(levelSkeletonGeneratorParams);
+
+        _levelSkeleton = levelSkeletonGenerator.Execute();
+
+        var levelSkeletonRenderer = GetComponent<LevelSkeletonRenderer>();
+        levelSkeletonRenderer.Draw(_levelSkeleton);
     }
 }
