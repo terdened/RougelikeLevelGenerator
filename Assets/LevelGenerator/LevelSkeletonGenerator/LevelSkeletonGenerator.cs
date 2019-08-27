@@ -121,7 +121,12 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
                 result.RemoveLines(linesToRemove);
             }
         }
-        
+
+
+        var cycles = result.GetCycles();
+        cycles.ForEach(cycle => cycle.ForEach(line => line.Type = new EntityType(Color.magenta, "cycle")));
+
+        Debug.Log(cycles.Count());
 
         return result;
     }

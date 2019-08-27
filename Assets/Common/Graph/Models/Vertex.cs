@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Vertex<T>
 {
@@ -11,6 +12,7 @@ public class Vertex<T>
         Id = Guid.NewGuid().ToId();
         _edges = new List<Edge<T>>();
         _data = data;
+        Color = VertexColor.White;
     }
 
     public Vertex(string id, T data)
@@ -18,13 +20,20 @@ public class Vertex<T>
         Id = id;
         _edges = new List<Edge<T>>();
         _data = data;
+        Color = VertexColor.White;
     }
 
     public string Id { get; }
 
+    public VertexColor Color { get; set; }
+
     public int Degree => _edges.Count;
 
+    public List<Edge<T>> Edges => _edges;
+
     public T Data => _data;
+
+    public List<Vertex<T>> NearVertexes => _edges.Select(_ => _.VertexA == this ? _.VertexB : _.VertexA).ToList();
 
     public void AddEdge(Edge<T> edge)
     {

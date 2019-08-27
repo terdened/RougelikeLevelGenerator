@@ -88,4 +88,29 @@ public static class SkeletonExtension
             Gizmos.DrawSphere(_.Position, 0.1f);
         });
     }
+
+    public static List<List<SkeletonLine>> GetCycles(this LevelSkeleton skeleton)
+    {
+        var cycles = new List<List<SkeletonLine>>();
+
+        var graphCycles = skeleton.ToGraph().GetCycles();
+
+        foreach(var graphCycle in graphCycles)
+        {
+            var cycle = new List<SkeletonLine>();
+
+            foreach(var edge in graphCycle)
+            {
+                var skeletonLine = skeleton.Lines.First(_ =>
+                                                        (_.Points.pointA.Id == edge.VertexA.Data.Id || _.Points.pointA.Id == edge.VertexB.Data.Id)
+                                                        && (_.Points.pointB.Id == edge.VertexA.Data.Id || _.Points.pointB.Id == edge.VertexB.Data.Id));
+
+                cycle.Add(skeletonLine);
+            }
+
+            cycles.Add(cycle);
+        }
+
+        return cycles;
+    }
 }
