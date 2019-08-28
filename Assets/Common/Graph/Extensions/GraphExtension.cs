@@ -8,9 +8,7 @@ public static class GraphExtension
     {
         foreach(var vertex in graph.Vertexes)
         {
-            var vertexesForEdges = graph.Vertexes.Where(_ => _ != vertex && !graph.Edges.Any(e =>
-                    (e.VertexA == vertex && e.VertexB == _) || (e.VertexB == vertex && e.VertexA == _)));
-
+            var vertexesForEdges = graph.Vertexes.Where(v => v != vertex && !graph.Edges.Any(e => e.ContainsVertex(v) && e.ContainsVertex(vertex)));
             var newEdges = vertexesForEdges.Select(_ => new Edge<T>(vertex, _, 1));
             graph.AddEdges(newEdges);
         }
@@ -96,35 +94,29 @@ public static class GraphExtension
 
         foreach (var nearVertex in vertex.NearVertexes)
         {
-            if (currentCycle.Count > 0 && (currentCycle.Last().VertexA == nearVertex || currentCycle.Last().VertexB == nearVertex))
+            if (currentCycle.Count > 0 && (currentCycle.Last().ContainsVertex(nearVertex)))
                 continue;
 
             if (nearVertex.Color == VertexColor.White)
             {
                 var newCurrentCycle = currentCycle.Select(_ => _).ToList();
-                newCurrentCycle.Add(vertex.Edges.First(_ => _.VertexA == nearVertex || _.VertexB == nearVertex));
+                newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
                 
                 dfs<T>(nearVertex, graph, newCurrentCycle, result);
             }
             else if (nearVertex.Color == VertexColor.Grey)
             {
                 var newCurrentCycle = currentCycle.Select(_ => _).ToList();
-                var firstVertexIndex = currentCycle.IndexOf(currentCycle.First(_ => _.VertexA == nearVertex || _.VertexB == nearVertex));
-
-
+                var firstVertexIndex = currentCycle.IndexOf(currentCycle.First(_ => _.ContainsVertex(nearVertex)));
+                
                 newCurrentCycle = newCurrentCycle.Skip(firstVertexIndex).ToList();
+                newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
 
-                //if (!(newCurrentCycle[firstVertexIndex].VertexA == nearVertex && newCurrentCycle[firstVertexIndex].VertexB == vertex)
-                //    && !(newCurrentCycle[firstVertexIndex].VertexB == nearVertex && newCurrentCycle[firstVertexIndex].VertexA == vertex))
-                //{
-                //    newCurrentCycle = newCurrentCycle.Skip(firstVertexIndex + 1).ToList();
-                //}
-
-                newCurrentCycle.Add(vertex.Edges.First(_ => _.VertexA == nearVertex || _.VertexB == nearVertex));
-
-                var notCycleEdge = newCurrentCycle.Where(_ => newCurrentCycle.Count(a => a.VertexA == _.VertexA || a.VertexB == _.VertexA) < 2 || newCurrentCycle.Count(a => a.VertexA == _.VertexB || a.VertexB == _.VertexB) < 2);
-
+                var notCycleEdge = newCurrentCycle.Where(_ => 
+                                                             newCurrentCycle.Count(a => a.ContainsVertex(_.VertexA)) < 2 
+                                                             || newCurrentCycle.Count(a => a.ContainsVertex(_.VertexB)) < 2);
                 newCurrentCycle.RemoveAll(_ => notCycleEdge.Contains(_));
+
                 result.Add(newCurrentCycle);
             }
         }

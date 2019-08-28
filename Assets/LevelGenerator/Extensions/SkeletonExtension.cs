@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -35,8 +34,6 @@ public static class SkeletonExtension
 
             foreach (var line in lines)
             {
-                // linesToRemove.AddRange(fullSkeleton.Lines.Where(_ => _ != line && _.Intersect(line) != null && _.Length > line.Length));
-
                 var l = fullSkeleton.Lines.Except(new[] { line })
                                           .Except(linesToRemove)
                                           .Where(_ => _.FindIntersection(line) != null && _.Length > line.Length)
@@ -98,16 +95,7 @@ public static class SkeletonExtension
         foreach(var graphCycle in graphCycles)
         {
             var cycle = new List<SkeletonLine>();
-
-            foreach(var edge in graphCycle)
-            {
-                var skeletonLine = skeleton.Lines.First(_ =>
-                                                        (_.Points.pointA.Id == edge.VertexA.Data.Id || _.Points.pointA.Id == edge.VertexB.Data.Id)
-                                                        && (_.Points.pointB.Id == edge.VertexA.Data.Id || _.Points.pointB.Id == edge.VertexB.Data.Id));
-
-                cycle.Add(skeletonLine);
-            }
-
+            graphCycle.ForEach(edge => cycle.Add(skeleton.Lines.First(_ => _.ContainsSkeletonPoint(edge.VertexA.Data) && _.ContainsSkeletonPoint(edge.VertexB.Data))));
             cycles.Add(cycle);
         }
 

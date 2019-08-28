@@ -5,9 +5,6 @@ using UnityEngine;
 public class SkeletonPoint
 {
     private Vector2 _position;
-
-    // private PointType _type;
-
     private EntityType _type;
 
     private readonly List<SkeletonLine> _lines;

@@ -3,35 +3,6 @@ using UnityEngine;
 
 public static class SkeletonLineExtension
 {
-    public static Vector2? Intersect(this SkeletonLine lineA, SkeletonLine lineB)
-    {
-        //Line1
-        float A1 = lineA.Points.pointB.Position.y - lineA.Points.pointA.Position.y;
-        float B1 = lineA.Points.pointB.Position.x - lineA.Points.pointA.Position.x;
-        float C1 = A1 * lineA.Points.pointA.Position.x + B1 * lineA.Points.pointA.Position.y;
-
-        //Line2
-        float A2 = lineB.Points.pointB.Position.y - lineB.Points.pointA.Position.y;
-        float B2 = lineB.Points.pointB.Position.x - lineB.Points.pointA.Position.x;
-        float C2 = A1 * lineB.Points.pointA.Position.x + B1 * lineB.Points.pointA.Position.y;
-
-        float det = A1 * B2 - A2 * B1;
-        if (det == 0)
-        {
-            return null;//parallel lines
-        }
-        else
-        {
-            float x = (B2 * C1 - B1 * C2) / det;
-            float y = (A1 * C2 - A2 * C1) / det;
-
-            if(!IsInsideLine(lineA, x, y) || !IsInsideLine(lineB, x, y))
-                return null;
-
-            return new Vector2(x, y);
-        }
-    }
-
     // Returns true if given point(x,y) is inside the given line segment
     private static bool IsInsideLine(SkeletonLine line, double x, double y)
     {
@@ -40,7 +11,6 @@ public static class SkeletonLineExtension
                && (y >= line.Points.pointA.Position.y && y <= line.Points.pointB.Position.y
                     || y >= line.Points.pointB.Position.y && y <= line.Points.pointA.Position.y);
     }
-
 
     //  Returns Point of intersection if do intersect otherwise default Point (null)
     public static Vector2? FindIntersection(this SkeletonLine lineA, SkeletonLine lineB)

@@ -20,6 +20,8 @@ public class SkeletonLine
 
     public float Length => Vector2.Distance(_points.pointA.Position, _points.pointB.Position);
 
+    public bool ContainsSkeletonPoint(SkeletonPoint point) => _points.pointA == point || _points.pointB == point;
+
     public IReadOnlyCollection<SkeletonPoint> PointsList => new ReadOnlyCollection<SkeletonPoint>(new List<SkeletonPoint> { _points.pointA, _points.pointB });
 
     public (SkeletonPoint pointA, SkeletonPoint pointB) Points => _points;
@@ -30,30 +32,6 @@ public class SkeletonLine
         set
         {
             _type = value;
-        }
-    }
-}
-
-public class SkeletonLineComp : IComparer<SkeletonLine>
-{
-    // Compares by Height, Length, and Width.
-    public int Compare(SkeletonLine x, SkeletonLine y)
-    {
-        if (x.Length.CompareTo(y.Length) != 0)
-        {
-            return x.Length.CompareTo(y.Length);
-        }
-        else if (x.Length.CompareTo(y.Length) != 0)
-        {
-            return x.Length.CompareTo(y.Length);
-        }
-        else if (x.Length.CompareTo(y.Length) != 0)
-        {
-            return x.Length.CompareTo(y.Length);
-        }
-        else
-        {
-            return 0;
         }
     }
 }

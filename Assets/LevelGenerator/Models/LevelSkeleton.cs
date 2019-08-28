@@ -5,7 +5,6 @@ using System.Linq;
 public class LevelSkeleton
 {
     private readonly List<SkeletonLine> _lines;
-
     private readonly List<SkeletonPoint> _points;
 
     public LevelSkeleton()

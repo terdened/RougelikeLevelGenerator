@@ -22,4 +22,6 @@ public class Edge<T>
     public Vertex<T> VertexA => _vertexes.vertexA;
 
     public Vertex<T> VertexB => _vertexes.vertexB;
+
+    public bool ContainsVertex(Vertex<T> vertex) => _vertexes.vertexA == vertex || _vertexes.vertexB == vertex;
 }
