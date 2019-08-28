@@ -3,6 +3,40 @@ using UnityEngine;
 
 public static class SkeletonLineExtension
 {
+    public static float? GetDistanceBetweenLineAndPoint(this SkeletonLine line, SkeletonPoint point)
+    {
+        var lineAngle = (float)GetLineAngle(line);
+        var secondLineAngle = lineAngle + 90;
+        var b = point.Position.y - Mathf.Atan(secondLineAngle) * point.Position.x;
+
+        var x1 = -10000;
+        var x2 = 10000;
+        var y1 = Mathf.Atan(secondLineAngle) * x1 + b;
+        var y2 = Mathf.Atan(secondLineAngle) * x2 + b;
+
+        var intersection = line.FindIntersection(new SkeletonLine(new SkeletonPoint(new Vector2(x1, y1)), new SkeletonPoint(new Vector2(x2, y2))));
+
+        if (intersection == null)
+            return null;
+
+        var secondLine = new SkeletonLine(point, new SkeletonPoint(intersection.Value));
+
+        return secondLine.Length;
+    }
+
+    public static double GetLineAngle(this SkeletonLine line)
+    {
+        var x1 = line.Points.pointA.Position.x > line.Points.pointB.Position.x ? line.Points.pointB.Position.x : line.Points.pointA.Position.x;
+        var x2 = line.Points.pointA.Position.x > line.Points.pointB.Position.x ? line.Points.pointA.Position.x : line.Points.pointB.Position.x;
+
+        var y1 = line.Points.pointA.Position.y > line.Points.pointB.Position.y ? line.Points.pointB.Position.y : line.Points.pointA.Position.y;
+        var y2 = line.Points.pointA.Position.y > line.Points.pointB.Position.y ? line.Points.pointA.Position.y : line.Points.pointB.Position.y;
+
+        float xDiff = Mathf.Abs(x2 - x1);
+        float yDiff = Mathf.Abs(y2 - y1);
+        return Mathf.Atan2(yDiff, xDiff) * 180.0 / Mathf.PI;
+    }
+
     // Returns true if given point(x,y) is inside the given line segment
     private static bool IsInsideLine(SkeletonLine line, double x, double y)
     {
