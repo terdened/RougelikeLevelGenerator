@@ -96,9 +96,27 @@ public static class SkeletonExtension
         {
             var cycle = new List<SkeletonLine>();
             graphCycle.ForEach(edge => cycle.Add(skeleton.Lines.First(_ => _.ContainsSkeletonPoint(edge.VertexA.Data) && _.ContainsSkeletonPoint(edge.VertexB.Data))));
-            cycles.Add(cycle);
+
+            if (!cycles.Any(_ => _.IsCycleEquals(cycle)))
+                cycles.Add(cycle);
         }
 
         return cycles;
+    }
+
+    private static bool IsCycleEquals(this List<SkeletonLine> cycleA, List<SkeletonLine> cycleB)
+    {
+        if (cycleA.Count() != cycleB.Count())
+            return false;
+
+        var result = true;
+
+        cycleA.ForEach(_ =>
+        {
+            if (!cycleB.Contains(_))
+                result = false;
+        });
+
+        return result;
     }
 }

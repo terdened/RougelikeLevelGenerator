@@ -97,28 +97,50 @@ public static class GraphExtension
             if (currentCycle.Count > 0 && (currentCycle.Last().ContainsVertex(nearVertex)))
                 continue;
 
-            if (nearVertex.Color == VertexColor.White)
-            {
-                var newCurrentCycle = currentCycle.Select(_ => _).ToList();
-                newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
-                
-                dfs<T>(nearVertex, graph, newCurrentCycle, result);
-            }
-            else if (nearVertex.Color == VertexColor.Grey)
+            if(currentCycle.Any(_ => _.ContainsVertex(nearVertex)))
             {
                 var newCurrentCycle = currentCycle.Select(_ => _).ToList();
                 var firstVertexIndex = currentCycle.IndexOf(currentCycle.First(_ => _.ContainsVertex(nearVertex)));
-                
+
                 newCurrentCycle = newCurrentCycle.Skip(firstVertexIndex).ToList();
                 newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
 
-                var notCycleEdge = newCurrentCycle.Where(_ => 
-                                                             newCurrentCycle.Count(a => a.ContainsVertex(_.VertexA)) < 2 
+                var notCycleEdge = newCurrentCycle.Where(_ =>
+                                                             newCurrentCycle.Count(a => a.ContainsVertex(_.VertexA)) < 2
                                                              || newCurrentCycle.Count(a => a.ContainsVertex(_.VertexB)) < 2);
                 newCurrentCycle.RemoveAll(_ => notCycleEdge.Contains(_));
 
                 result.Add(newCurrentCycle);
+            } else
+            {
+                var newCurrentCycle = currentCycle.Select(_ => _).ToList();
+                newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
+
+                dfs<T>(nearVertex, graph, newCurrentCycle, result);
             }
+
+            //if (nearVertex.Color == VertexColor.White)
+            //{
+            //    var newCurrentCycle = currentCycle.Select(_ => _).ToList();
+            //    newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
+                
+            //    dfs<T>(nearVertex, graph, newCurrentCycle, result);
+            //}
+            //else if (nearVertex.Color == VertexColor.Grey)
+            //{
+            //    var newCurrentCycle = currentCycle.Select(_ => _).ToList();
+            //    var firstVertexIndex = currentCycle.IndexOf(currentCycle.First(_ => _.ContainsVertex(nearVertex)));
+                
+            //    newCurrentCycle = newCurrentCycle.Skip(firstVertexIndex).ToList();
+            //    newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
+
+            //    var notCycleEdge = newCurrentCycle.Where(_ => 
+            //                                                 newCurrentCycle.Count(a => a.ContainsVertex(_.VertexA)) < 2 
+            //                                                 || newCurrentCycle.Count(a => a.ContainsVertex(_.VertexB)) < 2);
+            //    newCurrentCycle.RemoveAll(_ => notCycleEdge.Contains(_));
+
+            //    result.Add(newCurrentCycle);
+            //}
         }
 
         vertex.Color = VertexColor.Black;

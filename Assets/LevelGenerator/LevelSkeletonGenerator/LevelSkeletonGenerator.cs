@@ -49,6 +49,7 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
 
         var cycles = result.GetCycles();
         cycles.ForEach(cycle => cycle.ForEach(line => line.Type = new EntityType(Color.magenta, "Cycle")));
+        Debug.Log(cycles.Count);
 
         return result;
     }
