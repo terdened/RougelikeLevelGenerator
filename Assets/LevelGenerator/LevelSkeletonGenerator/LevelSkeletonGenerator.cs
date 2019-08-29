@@ -47,9 +47,14 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
         if (_params.MergeNearBy)
             MergeNearBy(result);
 
+        if (result.IsLinesIntersects())
+            return null;
+
         var cycles = result.GetCycles();
         cycles.ForEach(cycle => cycle.ForEach(line => line.Type = new EntityType(Color.magenta, "Cycle")));
-        Debug.Log(cycles.Count);
+
+        if (cycles.Any(_ => _.GetPathLength() > _params.MaxOpenSpacePerimeter))
+            return null;
 
         return result;
     }

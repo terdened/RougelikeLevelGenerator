@@ -104,6 +104,17 @@ public static class SkeletonExtension
         return cycles;
     }
 
+    public static bool IsLinesIntersects(this LevelSkeleton skeleton)
+    {
+        foreach(var line in skeleton.Lines)
+        {
+            if (skeleton.Lines.Where(_ => _ != line && !_.ContainsSkeletonPoint(line.Points.pointA) && !_.ContainsSkeletonPoint(line.Points.pointB)).Any(_ => _.FindIntersection(line).HasValue))
+                return true;
+        }
+
+        return false;
+    }
+
     private static bool IsCycleEquals(this List<SkeletonLine> cycleA, List<SkeletonLine> cycleB)
     {
         if (cycleA.Count() != cycleB.Count())

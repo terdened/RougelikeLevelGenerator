@@ -18,11 +18,14 @@ public abstract class BaseGenerator<T, TParams>
     {
         var result = Generate();
 
-        if (_generatorCriteria == null)
+        if (result != null && _generatorCriteria == null)
+        {
+            Debug.Log($"[Success] generation of: {typeof(T)}; attempts count: 1");
             return result;
+        }
 
         var attemptCount = 1;
-        while (_generatorCriteria.Any(_ => !_.Verify(result)) && attemptCount <= GeneratorConstants.MaxGenerationAttemts)
+        while (result == null || _generatorCriteria != null && _generatorCriteria.Any(_ => !_.Verify(result)) && attemptCount <= GeneratorConstants.MaxGenerationAttemts)
         {
             result = Generate();
             attemptCount++;
@@ -30,6 +33,8 @@ public abstract class BaseGenerator<T, TParams>
 
         if (attemptCount > GeneratorConstants.MaxGenerationAttemts)
             Debug.Log($"[Warning] Criteria doesn't pass for {GetType().ToString()}");
+
+        Debug.Log($"[Success] generation of: {typeof(T)}; attempts count: {attemptCount}");
 
         return result;
     }

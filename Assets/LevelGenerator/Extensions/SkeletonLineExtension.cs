@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class SkeletonLineExtension
@@ -37,6 +39,8 @@ public static class SkeletonLineExtension
         return Mathf.Atan2(yDiff, xDiff) * 180.0 / Mathf.PI;
     }
 
+    public static double GetPathLength(this List<SkeletonLine> path) => path.Sum(_ => _.Length);
+
     // Returns true if given point(x,y) is inside the given line segment
     private static bool IsInsideLine(SkeletonLine line, double x, double y)
     {
@@ -60,13 +64,13 @@ public static class SkeletonLineExtension
         // equations of the form x = c (two vertical lines)
         if (Math.Abs(x1 - x2) < tolerance && Math.Abs(x3 - x4) < tolerance && Math.Abs(x1 - x3) < tolerance)
         {
-            throw new Exception("Both lines overlap vertically, ambiguous intersection points.");
+            return null;
         }
 
         //equations of the form y=c (two horizontal lines)
         if (Math.Abs(y1 - y2) < tolerance && Math.Abs(y3 - y4) < tolerance && Math.Abs(y1 - y3) < tolerance)
         {
-            throw new Exception("Both lines overlap horizontally, ambiguous intersection points.");
+            return null;
         }
 
         //equations of the form x=c (two vertical lines)
