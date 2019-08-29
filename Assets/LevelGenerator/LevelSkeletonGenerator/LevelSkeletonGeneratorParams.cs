@@ -6,7 +6,7 @@ public class LevelSkeletonGeneratorParams
 {
     public int AdditionalLinesCount { get; set; }
 
-    public SkeletonPointGeneratorParams SkeletonPointGeneratorParams { get; set; }
+    public SkeletonPointsGeneratorParams SkeletonPointsGeneratorParams { get; set; }
 
     public bool ReplaceMoreThan45 { get; set; }
 
@@ -20,7 +20,7 @@ public class LevelSkeletonGeneratorParams
         MergeNearBy = true;
         AdditionalLinesCount = 0;
         MaxOpenSpacePerimeter = 30;
-        SkeletonPointGeneratorParams = new SkeletonPointGeneratorParams
+        SkeletonPointsGeneratorParams = new SkeletonPointsGeneratorParams
         {
             RandomPointsCount = 25,
             MinimalX = -10,

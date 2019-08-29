@@ -2,15 +2,19 @@
 using System.Linq;
 using UnityEngine;
 
-public class AvoidNearSkeletonPointGeneratorCriteria : IGeneratorCriteria<List<SkeletonPoint>>
+public class AvoidNearSkeletonPointGeneratorCriteria : IGeneratorCriteria<SkeletonPoint>
 {
-    public bool Verify(List<SkeletonPoint> model)
+    private readonly List<SkeletonPoint> _initialPoints;
+
+    public AvoidNearSkeletonPointGeneratorCriteria(List<SkeletonPoint> InitialPoints)
     {
-        foreach (var point in model)
-        {
-            if (model.Any(_ => _ != point && Vector2.Distance(_.Position, point.Position) < 1f))
-                return false;
-        }
+        _initialPoints = InitialPoints;
+    }
+
+    public bool Verify(SkeletonPoint model)
+    {
+        if (_initialPoints.Any(_ => Vector2.Distance(_.Position, model.Position) < 1f))
+            return false;
 
         return true;
     }

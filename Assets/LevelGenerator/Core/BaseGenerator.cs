@@ -32,7 +32,10 @@ public abstract class BaseGenerator<T, TParams>
         }
 
         if (attemptCount > GeneratorConstants.MaxGenerationAttemts)
+        {
             Debug.Log($"[Warning] Criteria doesn't pass for {GetType().ToString()}");
+            result = default;
+        }
 
         Debug.Log($"[Success] generation of: {typeof(T)}; attempts count: {attemptCount}");
 

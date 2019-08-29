@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeletonGeneratorParams>
 {
-    private readonly SkeletonPointGenerator _skeletonPointGenerator;
+    private readonly SkeletonPointsGenerator _skeletonPointsGenerator;
 
     public LevelSkeletonGenerator(LevelSkeletonGeneratorParams generatorParams, IEnumerable<IGeneratorCriteria<LevelSkeleton>> generatorCriteria = null) : base(generatorParams, generatorCriteria)
     {
         var criterias = new List<IGeneratorCriteria<List<SkeletonPoint>>>
         {
-            new AvoidNearSkeletonPointGeneratorCriteria()
+            new AvoidNearSkeletonPointsGeneratorCriteria()
         };
 
-        _skeletonPointGenerator = new SkeletonPointGenerator(generatorParams.SkeletonPointGeneratorParams, criterias);
+        _skeletonPointsGenerator = new SkeletonPointsGenerator(generatorParams.SkeletonPointsGeneratorParams, criterias);
     }
 
     protected override LevelSkeleton Generate()
@@ -22,7 +22,7 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
         var result = new LevelSkeleton();
 
         //1. Generate random points
-        var points = _skeletonPointGenerator.Execute();
+        var points = _skeletonPointsGenerator.Execute();
         generatedPoints.AddPoints(points);
 
         //2. Generate full connected graph
