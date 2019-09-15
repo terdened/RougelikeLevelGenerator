@@ -19,6 +19,14 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
                 if(walls != null)
                     level.AddWalls(walls);
             }
+
+            foreach (var line in _params.LevelSkeleton.Lines)
+            {
+                var elevator = line.GetLevelElevator();
+
+                if (elevator != null)
+                    level.AddWall(elevator);
+            }
         }
 
         return level;

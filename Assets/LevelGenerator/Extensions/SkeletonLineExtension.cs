@@ -260,31 +260,90 @@ public static class SkeletonLineExtension
 
     public static IEnumerable<LevelWall> GetLevelWalls(this SkeletonLine skeletonLine)
     {
-        if (skeletonLine.Type.Name == "Floor")
+        var width = 0.15f;
+
+        if (skeletonLine.Type.Name == "Floor" || skeletonLine.Type.Name == "Elevator")
         {
-            var lineAngle = (float)skeletonLine.GetLineAngle() * Mathf.Deg2Rad;
+            var (WallA, WallB) = GetWalls(skeletonLine, width);
 
-            Debug.Log($"Degree: {lineAngle * Mathf.Rad2Deg}; Atan: {Mathf.Tan(lineAngle)}");
+            return new List<LevelWall> { WallA, WallB };
+        } else if (skeletonLine.Type.Name == "Empty Space Floor")
+        {
+            var (WallA, WallB) = GetWalls(skeletonLine, width);
+            var wall = WallA.Points.pointA.y < WallB.Points.pointA.y
+                ? WallA
+                : WallB;
 
-            if (lineAngle == Mathf.PI / 2)
-                return null;
+            return new List<LevelWall> { wall };
+        } else if (skeletonLine.Type.Name == "Empty Space Roof")
+        {
+            var (WallA, WallB) = GetWalls(skeletonLine, width);
+            var wall = WallA.Points.pointA.y > WallB.Points.pointA.y
+                ? WallA
+                : WallB;
 
-            var b = skeletonLine.Points.pointA.Position.y - Mathf.Tan(lineAngle) * skeletonLine.Points.pointA.Position.x;
+            var airPlatform = WallA.Points.pointA.y <= WallB.Points.pointA.y
+                ? WallA
+                : WallB;
 
-            var firstWallX1 = skeletonLine.Points.pointA.Position.x;
-            var firstWallX2 = skeletonLine.Points.pointB.Position.x;
-            var firstWallY1 = Mathf.Tan(lineAngle) * skeletonLine.Points.pointA.Position.x + b - 0.1f;
-            var firstWallY2 = Mathf.Tan(lineAngle) * skeletonLine.Points.pointB.Position.x + b - 0.1f;
+            airPlatform.Type = new EntityType(Color.yellow, "Air Plartform");
 
+            return new List<LevelWall> { wall, airPlatform };
+        } else if (skeletonLine.Type.Name == "Empty Space Elevator Left")
+        {
+            var (WallA, WallB) = GetWalls(skeletonLine, width);
+            var wall = WallA.Points.pointA.x < WallB.Points.pointA.x
+                ? WallA
+                : WallB;
 
-            var secondWallX1 = skeletonLine.Points.pointA.Position.x;
-            var secondWallX2 = skeletonLine.Points.pointB.Position.x;
-            var secondWallY1 = Mathf.Tan(lineAngle) * skeletonLine.Points.pointA.Position.x + b + 0.1f;
-            var secondWallY2 = Mathf.Tan(lineAngle) * skeletonLine.Points.pointB.Position.x + b + 0.1f;
+            return new List<LevelWall> { wall };
+        } else if (skeletonLine.Type.Name == "Empty Space Elevator Right")
+        {
+            var (WallA, WallB) = GetWalls(skeletonLine, width);
+            var wall = WallA.Points.pointA.x > WallB.Points.pointA.x
+                ? WallA
+                : WallB;
 
-            return new List<LevelWall> { new LevelWall(new Vector2(firstWallX1, firstWallY1), new Vector2(firstWallX2, firstWallY2)), new LevelWall(new Vector2(secondWallX1, secondWallY1), new Vector2(secondWallX2, secondWallY2)) };
+            return new List<LevelWall> { wall };
+        } else if (skeletonLine.Type.Name == "Inside Floor")
+        {
+            var (WallA, WallB) = GetWalls(skeletonLine, width);
+            var wall = WallA.Points.pointA.x > WallB.Points.pointA.x
+                ? WallA
+                : WallB;
+
+            wall.Type = new EntityType(Color.yellow, "Air Plartform");
+            return new List<LevelWall> { wall };
         }
 
         return null;
+    }
+
+    public static LevelWall GetLevelElevator(this SkeletonLine skeletonLine)
+    {
+        if (skeletonLine.Type.Name.Contains("Elevator"))
+        {
+            return new LevelWall(skeletonLine.Points.pointA.Position, skeletonLine.Points.pointB.Position, new EntityType(Color.green, "Elevator"));
+        }
+
+        return null;
+    }
+
+    private static (LevelWall WallA, LevelWall WallB) GetWalls(this SkeletonLine skeletonLine, float width)
+    {
+        var lineAngle = (float)skeletonLine.GetOrigianlLineAngle() * Mathf.Deg2Rad;
+        lineAngle += (float)Math.PI / 2;
+
+        var firstWallX1 = (float)(skeletonLine.Points.pointA.Position.x + width * Math.Cos(lineAngle));
+        var firstWallX2 = (float)(skeletonLine.Points.pointB.Position.x + width * Math.Cos(lineAngle));
+        var firstWallY1 = (float)(skeletonLine.Points.pointA.Position.y + width * Math.Sin(lineAngle));
+        var firstWallY2 = (float)(skeletonLine.Points.pointB.Position.y + width * Math.Sin(lineAngle));
+
+        var secondWallX1 = (float)(skeletonLine.Points.pointA.Position.x - width * Math.Cos(lineAngle));
+        var secondWallX2 = (float)(skeletonLine.Points.pointB.Position.x - width * Math.Cos(lineAngle));
+        var secondWallY1 = (float)(skeletonLine.Points.pointA.Position.y - width * Math.Sin(lineAngle));
+        var secondWallY2 = (float)(skeletonLine.Points.pointB.Position.y - width * Math.Sin(lineAngle));
+
+        return (new LevelWall(new Vector2(firstWallX1, firstWallY1), new Vector2(firstWallX2, firstWallY2)), new LevelWall(new Vector2(secondWallX1, secondWallY1), new Vector2(secondWallX2, secondWallY2)));
     }
 }

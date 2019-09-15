@@ -311,13 +311,13 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
             {
                 if (l.Type.Name == "Elevator")
                 {
-                    l.Type = new EntityType(new Color(0.25f, 0.25f, 0.25f), "Inside");
+                    l.Type = new EntityType(new Color(0.25f, 0.25f, 0.25f), "Elevator Inside");
                 } else
                 {
-                    l.Type = new EntityType(Color.grey, "Inside");
+                    l.Type = new EntityType(Color.grey, "Inside Floor");
                 }
-                l.Points.pointA.Type = new EntityType(Color.grey, "Inside");
-                l.Points.pointB.Type = new EntityType(Color.grey, "Inside");
+                l.Points.pointA.Type = new EntityType(Color.grey, "Inside Floor");
+                l.Points.pointB.Type = new EntityType(Color.grey, "Inside Floor");
             });
         });
     }

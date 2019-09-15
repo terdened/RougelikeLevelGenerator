@@ -33,7 +33,7 @@ public class LevelGeneratorController : MonoBehaviour
         }
 
         var levelSkeletonRenderer = GetComponent<LevelSkeletonRenderer>();
-        levelSkeletonRenderer.Draw(_levelSkeleton);
+        //levelSkeletonRenderer.Draw(_levelSkeleton);
 
         var levelGeneratorParams = new LevelGeneratorParams()
         {
@@ -42,15 +42,15 @@ public class LevelGeneratorController : MonoBehaviour
 
         var levelGenerator = new LevelGenerator(levelGeneratorParams);
 
-        //_level = levelGenerator.Execute();
+        _level = levelGenerator.Execute();
 
-        //if (_level == null)
-        //{
-        //    Debug.Log("[Failed] Level generation failed");
-        //    return;
-        //}
+        if (_level == null)
+        {
+            Debug.Log("[Failed] Level generation failed");
+            return;
+        }
 
-        //var levelRenderer = GetComponent<LevelRenderer>();
-        //levelRenderer.Draw(_level);
+        var levelRenderer = GetComponent<LevelRenderer>();
+        levelRenderer.Draw(_level);
     }
 }
