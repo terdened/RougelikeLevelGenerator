@@ -13,13 +13,15 @@ public class LevelSkeletonGeneratorParams
     public bool MergeNearBy { get; set; }
 
     public double MaxOpenSpacePerimeter { get; set; }
+    public double MinOpenSpacePerimeter { get; set; }
 
     public LevelSkeletonGeneratorParams()
     {
         ReplaceMoreThan45 = true;
         MergeNearBy = true;
         AdditionalLinesCount = 0;
-        MaxOpenSpacePerimeter = 30;
+        MaxOpenSpacePerimeter = 45;
+        MinOpenSpacePerimeter = 8;
         SkeletonPointsGeneratorParams = new SkeletonPointsGeneratorParams
         {
             RandomPointsCount = 25,

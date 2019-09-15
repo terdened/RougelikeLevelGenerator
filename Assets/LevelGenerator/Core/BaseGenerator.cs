@@ -16,18 +16,32 @@ public abstract class BaseGenerator<T, TParams>
 
     public T Execute()
     {
-        var result = Generate();
-
-        if (result != null && _generatorCriteria == null)
+        T result = default; 
+        try
         {
-            Debug.Log($"[Success] generation of: {typeof(T)}; attempts count: 1");
-            return result;
+            result = Generate();
+
+            if (result != null && _generatorCriteria == null)
+            {
+                Debug.Log($"[Success] generation of: {typeof(T)}; attempts count: 1");
+                return result;
+            }
+        } catch
+        {
+            result = default;
         }
 
         var attemptCount = 1;
         while (result == null || _generatorCriteria != null && _generatorCriteria.Any(_ => !_.Verify(result)) && attemptCount <= GeneratorConstants.MaxGenerationAttemts)
         {
-            result = Generate();
+            try
+            {
+                result = Generate();
+            }
+            catch
+            {
+                result = default;
+            }
             attemptCount++;
         }
 

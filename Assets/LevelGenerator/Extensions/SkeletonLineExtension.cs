@@ -2,19 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public static class SkeletonLineExtension
 {
     public static float? GetDistanceBetweenLineAndPoint(this SkeletonLine line, SkeletonPoint point)
     {
-        var lineAngle = (float)GetLineAngle(line);
-        var secondLineAngle = lineAngle + 90;
-        var b = point.Position.y - Mathf.Atan(secondLineAngle) * point.Position.x;
+        var lineAngle = (float)GetOrigianlLineAngle(line);
+        var secondLineAngle = (lineAngle + 90) * Mathf.Deg2Rad;
+
+        secondLineAngle = secondLineAngle % Mathf.PI;
+
+        //if (Mathf.Abs(Mathf.Abs(secondLineAngle) - Mathf.PI / 2) < 0.01f)
+        //    return null;
+
+        var b = point.Position.y - Mathf.Tan(secondLineAngle) * point.Position.x;
 
         var x1 = -10000;
         var x2 = 10000;
-        var y1 = Mathf.Atan(secondLineAngle) * x1 + b;
-        var y2 = Mathf.Atan(secondLineAngle) * x2 + b;
+        var y1 = Mathf.Tan(secondLineAngle) * x1 + b;
+        var y2 = Mathf.Tan(secondLineAngle) * x2 + b;
 
         var intersection = line.FindIntersection(new SkeletonLine(new SkeletonPoint(new Vector2(x1, y1)), new SkeletonPoint(new Vector2(x2, y2))));
 
@@ -22,6 +29,11 @@ public static class SkeletonLineExtension
             return null;
 
         var secondLine = new SkeletonLine(point, new SkeletonPoint(intersection.Value));
+
+        if(secondLine.Length < 0.5)
+        {
+            var a = 0;
+        }
 
         return secondLine.Length;
     }
@@ -31,15 +43,77 @@ public static class SkeletonLineExtension
         var x1 = line.Points.pointA.Position.x > line.Points.pointB.Position.x ? line.Points.pointB.Position.x : line.Points.pointA.Position.x;
         var x2 = line.Points.pointA.Position.x > line.Points.pointB.Position.x ? line.Points.pointA.Position.x : line.Points.pointB.Position.x;
 
-        var y1 = line.Points.pointA.Position.y > line.Points.pointB.Position.y ? line.Points.pointB.Position.y : line.Points.pointA.Position.y;
-        var y2 = line.Points.pointA.Position.y > line.Points.pointB.Position.y ? line.Points.pointA.Position.y : line.Points.pointB.Position.y;
+        var y1 = line.Points.pointA.Position.x > line.Points.pointB.Position.y ? line.Points.pointB.Position.y : line.Points.pointA.Position.y;
+        var y2 = line.Points.pointA.Position.x > line.Points.pointB.Position.y ? line.Points.pointA.Position.y : line.Points.pointB.Position.y;
 
         float xDiff = Mathf.Abs(x2 - x1);
         float yDiff = Mathf.Abs(y2 - y1);
         return Mathf.Atan2(yDiff, xDiff) * 180.0 / Mathf.PI;
     }
 
+    public static double GetOrigianlLineAngle(this SkeletonLine line)
+    {
+        return Mathf.Atan2(line.Points.pointB.Position.y - line.Points.pointA.Position.y, line.Points.pointB.Position.x - line.Points.pointA.Position.x) * 180.0 / Mathf.PI;
+    }
+
+    public static SkeletonPoint GetMiddlePoint(this SkeletonLine line)
+    {
+        var middleX = line.Points.pointA.Position.x > line.Points.pointB.Position.x
+            ? line.Points.pointB.Position.x + ((line.Points.pointA.Position.x - line.Points.pointB.Position.x) / 2)
+            : line.Points.pointA.Position.x + ((line.Points.pointB.Position.x - line.Points.pointA.Position.x) / 2);
+        
+        var middleY = line.Points.pointA.Position.y > line.Points.pointB.Position.y
+            ? line.Points.pointB.Position.y + ((line.Points.pointA.Position.y - line.Points.pointB.Position.y) / 2)
+            : line.Points.pointA.Position.y + ((line.Points.pointB.Position.y - line.Points.pointA.Position.y) / 2);
+
+        return new SkeletonPoint(new Vector2(middleX, middleY));
+    }
+
+    public static bool IsSkeletonPointInside(this List<SkeletonLine> perimeter, SkeletonPoint point)
+    {
+        var randomAngle = Random.Range(0f, 1.5708f);
+        var b = point.Position.y - Mathf.Atan(randomAngle) * point.Position.x;
+        var secondPoint = new SkeletonPoint(new Vector2(1000, Mathf.Atan(randomAngle) * 1000 + b));
+        var ray = new SkeletonLine(point, secondPoint);
+
+        while (perimeter.Any(_ => (ray.GetDistanceBetweenLineAndPoint(_.Points.pointA) == -1 ? 0 : ray.GetDistanceBetweenLineAndPoint(_.Points.pointA)) < 0.1 || (ray.GetDistanceBetweenLineAndPoint(_.Points.pointB) == -1 ? 0: ray.GetDistanceBetweenLineAndPoint(_.Points.pointB)) < 0.1))
+        {
+            randomAngle = Random.Range(0, 90);
+            b = point.Position.y - Mathf.Atan(randomAngle) * point.Position.x;
+            secondPoint = new SkeletonPoint(new Vector2(1000, Mathf.Atan(randomAngle) * 1000 + b));
+            ray = new SkeletonLine(point, secondPoint);
+        }
+
+        var intesectionsCount = perimeter.Where(_ => _.FindIntersection(ray).HasValue).Count();
+
+        return intesectionsCount % 2 == 0 ? false : true;
+    }
+
+    public static bool IsSkeletonPointBelongs(this List<SkeletonLine> perimeter, SkeletonPoint point)
+    {
+        if (perimeter.Any(l => l.ContainsSkeletonPoint(point)))
+            return true;
+
+        return perimeter.IsSkeletonPointInside(point);
+    }
+
     public static double GetPathLength(this List<SkeletonLine> path) => path.Sum(_ => _.Length);
+    
+    public static bool IsCycleEquals(this List<SkeletonLine> cycleA, List<SkeletonLine> cycleB)
+    {
+        if (cycleA.Count() != cycleB.Count())
+            return false;
+
+        var result = true;
+
+        cycleA.ForEach(_ =>
+        {
+            if (!cycleB.Contains(_))
+                result = false;
+        });
+
+        return result;
+    }
 
     // Returns true if given point(x,y) is inside the given line segment
     private static bool IsInsideLine(SkeletonLine line, double x, double y)
@@ -182,5 +256,35 @@ public static class SkeletonLineExtension
         // return default(Point);
         return null;
 
+    }
+
+    public static IEnumerable<LevelWall> GetLevelWalls(this SkeletonLine skeletonLine)
+    {
+        if (skeletonLine.Type.Name == "Floor")
+        {
+            var lineAngle = (float)skeletonLine.GetLineAngle() * Mathf.Deg2Rad;
+
+            Debug.Log($"Degree: {lineAngle * Mathf.Rad2Deg}; Atan: {Mathf.Tan(lineAngle)}");
+
+            if (lineAngle == Mathf.PI / 2)
+                return null;
+
+            var b = skeletonLine.Points.pointA.Position.y - Mathf.Tan(lineAngle) * skeletonLine.Points.pointA.Position.x;
+
+            var firstWallX1 = skeletonLine.Points.pointA.Position.x;
+            var firstWallX2 = skeletonLine.Points.pointB.Position.x;
+            var firstWallY1 = Mathf.Tan(lineAngle) * skeletonLine.Points.pointA.Position.x + b - 0.1f;
+            var firstWallY2 = Mathf.Tan(lineAngle) * skeletonLine.Points.pointB.Position.x + b - 0.1f;
+
+
+            var secondWallX1 = skeletonLine.Points.pointA.Position.x;
+            var secondWallX2 = skeletonLine.Points.pointB.Position.x;
+            var secondWallY1 = Mathf.Tan(lineAngle) * skeletonLine.Points.pointA.Position.x + b + 0.1f;
+            var secondWallY2 = Mathf.Tan(lineAngle) * skeletonLine.Points.pointB.Position.x + b + 0.1f;
+
+            return new List<LevelWall> { new LevelWall(new Vector2(firstWallX1, firstWallY1), new Vector2(firstWallX2, firstWallY2)), new LevelWall(new Vector2(secondWallX1, secondWallY1), new Vector2(secondWallX2, secondWallY2)) };
+        }
+
+        return null;
     }
 }

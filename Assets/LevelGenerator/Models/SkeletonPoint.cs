@@ -29,6 +29,8 @@ public class SkeletonPoint
         }
     }
 
+    public List<SkeletonLine> Lines => _lines;
+
     public void AddLine(SkeletonLine line)
     {
         _lines.Add(line);

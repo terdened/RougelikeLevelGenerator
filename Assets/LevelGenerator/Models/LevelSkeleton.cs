@@ -18,6 +18,11 @@ public class LevelSkeleton
         AddPoints(new List<SkeletonPoint> { newPoint });
     }
 
+    public void RemovePoint(SkeletonPoint point)
+    {
+        _points.RemoveAll(_ => _.Id == point.Id);
+    }
+
     public void AddPoints(IEnumerable<SkeletonPoint> newPoints)
     {
         _points.AddRange(newPoints);
@@ -46,7 +51,9 @@ public class LevelSkeleton
 
     public void RemoveLines(IEnumerable<SkeletonLine> lines)
     {
-        _lines.RemoveAll(_ => lines.Any(l => _.Id == l.Id));
+        var linesToRemove = _lines.Where(_ => lines.Any(l => l.ContainsSkeletonPoint(_.Points.pointA) && l.ContainsSkeletonPoint(_.Points.pointB))).ToList();
+        _lines.RemoveAll(_ => linesToRemove.Contains(_));
+        _points.ForEach(_ => _.Lines.RemoveAll(__ => linesToRemove.Contains(__)));
     }
 
     public void SetLineType(EntityType type)

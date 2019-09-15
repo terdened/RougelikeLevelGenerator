@@ -114,20 +114,4 @@ public static class SkeletonExtension
 
         return false;
     }
-
-    private static bool IsCycleEquals(this List<SkeletonLine> cycleA, List<SkeletonLine> cycleB)
-    {
-        if (cycleA.Count() != cycleB.Count())
-            return false;
-
-        var result = true;
-
-        cycleA.ForEach(_ =>
-        {
-            if (!cycleB.Contains(_))
-                result = false;
-        });
-
-        return result;
-    }
 }
