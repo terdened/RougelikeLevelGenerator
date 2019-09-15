@@ -33,7 +33,7 @@ public class LevelGeneratorController : MonoBehaviour
         }
 
         var levelSkeletonRenderer = GetComponent<LevelSkeletonRenderer>();
-        //levelSkeletonRenderer.Draw(_levelSkeleton);
+        // levelSkeletonRenderer.Draw(_levelSkeleton);
 
         var levelGeneratorParams = new LevelGeneratorParams()
         {

@@ -29,4 +29,14 @@ public class LevelWall
             _type = value;
         }
     }
+
+    public void SetPointA(Vector2 pointA)
+    {
+        _points.pointA = pointA;
+    }
+
+    public void SetPointB(Vector2 pointB)
+    {
+        _points.pointB = pointB;
+    }
 }

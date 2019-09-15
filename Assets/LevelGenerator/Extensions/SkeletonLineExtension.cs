@@ -308,7 +308,7 @@ public static class SkeletonLineExtension
         } else if (skeletonLine.Type.Name == "Inside Floor")
         {
             var (WallA, WallB) = GetWalls(skeletonLine, width);
-            var wall = WallA.Points.pointA.x > WallB.Points.pointA.x
+            var wall = WallA.Points.pointA.y < WallB.Points.pointA.y
                 ? WallA
                 : WallB;
 
@@ -334,15 +334,31 @@ public static class SkeletonLineExtension
         var lineAngle = (float)skeletonLine.GetOrigianlLineAngle() * Mathf.Deg2Rad;
         lineAngle += (float)Math.PI / 2;
 
+        var originalAngle = (float)skeletonLine.GetOrigianlLineAngle() * Mathf.Deg2Rad;
+
         var firstWallX1 = (float)(skeletonLine.Points.pointA.Position.x + width * Math.Cos(lineAngle));
         var firstWallX2 = (float)(skeletonLine.Points.pointB.Position.x + width * Math.Cos(lineAngle));
+
+        firstWallX1 -= 0.2f * (float)Math.Cos(originalAngle + Mathf.PI);
+        firstWallX2 -= 0.2f * (float)Math.Cos(originalAngle);
+
         var firstWallY1 = (float)(skeletonLine.Points.pointA.Position.y + width * Math.Sin(lineAngle));
         var firstWallY2 = (float)(skeletonLine.Points.pointB.Position.y + width * Math.Sin(lineAngle));
+        
+        firstWallY1 -= 0.2f * (float)Math.Sin(originalAngle + Mathf.PI);
+        firstWallY2 -= 0.2f * (float)Math.Sin(originalAngle);
 
         var secondWallX1 = (float)(skeletonLine.Points.pointA.Position.x - width * Math.Cos(lineAngle));
         var secondWallX2 = (float)(skeletonLine.Points.pointB.Position.x - width * Math.Cos(lineAngle));
+        
+        secondWallX1 -= 0.2f * (float)Math.Cos(originalAngle + Mathf.PI);
+        secondWallX2 -= 0.2f * (float)Math.Cos(originalAngle);
+
         var secondWallY1 = (float)(skeletonLine.Points.pointA.Position.y - width * Math.Sin(lineAngle));
         var secondWallY2 = (float)(skeletonLine.Points.pointB.Position.y - width * Math.Sin(lineAngle));
+        
+        secondWallY1 -= 0.2f * (float)Math.Sin(originalAngle + Mathf.PI);
+        secondWallY2 -= 0.2f * (float)Math.Sin(originalAngle);
 
         return (new LevelWall(new Vector2(firstWallX1, firstWallY1), new Vector2(firstWallX2, firstWallY2)), new LevelWall(new Vector2(secondWallX1, secondWallY1), new Vector2(secondWallX2, secondWallY2)));
     }

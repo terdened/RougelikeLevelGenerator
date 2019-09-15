@@ -8,6 +8,7 @@ public class LevelRenderer : MonoBehaviour
     public GameObject PointPrefab;
 
     private List<GameObject> _lineRendererGameObjects;
+    private List<GameObject> _roomRendererGameObjects;
 
     public void Draw(Level level)
     {
@@ -16,10 +17,24 @@ public class LevelRenderer : MonoBehaviour
 
         _lineRendererGameObjects = new List<GameObject>();
 
+        if (_roomRendererGameObjects != null)
+            _roomRendererGameObjects.ForEach(_ => Destroy(_));
+
+        _roomRendererGameObjects = new List<GameObject>();
+
         level.Walls.ToList().ForEach(_ =>
         {
             var lineRendererGameObject = CreateLine(_.Points.pointA, _.Points.pointB, _.Type);
             _lineRendererGameObjects.Add(lineRendererGameObject);
+        });
+
+        level.Rooms.ToList().ForEach(_ =>
+        {
+            var roomRendererGameObject = CreatePoint(_);
+            _roomRendererGameObjects.Add(roomRendererGameObject);
+
+            var roomRendererGameObject2 = CreatePoint2(_);
+            _roomRendererGameObjects.Add(roomRendererGameObject2);
         });
     }
 
@@ -38,11 +53,23 @@ public class LevelRenderer : MonoBehaviour
         return lineRendererGameObject;
     }
 
-    private GameObject CreatePoint(SkeletonPoint point)
+    private GameObject CreatePoint(Vector2 room)
     {
-        var pointPrefab = Instantiate(PointPrefab, point.Position, Quaternion.identity, gameObject.transform);
+        var pointPrefab = Instantiate(PointPrefab, room, Quaternion.identity, gameObject.transform);
+        pointPrefab.transform.localScale = new Vector3(3,3,3);
         var pointSpriteRenderer = pointPrefab.GetComponent<SpriteRenderer>();
-        pointSpriteRenderer.color = point.Type.Color;
+        pointSpriteRenderer.color = Color.gray;
+
+        return pointPrefab;
+    }
+
+    private GameObject CreatePoint2(Vector2 room)
+    {
+        var pointPrefab = Instantiate(PointPrefab, room, Quaternion.identity, gameObject.transform);
+        pointPrefab.transform.localScale = new Vector3(2f, 2f, 2f);
+        pointPrefab.transform.Translate(new Vector3(0,0,-1));
+        var pointSpriteRenderer = pointPrefab.GetComponent<SpriteRenderer>();
+        pointSpriteRenderer.color = new Color(0.35f, 0.35f, 0.35f);
 
         return pointPrefab;
     }
