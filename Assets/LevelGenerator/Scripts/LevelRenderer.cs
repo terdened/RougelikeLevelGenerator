@@ -28,14 +28,14 @@ public class LevelRenderer : MonoBehaviour
             _lineRendererGameObjects.Add(lineRendererGameObject);
         });
 
-        level.Rooms.ToList().ForEach(_ =>
-        {
-            var roomRendererGameObject = CreatePoint(_);
-            _roomRendererGameObjects.Add(roomRendererGameObject);
+        //level.Rooms.ToList().ForEach(_ =>
+        //{
+        //    var roomRendererGameObject = CreatePoint(_);
+        //    _roomRendererGameObjects.Add(roomRendererGameObject);
 
-            var roomRendererGameObject2 = CreatePoint2(_);
-            _roomRendererGameObjects.Add(roomRendererGameObject2);
-        });
+        //    var roomRendererGameObject2 = CreatePoint2(_);
+        //    _roomRendererGameObjects.Add(roomRendererGameObject2);
+        //});
     }
 
     private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition, EntityType type)

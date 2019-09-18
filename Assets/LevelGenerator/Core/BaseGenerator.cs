@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -38,11 +39,13 @@ public abstract class BaseGenerator<T, TParams>
             {
                 result = Generate();
             }
-            catch
+            catch(Exception e)
             {
                 result = default;
             }
-            attemptCount++;
+            finally {
+                attemptCount++;
+            }
         }
 
         if (attemptCount > GeneratorConstants.MaxGenerationAttemts)
