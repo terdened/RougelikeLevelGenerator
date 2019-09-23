@@ -13,15 +13,20 @@ public static class SkeletonLineExtension
 
         secondLineAngle = secondLineAngle % Mathf.PI;
 
-        //if (Mathf.Abs(Mathf.Abs(secondLineAngle) - Mathf.PI / 2) < 0.01f)
-        //    return null;
-
         var b = point.Position.y - Mathf.Tan(secondLineAngle) * point.Position.x;
 
-        var x1 = -10000;
-        var x2 = 10000;
+        var x1 = -10000f;
+        var x2 = 10000f;
         var y1 = Mathf.Tan(secondLineAngle) * x1 + b;
         var y2 = Mathf.Tan(secondLineAngle) * x2 + b;
+
+        if (Mathf.Abs(Mathf.Abs(secondLineAngle) - Mathf.PI / 2) < 0.01f)
+        {
+            x1 = point.Position.x;
+            x2 = point.Position.x;
+            y1 = -10000f;
+            y2 = 10000f;
+        }
 
         var intersection = line.FindIntersection(new SkeletonLine(new SkeletonPoint(new Vector2(x1, y1)), new SkeletonPoint(new Vector2(x2, y2))));
 
@@ -53,7 +58,7 @@ public static class SkeletonLineExtension
 
     public static double GetOrigianlLineAngle(this SkeletonLine line)
     {
-        return Mathf.Atan2(line.Points.pointB.Position.y - line.Points.pointA.Position.y, line.Points.pointB.Position.x - line.Points.pointA.Position.x) * 180.0 / Mathf.PI;
+        return Mathf.Atan2(line.Points.pointB.Position.y - line.Points.pointA.Position.y, line.Points.pointB.Position.x - line.Points.pointA.Position.x) * Mathf.Rad2Deg;
     }
 
     public static SkeletonPoint GetMiddlePoint(this SkeletonLine line)
@@ -339,26 +344,26 @@ public static class SkeletonLineExtension
         var firstWallX1 = (float)(skeletonLine.Points.pointA.Position.x + width * Math.Cos(lineAngle));
         var firstWallX2 = (float)(skeletonLine.Points.pointB.Position.x + width * Math.Cos(lineAngle));
 
-        firstWallX1 -= 0.3f * (float)Math.Cos(originalAngle + Mathf.PI);
-        firstWallX2 -= 0.3f * (float)Math.Cos(originalAngle);
+        firstWallX1 -= 0.1f * (float)Math.Cos(originalAngle + Mathf.PI);
+        firstWallX2 -= 0.1f * (float)Math.Cos(originalAngle);
 
         var firstWallY1 = (float)(skeletonLine.Points.pointA.Position.y + width * Math.Sin(lineAngle));
         var firstWallY2 = (float)(skeletonLine.Points.pointB.Position.y + width * Math.Sin(lineAngle));
         
-        firstWallY1 -= 0.3f * (float)Math.Sin(originalAngle + Mathf.PI);
-        firstWallY2 -= 0.3f * (float)Math.Sin(originalAngle);
+        firstWallY1 -= 0.1f * (float)Math.Sin(originalAngle + Mathf.PI);
+        firstWallY2 -= 0.1f * (float)Math.Sin(originalAngle);
 
         var secondWallX1 = (float)(skeletonLine.Points.pointA.Position.x - width * Math.Cos(lineAngle));
         var secondWallX2 = (float)(skeletonLine.Points.pointB.Position.x - width * Math.Cos(lineAngle));
         
-        secondWallX1 -= 0.3f * (float)Math.Cos(originalAngle + Mathf.PI);
-        secondWallX2 -= 0.3f * (float)Math.Cos(originalAngle);
+        secondWallX1 -= 0.1f * (float)Math.Cos(originalAngle + Mathf.PI);
+        secondWallX2 -= 0.1f * (float)Math.Cos(originalAngle);
 
         var secondWallY1 = (float)(skeletonLine.Points.pointA.Position.y - width * Math.Sin(lineAngle));
         var secondWallY2 = (float)(skeletonLine.Points.pointB.Position.y - width * Math.Sin(lineAngle));
         
-        secondWallY1 -= 0.3f * (float)Math.Sin(originalAngle + Mathf.PI);
-        secondWallY2 -= 0.3f * (float)Math.Sin(originalAngle);
+        secondWallY1 -= 0.1f * (float)Math.Sin(originalAngle + Mathf.PI);
+        secondWallY2 -= 0.1f * (float)Math.Sin(originalAngle);
 
         return (new LevelWall(new Vector2(firstWallX1, firstWallY1), new Vector2(firstWallX2, firstWallY2)), new LevelWall(new Vector2(secondWallX1, secondWallY1), new Vector2(secondWallX2, secondWallY2)));
     }

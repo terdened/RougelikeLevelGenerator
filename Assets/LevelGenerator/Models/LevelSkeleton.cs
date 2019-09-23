@@ -44,16 +44,19 @@ public class LevelSkeleton
                 if (!_points.Contains(point))
                     AddPoint(point);
 
-                point.AddLine(line);
+                // point.AddLine(line);
             }
         }
     }
 
     public void RemoveLines(IEnumerable<SkeletonLine> lines)
     {
-        var linesToRemove = _lines.Where(_ => lines.Any(l => l.ContainsSkeletonPoint(_.Points.pointA) && l.ContainsSkeletonPoint(_.Points.pointB))).ToList();
-        _lines.RemoveAll(_ => linesToRemove.Contains(_));
-        _points.ForEach(_ => _.Lines.RemoveAll(__ => linesToRemove.Contains(__)));
+        if (lines == null)
+            return;
+
+        //var linesToRemove = _lines.Where(_ => lines.Any(l => l.ContainsSkeletonPoint(_.Points.pointA) && l.ContainsSkeletonPoint(_.Points.pointB))).ToList();
+        _lines.RemoveAll(_ => lines.Contains(_));
+        //_points.ForEach(_ => _.Lines.RemoveAll(__ => lines.Contains(__)));
     }
 
     public void SetLineType(EntityType type)
@@ -64,4 +67,7 @@ public class LevelSkeleton
     public IReadOnlyCollection<SkeletonLine> Lines => new ReadOnlyCollection<SkeletonLine>(_lines);
 
     public IReadOnlyCollection<SkeletonPoint> Points => new ReadOnlyCollection<SkeletonPoint>(_points);
+
+    public IReadOnlyCollection<SkeletonLine> LinesForPoint(SkeletonPoint point) 
+        => new ReadOnlyCollection<SkeletonLine>(_lines.Where(_ => _.ContainsSkeletonPoint(point)).ToList());
 }

@@ -50,8 +50,10 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
             MergeNearByPointLines(result);
         }
 
-
         if (result.IsLinesIntersects())
+            return null;
+
+        if (result.IsDuplicateLines())
             return null;
 
         var emptySpaces = FindEmptySpaces(result);
@@ -109,54 +111,66 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
 
     private void MergeNearByPointLines(LevelSkeleton skeleton)
     {
-        var changes = true;
+        SkeletonLine lineToRemove1 = null;
+        var isStart = true;
 
-        while (changes)
+        var attempts = 0;
+
+        while ((lineToRemove1 != null || isStart) && attempts <= GeneratorConstants.MaxGenerationAttemts)
         {
-            changes = false;
-            var linesToRemove = new List<SkeletonLine>();
-            var isStart = true;
+            isStart = false;
+            lineToRemove1 = null;
 
-            var attempts = 0;
-
-            while ((linesToRemove.Count > 0 || isStart) && attempts <= GeneratorConstants.MaxGenerationAttemts)
+            foreach (var point in skeleton.Points)
             {
-                isStart = false;
-                linesToRemove = new List<SkeletonLine>();
+                var lineToRemove = skeleton.Lines.Where(l => !l.ContainsSkeletonPoint(point) && l.GetDistanceBetweenLineAndPoint(point) < 0.5)
+                    .FirstOrDefault();
 
-                foreach (var point in skeleton.Points)
+                if (lineToRemove != null)
                 {
-                    var lineToRemove = skeleton.Lines.Where(l => l.Points.pointA.Id != point.Id && l.Points.pointB.Id != point.Id && l.GetDistanceBetweenLineAndPoint(point) < 0.5)
-                        .FirstOrDefault();
+                    var l1 = !skeleton.LinesForPoint(point).Any(_ => _.ContainsSkeletonPoint(lineToRemove.Points.pointA))
+                        ? new SkeletonLine(point, lineToRemove.Points.pointA)
+                        : null;
 
-                    if (lineToRemove != null)
+                    var l2 = !skeleton.LinesForPoint(point).Any(_ => _.ContainsSkeletonPoint(lineToRemove.Points.pointB))
+                        ? new SkeletonLine(point, lineToRemove.Points.pointB)
+                        : null;
+
+                    //var line = lineToRemove.ContainsSkeletonPoint(lineToRemove.Points.pointA) 
+                    //    ? new SkeletonLine(point, lineToRemove.Points.pointB) 
+                    //    : lineToRemove.ContainsSkeletonPoint(lineToRemove.Points.pointB) 
+                    //        ? new SkeletonLine(point, lineToRemove.Points.pointA)
+                    //        : null;
+
+                    if (l1 != null)
                     {
-                        changes = true;
-                        linesToRemove.Add(lineToRemove);
-
-                        var line1 = new SkeletonLine(point, lineToRemove.Points.pointA);
-                        var line2 = new SkeletonLine(point, lineToRemove.Points.pointB);
-
-                        skeleton.AddLine(line1);
-                        skeleton.AddLine(line2);
+                        skeleton.AddLine(l1);
                         point.Type = new EntityType(Color.red, "NearByLine");
+                        lineToRemove1 = lineToRemove;
+                    }
 
+                    if (l2 != null)
+                    {
+                        skeleton.AddLine(l2);
+                        point.Type = new EntityType(Color.red, "NearByLine");
+                        lineToRemove1 = lineToRemove;
+                    }
+
+                    if (lineToRemove1 != null)
+                    {
                         break;
                     }
                 }
-
-                attempts++;
-
-                skeleton.RemoveLines(linesToRemove);
             }
 
-            if (attempts > GeneratorConstants.MaxGenerationAttemts)
-            {
-                Debug.Log("Too many attempts");
-                changes = false;
-            }
+            attempts++;
+            skeleton.RemoveLines(new List<SkeletonLine> { lineToRemove1 });
         }
-        
+
+        if (attempts > GeneratorConstants.MaxGenerationAttemts)
+        {
+            Debug.Log("Too many attempts");
+        }
     }
 
     private void MergeNearByPoints(LevelSkeleton skeleton)
@@ -184,8 +198,10 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
 
             if (pointToMergeA != null)
             {
-                var newLines = pointToMergeB.Lines.Where(_ => !_.ContainsSkeletonPoint(pointToMergeA)).Select(_ => new SkeletonLine(_.Points.pointA.Id == pointToMergeB.Id ? _.Points.pointB : _.Points.pointA, pointToMergeA)).ToList();
-                skeleton.RemoveLines(pointToMergeB.Lines);
+                var newLines = skeleton.LinesForPoint(pointToMergeB).Where(_ => !_.ContainsSkeletonPoint(pointToMergeA)).Select(_ => new SkeletonLine(_.Points.pointA.Id == pointToMergeB.Id ? _.Points.pointB : _.Points.pointA, pointToMergeA)).ToList();
+                var linesToRemove = skeleton.Lines.Where(_ => _.ContainsSkeletonPoint(pointToMergeB));
+
+                skeleton.RemoveLines(linesToRemove);
                 skeleton.RemovePoint(pointToMergeB);
                 skeleton.AddLines(newLines);
                 isMerged = true;

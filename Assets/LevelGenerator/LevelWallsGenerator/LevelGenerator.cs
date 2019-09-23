@@ -49,11 +49,11 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
 
                 skeletonLinesWithWalls.Add((line, wallA, wallB));
 
-                if(walls != null)
+                if (walls != null)
                     level.AddWalls(walls);
             }
 
-            foreach (var point in _params.LevelSkeleton.Points.Where(_ => _.Lines.Count >= 2))
+            foreach (var point in _params.LevelSkeleton.Points.Where(_ => _params.LevelSkeleton.LinesForPoint(_).Count >= 2))
             {
                 var skeletonLinesWithWallsForPoint = skeletonLinesWithWalls
                     .Where(_ => _.line.ContainsSkeletonPoint(point))
@@ -83,10 +83,10 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
                     }
                 });
 
-                skeletonLinesWithWallsForPoint = skeletonLinesWithWallsForPoint.OrderBy(_ => GetAngle(point.Position, _.line.Points.pointB.Position)).ToArray();
-
                 if (skeletonLinesWithWallsForPoint.Count() < 2)
                     continue;
+
+                skeletonLinesWithWallsForPoint = skeletonLinesWithWallsForPoint.OrderBy(_ => GetAngle(point.Position, _.line.Points.pointB.Position)).ToArray();
 
                 for(int i = 0; i < skeletonLinesWithWallsForPoint.Count(); i++)
                 {
@@ -103,7 +103,7 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
                                 angle -= 360;
                         }
 
-                        if (angle > wallAAngle)
+                        if (angle >= wallAAngle)
                         {
                             var wall = skeletonLinesWithWallsForPoint[i].wallB;
                             skeletonLinesWithWallsForPoint[i].wallB = skeletonLinesWithWallsForPoint[i].wallA;
@@ -133,27 +133,6 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
 
                 }
 
-                //skeletonLinesWithWallsForPoint.ForEach(_ =>
-                //{
-                //    var angle = GetAngle(point.Position, _.line.Points.pointB.Position);
-                //    var wallAAngle = GetAngle(point.Position, _.wallA.Points.pointB);
-
-                //    if (Mathf.Abs(wallAAngle - angle) > 180)
-                //    {
-                //        if (wallAAngle > angle)
-                //            wallAAngle -= 360;
-                //        else
-                //            angle -= 360;
-                //    }
-
-                //    if (angle > wallAAngle)
-                //    {
-                //        var wall = _.wallB;
-                //        _.wallB = _.wallA;
-                //        _.wallA = wall;
-                //    }
-                //});
-
                 for (var i = 0; i < skeletonLinesWithWallsForPoint.Count(); i++)
                 {
                     var wallA = skeletonLinesWithWallsForPoint[i].wallA;
@@ -169,77 +148,15 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
                             wallA.SetPointA(intersection.Value);
                             wallB.SetPointA(intersection.Value);
                         }
-                        //else if (Mathf.Abs(wallA.Points.pointA.x - wallB.Points.pointA.x) < 0.01 || Mathf.Abs(wallA.Points.pointA.y - wallB.Points.pointA.y) < 0.01)
-                        //{
-                        //    var middlePoint = new Vector2((wallA.Points.pointA.x + wallB.Points.pointA.x) / 2, (wallA.Points.pointA.y + wallB.Points.pointA.y) / 2);
-                        //    wallA.SetPointA(middlePoint);
-                        //    wallB.SetPointA(middlePoint);
-                        //}
+                        else if (Mathf.Abs(wallA.Points.pointA.x - wallB.Points.pointA.x) < 0.01 || Mathf.Abs(wallA.Points.pointA.y - wallB.Points.pointA.y) < 0.01)
+                        {
+                            var middlePoint = new Vector2((wallA.Points.pointA.x + wallB.Points.pointA.x) / 2, (wallA.Points.pointA.y + wallB.Points.pointA.y) / 2);
+                            wallA.SetPointA(middlePoint);
+                            wallB.SetPointA(middlePoint);
+                        }
                     }
                 }
             }
-            /////////////////////////////
-
-            //foreach (var wall in level.Walls.Where(_ => _.Type.Name == "Unknown"))
-            //{
-            //    var otherWalls = level.Walls.Where(_ => _.Type.Name == "Unknown").Where(_ => _.Id != wall.Id).ToList();
-
-            //    var allIntersectionsForPointA = otherWalls.Select(_ =>
-            //    {
-            //        var intersection = _.FindIntersection(wall);
-            //        return (Intersection: intersection, Distance: intersection.HasValue ? Vector2.Distance(intersection.Value, wall.Points.pointA) : (float?)null);
-            //    });
-
-            //    var intersectionForPointA = allIntersectionsForPointA.Where(_ => _.Distance.HasValue && _.Distance.Value > 0.001).OrderBy(_ => _.Distance).First();
-
-            //    if (intersectionForPointA.Distance < 1f)
-            //        wall.SetPointA(intersectionForPointA.Intersection.Value);
-            //    else
-            //    {
-            //        var a = allIntersectionsForPointA.Where(_ => _.Distance.HasValue).Min(_ => _.Distance);
-            //        a = 0;
-            //    }
-
-            //var allIntersectionsForPointB = otherWalls.Select(_ =>
-            //{
-            //    var intersection = _.FindIntersection(wall);
-            //    return (Intersection: intersection, Distance: intersection.HasValue ? Vector2.Distance(intersection.Value, wall.Points.pointB) : (float?)null);
-            //});
-
-            //var firstIntersectionForPointB = allIntersectionsForPointB.Where(_ => _.Distance.HasValue).OrderBy(_ => _.Distance).First().Intersection;
-
-            //var intersectionForPointB = allIntersectionsForPointB.Where(_ => _.Distance.HasValue).OrderBy(_ => _.Distance).First();
-
-            //if (intersectionForPointB.Distance < 1f)
-            //    wall.SetPointB(intersectionForPointB.Intersection.Value);
-            //}
-
-            //foreach (var wall in level.Walls.Where(_ => _.Type.Name == "Air Plartform"))
-            //{
-            //    var otherWalls = level.Walls.Where(_ => _.Type.Name == "Air Plartform").Where(_ => _.Id != wall.Id).ToList();
-
-            //    var allIntersectionsForPointA = otherWalls.Select(_ =>
-            //    {
-            //        var intersection = _.FindIntersection(wall);
-            //        return (Intersection: intersection, Distance: intersection.HasValue ? Vector2.Distance(intersection.Value, wall.Points.pointA) : (float?)null);
-            //    });
-
-            //    var intersectionForPointA = allIntersectionsForPointA.Where(_ => _.Distance.HasValue).OrderBy(_ => _.Distance).First();
-
-            //    if (intersectionForPointA.Distance < 0.3f)
-            //        wall.SetPointA(intersectionForPointA.Intersection.Value);
-
-            //    var allIntersectionsForPointB = otherWalls.Select(_ =>
-            //    {
-            //        var intersection = _.FindIntersection(wall);
-            //        return (Intersection: intersection, Distance: intersection.HasValue ? Vector2.Distance(intersection.Value, wall.Points.pointB) : (float?)null);
-            //    });
-
-            //    var intersectionForPointB = allIntersectionsForPointB.Where(_ => _.Distance.HasValue).OrderBy(_ => _.Distance).First();
-
-            //    if (intersectionForPointB.Distance < 2f)
-            //        wall.SetPointB(intersectionForPointB.Intersection.Value);
-            //}
 
             foreach (var line in _params.LevelSkeleton.Lines)
             {

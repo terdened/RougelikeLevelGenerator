@@ -33,7 +33,7 @@ public abstract class BaseGenerator<T, TParams>
         }
 
         var attemptCount = 1;
-        while (result == null || _generatorCriteria != null && _generatorCriteria.Any(_ => !_.Verify(result)) && attemptCount <= GeneratorConstants.MaxGenerationAttemts)
+        while ((result == null || (_generatorCriteria != null && _generatorCriteria.Any(_ => !_.Verify(result)))) && attemptCount <= GeneratorConstants.MaxGenerationAttemts)
         {
             try
             {
@@ -50,8 +50,8 @@ public abstract class BaseGenerator<T, TParams>
 
         if (attemptCount > GeneratorConstants.MaxGenerationAttemts)
         {
-            Debug.Log($"[Warning] Criteria doesn't pass for {GetType().ToString()}");
-            result = default;
+            Debug.Log($"[Warning] Too many attempts to generate {GetType().ToString()}");
+            return default;
         }
 
         Debug.Log($"[Success] generation of: {typeof(T)}; attempts count: {attemptCount}");
