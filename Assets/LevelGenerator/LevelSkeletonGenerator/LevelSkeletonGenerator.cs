@@ -136,12 +136,6 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
                         ? new SkeletonLine(point, lineToRemove.Points.pointB)
                         : null;
 
-                    //var line = lineToRemove.ContainsSkeletonPoint(lineToRemove.Points.pointA) 
-                    //    ? new SkeletonLine(point, lineToRemove.Points.pointB) 
-                    //    : lineToRemove.ContainsSkeletonPoint(lineToRemove.Points.pointB) 
-                    //        ? new SkeletonLine(point, lineToRemove.Points.pointA)
-                    //        : null;
-
                     if (l1 != null)
                     {
                         skeleton.AddLine(l1);

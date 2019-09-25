@@ -12,13 +12,7 @@ public class LevelSkeletonRenderer : MonoBehaviour
 
     public void Draw(LevelSkeleton levelSkeleton)
     {
-        if (_lineRendererGameObjects != null)
-            _lineRendererGameObjects.ForEach(_ => Destroy(_));
-
-
-        if (_pointGameObjects != null)
-            _pointGameObjects.ForEach(_ => Destroy(_));
-
+        Clear();
         _lineRendererGameObjects = new List<GameObject>();
         _pointGameObjects = new List<GameObject>();
 
@@ -33,6 +27,16 @@ public class LevelSkeletonRenderer : MonoBehaviour
             var pointGameObject = CreatePoint(_);
             _pointGameObjects.Add(pointGameObject);
         });
+    }
+
+    public void Clear()
+    {
+        if (_lineRendererGameObjects != null)
+            _lineRendererGameObjects.ForEach(_ => Destroy(_));
+
+
+        if (_pointGameObjects != null)
+            _pointGameObjects.ForEach(_ => Destroy(_));
     }
 
     private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition, EntityType type)

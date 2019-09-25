@@ -12,14 +12,8 @@ public class LevelRenderer : MonoBehaviour
 
     public void Draw(Level level)
     {
-        if (_lineRendererGameObjects != null)
-            _lineRendererGameObjects.ForEach(_ => Destroy(_));
-
+        Clear();
         _lineRendererGameObjects = new List<GameObject>();
-
-        if (_roomRendererGameObjects != null)
-            _roomRendererGameObjects.ForEach(_ => Destroy(_));
-
         _roomRendererGameObjects = new List<GameObject>();
 
         level.Walls.ToList().ForEach(_ =>
@@ -27,15 +21,15 @@ public class LevelRenderer : MonoBehaviour
             var lineRendererGameObject = CreateLine(_.Points.pointA, _.Points.pointB, _.Type);
             _lineRendererGameObjects.Add(lineRendererGameObject);
         });
+    }
 
-        //level.Rooms.ToList().ForEach(_ =>
-        //{
-        //    var roomRendererGameObject = CreatePoint(_);
-        //    _roomRendererGameObjects.Add(roomRendererGameObject);
-
-        //    var roomRendererGameObject2 = CreatePoint2(_);
-        //    _roomRendererGameObjects.Add(roomRendererGameObject2);
-        //});
+    public void Clear()
+    {
+        if (_lineRendererGameObjects != null)
+            _lineRendererGameObjects.ForEach(_ => Destroy(_));
+        
+        if (_roomRendererGameObjects != null)
+            _roomRendererGameObjects.ForEach(_ => Destroy(_));
     }
 
     private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition, EntityType type)

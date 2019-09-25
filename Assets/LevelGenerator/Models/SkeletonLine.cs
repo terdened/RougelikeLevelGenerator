@@ -22,7 +22,6 @@ public class SkeletonLine
 
     public bool ContainsSkeletonPoint(SkeletonPoint point) => _points.pointA == point || _points.pointB == point;
 
-
     public bool ContainsSkeletonPoint(Vector2 point) => _points.pointA.Position == point || _points.pointB.Position == point;
 
     public IReadOnlyCollection<SkeletonPoint> PointsList => new ReadOnlyCollection<SkeletonPoint>(new List<SkeletonPoint> { _points.pointA, _points.pointB });
