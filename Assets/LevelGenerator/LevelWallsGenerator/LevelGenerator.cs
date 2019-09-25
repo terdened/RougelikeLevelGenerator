@@ -44,8 +44,8 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
             {
                 var walls = line.GetLevelWalls().ToArray();
 
-                var wallA = walls.Where(_ => _.Type.Name == "Unknown").Count() > 0 ? walls[0] : null;
-                var wallB = walls.Where(_ => _.Type.Name == "Unknown").Count() > 1 ? walls[1] : null;
+                var wallA = walls.Where(_ => _.Type == EntityTypeConstants.Unknown).Count() > 0 ? walls[0] : null;
+                var wallB = walls.Where(_ => _.Type == EntityTypeConstants.Unknown).Count() > 1 ? walls[1] : null;
 
                 skeletonLinesWithWalls.Add((line, wallA, wallB));
 

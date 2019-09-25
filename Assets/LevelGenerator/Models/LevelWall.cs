@@ -7,11 +7,11 @@ public class LevelWall
 
     private (Vector2 pointA, Vector2 pointB) _points;
 
-    public LevelWall(Vector2 pointA, Vector2 pointB, EntityType type = null)
+    public LevelWall(Vector2 pointA, Vector2 pointB, EntityType type = default)
     {
         Id = Guid.NewGuid().ToId();
         _points = (pointA, pointB);
-        _type = type ?? new EntityType();
+        _type = type;
     }
 
     public string Id { get; }

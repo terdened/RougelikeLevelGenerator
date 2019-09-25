@@ -81,12 +81,12 @@ public static class SkeletonLineExtension
     {
         var width = 0.15f;
 
-        if (skeletonLine.Type.Name == "Floor" || skeletonLine.Type.Name == "Elevator")
+        if (skeletonLine.Type.Name == EntityTypeConstants.Floor.Name || skeletonLine.Type.Name == EntityTypeConstants.Elevator.Name)
         {
             var (WallA, WallB) = GetWalls(skeletonLine, width);
 
             return new List<LevelWall> { WallA, WallB };
-        } else if (skeletonLine.Type.Name == "Empty Space Floor")
+        } else if (skeletonLine.Type == EntityTypeConstants.EmptySpaceFloor)
         {
             var (WallA, WallB) = GetWalls(skeletonLine, width);
             var wall = WallA.Points.pointA.y < WallB.Points.pointA.y
@@ -94,7 +94,7 @@ public static class SkeletonLineExtension
                 : WallB;
 
             return new List<LevelWall> { wall };
-        } else if (skeletonLine.Type.Name == "Empty Space Roof")
+        } else if (skeletonLine.Type == EntityTypeConstants.EmptySpaceTop)
         {
             var (WallA, WallB) = GetWalls(skeletonLine, width);
             var wall = WallA.Points.pointA.y > WallB.Points.pointA.y
@@ -105,10 +105,10 @@ public static class SkeletonLineExtension
                 ? WallA
                 : WallB;
 
-            airPlatform.Type = new EntityType(Color.yellow, "Air Plartform");
+            airPlatform.Type = EntityTypeConstants.AirPlartform;
 
             return new List<LevelWall> { wall, airPlatform };
-        } else if (skeletonLine.Type.Name == "Empty Space Elevator Left")
+        } else if (skeletonLine.Type == EntityTypeConstants.EmptySpaceElevatorLeft)
         {
             var (WallA, WallB) = GetWalls(skeletonLine, width);
             var wall = WallA.Points.pointA.x < WallB.Points.pointA.x
@@ -116,7 +116,7 @@ public static class SkeletonLineExtension
                 : WallB;
 
             return new List<LevelWall> { wall };
-        } else if (skeletonLine.Type.Name == "Empty Space Elevator Right")
+        } else if (skeletonLine.Type == EntityTypeConstants.EmptySpaceElevatorRight)
         {
             var (WallA, WallB) = GetWalls(skeletonLine, width);
             var wall = WallA.Points.pointA.x > WallB.Points.pointA.x
@@ -124,14 +124,14 @@ public static class SkeletonLineExtension
                 : WallB;
 
             return new List<LevelWall> { wall };
-        } else if (skeletonLine.Type.Name == "Inside Floor")
+        } else if (skeletonLine.Type == EntityTypeConstants.InsideFloor)
         {
             var (WallA, WallB) = GetWalls(skeletonLine, width);
             var wall = WallA.Points.pointA.y < WallB.Points.pointA.y
                 ? WallA
                 : WallB;
 
-            wall.Type = new EntityType(Color.yellow, "Air Plartform");
+            wall.Type = EntityTypeConstants.AirPlartform;
             return new List<LevelWall> { wall };
         }
 
@@ -142,7 +142,7 @@ public static class SkeletonLineExtension
     {
         if (skeletonLine.Type.Name.Contains("Elevator"))
         {
-            return new LevelWall(skeletonLine.Points.pointA.Position, skeletonLine.Points.pointB.Position, new EntityType(Color.green, "Elevator"));
+            return new LevelWall(skeletonLine.Points.pointA.Position, skeletonLine.Points.pointB.Position, EntityTypeConstants.Elevator);
         }
 
         return null;

@@ -171,7 +171,8 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
     {
         var isMerged = true;
         var attempts = 0;
-        while (isMerged && attempts < skeleton.Points.Count)
+
+        while (isMerged && attempts < skeleton.Points.Count && attempts < GeneratorConstants.MaxGenerationAttemts)
         {
             attempts++;
             isMerged = false;
@@ -201,7 +202,6 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
                 isMerged = true;
             }
         }
-        Debug.Log(attempts);
     }
 
     private List<List<SkeletonLine>> FindEmptySpaces(LevelSkeleton skeleton)
@@ -261,14 +261,14 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
         {
             if(_.GetLineAngle() > 45)
             {
-                _.Type = new EntityType(new Color(0.33f, 0.24f, 0.21f), "Elevator");
+                _.Type = EntityTypeConstants.Elevator;
             } else
             {
 
-                _.Type = new EntityType(new Color(0.72f, 0.47f, 0.34f), "Floor");
+                _.Type = EntityTypeConstants.Floor;
             }
-            _.Points.pointA.Type = new EntityType(new Color(0.72f, 0.47f, 0.34f), "Floor");
-            _.Points.pointB.Type = new EntityType(new Color(0.72f, 0.47f, 0.34f), "Floor");
+            _.Points.pointA.Type = EntityTypeConstants.Floor;
+            _.Points.pointB.Type = EntityTypeConstants.Floor;
         });
 
         if (emptySpaces == null)
@@ -288,10 +288,10 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
 
                         if (c.IsSkeletonPointInside(rightMiddlePoint))
                         {
-                            _.Type = new EntityType(new Color(0.12f, 0.32f, 0.32f), "Empty Space Elevator Left");
+                            _.Type = EntityTypeConstants.EmptySpaceElevatorLeft;
                         } else
                         {
-                            _.Type = new EntityType(new Color(0.09f, 0.16f, 0.16f), "Empty Space Elevator Right");
+                            _.Type = EntityTypeConstants.EmptySpaceElevatorRight;
                         }
 
                     } else
@@ -300,15 +300,15 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
                         var aboveMiddlePoint = new SkeletonPoint(new Vector2(middlePoint.Position.x, middlePoint.Position.y + 0.1f));
                         if(c.IsSkeletonPointInside(aboveMiddlePoint))
                         {
-                            _.Type = new EntityType(new Color(0.0f, 0.5f, 0.5f), "Empty Space Floor");
+                            _.Type = EntityTypeConstants.EmptySpaceFloor;
                         } else
                         {
-                            _.Type = new EntityType(Color.cyan, "Empty Space Roof");
+                            _.Type = EntityTypeConstants.EmptySpaceTop;
                         }
                     }
                 });
-                l.Points.pointA.Type = new EntityType(Color.cyan, "Empty Space");
-                l.Points.pointB.Type = new EntityType(Color.cyan, "Empty Space");
+                l.Points.pointA.Type = EntityTypeConstants.EmptySpace;
+                l.Points.pointB.Type = EntityTypeConstants.EmptySpace;
             });
 
             var linesInEmptySpace = skeleton.Lines.Where(_ => !c.Any(l => l.ContainsSkeletonPoint(_.Points.pointA)) && c.IsSkeletonPointInside(_.Points.pointA)
@@ -321,13 +321,13 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
             {
                 if (l.Type.Name == "Elevator")
                 {
-                    l.Type = new EntityType(new Color(0.25f, 0.25f, 0.25f), "Elevator Inside");
+                    l.Type = EntityTypeConstants.InsideElevator;
                 } else
                 {
-                    l.Type = new EntityType(Color.grey, "Inside Floor");
+                    l.Type = EntityTypeConstants.InsideFloor;
                 }
-                l.Points.pointA.Type = new EntityType(Color.grey, "Inside Floor");
-                l.Points.pointB.Type = new EntityType(Color.grey, "Inside Floor");
+                l.Points.pointA.Type = EntityTypeConstants.InsideFloor;
+                l.Points.pointB.Type = EntityTypeConstants.InsideFloor;
             });
         });
     }

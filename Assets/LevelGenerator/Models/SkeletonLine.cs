@@ -9,11 +9,11 @@ public class SkeletonLine
 
     private (SkeletonPoint pointA, SkeletonPoint pointB) _points;
 
-    public SkeletonLine(SkeletonPoint pointA, SkeletonPoint pointB, EntityType type = null)
+    public SkeletonLine(SkeletonPoint pointA, SkeletonPoint pointB, EntityType type = default)
     {
         Id = Guid.NewGuid().ToId();
         _points = (pointA, pointB);
-        _type = type ?? new EntityType();
+        _type = type;
     }
 
     public string Id { get; }
