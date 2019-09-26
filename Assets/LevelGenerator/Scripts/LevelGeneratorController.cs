@@ -4,26 +4,28 @@ using UnityEngine.UI;
 public class LevelGeneratorController : MonoBehaviour
 {
     private LevelSkeleton _levelSkeleton;
+    private LevelSkeleton _levelSkeletonWithBioms;
     private Level _level;
+
     private LevelSkeletonRenderer _skeletonRenderer;
     private LevelRenderer _levelRenderer;
 
     public Toggle ShowSkeleton;
     public Toggle ShowWalls;
-
-    // Start is called before the first frame update
+    
     void Start()
     {
-        var levelSkeletonGeneratorParams = new LevelSkeletonGeneratorParams();
-        Generate(levelSkeletonGeneratorParams);
-
         Init();
+
         ShowSkeleton.onValueChanged.AddListener(delegate {
             Redraw();
         });
         ShowWalls.onValueChanged.AddListener(delegate {
             Redraw();
         });
+
+        var levelSkeletonGeneratorParams = new LevelSkeletonGeneratorParams();
+        Regenerate(levelSkeletonGeneratorParams);
     }
 
     void Init()
@@ -39,15 +41,12 @@ public class LevelGeneratorController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Regenerate(LevelSkeletonGeneratorParams levelSkeletonGeneratorParams)
     {
-        
-    }
+        _levelSkeleton = null;
+        _levelSkeletonWithBioms = null;
+        _level = null;
 
-    public void Generate(LevelSkeletonGeneratorParams levelSkeletonGeneratorParams)
-    {
-        Init();
         var levelSkeletonGenerator = new LevelSkeletonGenerator(levelSkeletonGeneratorParams);
 
         _levelSkeleton = levelSkeletonGenerator.Execute();
@@ -58,9 +57,96 @@ public class LevelGeneratorController : MonoBehaviour
             return;
         }
 
-        var levelGeneratorParams = new LevelGeneratorParams()
+        var levelSkeletomBiomsGeneratorParams = new LevelSkeletonBiomsGeneratorParams()
         {
             LevelSkeleton = _levelSkeleton
+        };
+
+        var levelSkeletonBiomsGenerator = new LevelSkeletonBiomsGenerator(levelSkeletomBiomsGeneratorParams);
+
+        _levelSkeletonWithBioms = levelSkeletonBiomsGenerator.Execute();
+
+        if (_levelSkeletonWithBioms == null)
+        {
+            Debug.Log("[Failed] Bioms generation failed");
+            return;
+        }
+
+        var levelGeneratorParams = new LevelGeneratorParams()
+        {
+            LevelSkeleton = _levelSkeletonWithBioms
+        };
+
+        var levelGenerator = new LevelGenerator(levelGeneratorParams);
+
+        _level = levelGenerator.Execute();
+
+        if (_level == null)
+        {
+            Debug.Log("[Failed] Level generation failed");
+            return;
+        }
+
+        Redraw();
+    }
+
+    public void RegenerateBioms()
+    {
+        _levelSkeletonWithBioms = null;
+        _level = null;
+
+        if (_levelSkeleton == null)
+        {
+            Debug.Log($"[Failed] Bioms generation failed: {nameof(_levelSkeleton)} is null");
+            return;
+        }
+
+        var levelSkeletomBiomsGeneratorParams = new LevelSkeletonBiomsGeneratorParams()
+        {
+            LevelSkeleton = _levelSkeleton
+        };
+
+        var levelSkeletonBiomsGenerator = new LevelSkeletonBiomsGenerator(levelSkeletomBiomsGeneratorParams);
+
+        _levelSkeletonWithBioms = levelSkeletonBiomsGenerator.Execute();
+
+        if (_levelSkeletonWithBioms == null)
+        {
+            Debug.Log("[Failed] Bioms generation failed");
+            return;
+        }
+
+        var levelGeneratorParams = new LevelGeneratorParams()
+        {
+            LevelSkeleton = _levelSkeletonWithBioms
+        };
+
+        var levelGenerator = new LevelGenerator(levelGeneratorParams);
+
+        _level = levelGenerator.Execute();
+
+        if (_level == null)
+        {
+            Debug.Log("[Failed] Level generation failed");
+            return;
+        }
+
+        Redraw();
+    }
+
+    public void RegenerateLevel()
+    {
+        _level = null;
+
+        if (_levelSkeletonWithBioms == null)
+        {
+            Debug.Log($"[Failed] Level generation failed: {nameof(_levelSkeletonWithBioms)} is null");
+            return;
+        }
+
+        var levelGeneratorParams = new LevelGeneratorParams()
+        {
+            LevelSkeleton = _levelSkeletonWithBioms
         };
 
         var levelGenerator = new LevelGenerator(levelGeneratorParams);
@@ -78,7 +164,11 @@ public class LevelGeneratorController : MonoBehaviour
 
     void Redraw()
     {
-        if (ShowSkeleton.isOn && _levelSkeleton != null)
+        if (ShowSkeleton.isOn && _levelSkeletonWithBioms != null)
+        {
+            _skeletonRenderer.Draw(_levelSkeletonWithBioms);
+        }
+        else if (ShowSkeleton.isOn && _levelSkeleton != null)
         {
             _skeletonRenderer.Draw(_levelSkeleton);
         }

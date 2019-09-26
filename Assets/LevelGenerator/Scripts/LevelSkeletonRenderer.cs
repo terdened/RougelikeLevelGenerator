@@ -18,13 +18,13 @@ public class LevelSkeletonRenderer : MonoBehaviour
 
         levelSkeleton.Lines.ToList().ForEach(_ =>
         {
-            var lineRendererGameObject = CreateLine(_.Points.pointA.Position, _.Points.pointB.Position, _.Type);
+            var lineRendererGameObject = CreateLine(_.Points.pointA.Position, _.Points.pointB.Position, _.Type, _.Id);
             _lineRendererGameObjects.Add(lineRendererGameObject);
         });
 
         levelSkeleton.Points.ToList().ForEach(_ =>
         {
-            var pointGameObject = CreatePoint(_);
+            var pointGameObject = CreatePoint(_, _.Id);
             _pointGameObjects.Add(pointGameObject);
         });
     }
@@ -39,9 +39,12 @@ public class LevelSkeletonRenderer : MonoBehaviour
             _pointGameObjects.ForEach(_ => Destroy(_));
     }
 
-    private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition, EntityType type)
+    private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition, EntityType type, string entityId)
     {
         var lineRendererGameObject = Instantiate(LineRendererPrefab, Vector3.zero, Quaternion.identity, gameObject.transform);
+
+        EntityIdHolder idHolder = lineRendererGameObject.AddComponent<EntityIdHolder>();
+        idHolder.SetId(entityId);
 
         LineRenderer lineRenderer = lineRendererGameObject.AddComponent<LineRenderer>();
         lineRenderer.startWidth = 0.05f;
@@ -54,11 +57,14 @@ public class LevelSkeletonRenderer : MonoBehaviour
         return lineRendererGameObject;
     }
 
-    private GameObject CreatePoint(SkeletonPoint point)
+    private GameObject CreatePoint(SkeletonPoint point, string entityId)
     {
         var pointPrefab = Instantiate(PointPrefab, point.Position, Quaternion.identity, gameObject.transform);
         var pointSpriteRenderer = pointPrefab.GetComponent<SpriteRenderer>();
         pointSpriteRenderer.color = point.Type.Color;
+
+        EntityIdHolder idHolder = pointPrefab.AddComponent<EntityIdHolder>();
+        idHolder.SetId(entityId);
 
         return pointPrefab;
     }

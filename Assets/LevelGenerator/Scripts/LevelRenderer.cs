@@ -18,7 +18,7 @@ public class LevelRenderer : MonoBehaviour
 
         level.Walls.ToList().ForEach(_ =>
         {
-            var lineRendererGameObject = CreateLine(_.Points.pointA, _.Points.pointB, _.Type);
+            var lineRendererGameObject = CreateLine(_.Points.pointA, _.Points.pointB, _.Type, _.Id);
             _lineRendererGameObjects.Add(lineRendererGameObject);
         });
     }
@@ -32,9 +32,12 @@ public class LevelRenderer : MonoBehaviour
             _roomRendererGameObjects.ForEach(_ => Destroy(_));
     }
 
-    private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition, EntityType type)
+    private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition, EntityType type, string entityId)
     {
         var lineRendererGameObject = Instantiate(LineRendererPrefab, Vector3.zero, Quaternion.identity, gameObject.transform);
+
+        EntityIdHolder idHolder = lineRendererGameObject.AddComponent<EntityIdHolder>();
+        idHolder.SetId(entityId);
 
         LineRenderer lineRenderer = lineRendererGameObject.AddComponent<LineRenderer>();
         lineRenderer.startWidth = 0.05f;

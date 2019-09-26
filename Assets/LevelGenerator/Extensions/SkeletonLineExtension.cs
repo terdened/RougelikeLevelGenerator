@@ -18,20 +18,48 @@ public static class SkeletonLineExtension
     public static SkeletonPoint GetMiddlePoint(this SkeletonLine line)
         => new SkeletonPoint(line.ToVector2().GetMiddlePoint());
 
+    public static bool IsSkeletonPointInsideStatistics(this List<SkeletonLine> perimeter, SkeletonPoint point, int repeats = 9)
+    {
+        var yesCount = 0;
+        var noCounts = 0;
+
+        var attempts = 0;
+        while (attempts < repeats)
+        {
+            attempts++;
+
+            if(IsSkeletonPointInside(perimeter, point))
+            {
+                yesCount++;
+            } else
+            {
+                noCounts++;
+            }
+        }
+
+        return yesCount >= noCounts;
+    }
+
     public static bool IsSkeletonPointInside(this List<SkeletonLine> perimeter, SkeletonPoint point)
     {
         var randomAngle = Random.Range(0f, 1.5708f);
         var b = point.Position.y - Mathf.Tan(randomAngle) * point.Position.x;
-        var secondPoint = new SkeletonPoint(new Vector2(1000, Mathf.Tan(randomAngle) * 1000 + b));
+        var secondPoint = new SkeletonPoint(new Vector2(point.Position.x + 100, Mathf.Tan(randomAngle) * (point.Position.x + 100) + b));
         var ray = new SkeletonLine(point, secondPoint);
 
-        while (perimeter.Any(_ => (ray.GetDistanceBetweenLineAndPoint(_.Points.pointA) == -1 ? 0 : ray.GetDistanceBetweenLineAndPoint(_.Points.pointA)) < 0.1 || (ray.GetDistanceBetweenLineAndPoint(_.Points.pointB) == -1 ? 0 : ray.GetDistanceBetweenLineAndPoint(_.Points.pointB)) < 0.1))
-        {
-            randomAngle = Random.Range(0, 90);
-            b = point.Position.y - Mathf.Tan(randomAngle) * point.Position.x;
-            secondPoint = new SkeletonPoint(new Vector2(1000, Mathf.Tan(randomAngle) * 1000 + b));
-            ray = new SkeletonLine(point, secondPoint);
-        }
+        //var attempts = 0;
+
+        //while (attempts < GeneratorConstants.MaxGenerationAttemts && perimeter.Any(_ => (ray.GetDistanceBetweenLineAndPoint(_.Points.pointA) == -1 ? 0 : ray.GetDistanceBetweenLineAndPoint(_.Points.pointA)) < 0.1 || (ray.GetDistanceBetweenLineAndPoint(_.Points.pointB) == -1 ? 0 : ray.GetDistanceBetweenLineAndPoint(_.Points.pointB)) < 0.1))
+        //{
+        //    attempts++;
+        //    randomAngle = Random.Range(0, 90);
+        //    b = point.Position.y - Mathf.Tan(randomAngle) * point.Position.x;
+        //    secondPoint = new SkeletonPoint(new Vector2(point.Position.x + 100, Mathf.Tan(randomAngle) * (point.Position.x + 100) + b));
+        //    ray = new SkeletonLine(point, secondPoint);
+        //}
+
+        //if (attempts >= GeneratorConstants.MaxGenerationAttemts)
+        //    throw new Exception("Too many attempts");
 
         var intesectionsCount = perimeter.Where(_ => _.FindIntersection(ray).HasValue).Count();
 
