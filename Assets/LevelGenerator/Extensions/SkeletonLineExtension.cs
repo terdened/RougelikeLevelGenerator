@@ -12,7 +12,7 @@ public static class SkeletonLineExtension
     public static double GetLineAngle(this SkeletonLine line)
         => line.ToVector2().GetLineAngle();
 
-    public static double GetOrigianlLineAngle(this SkeletonLine line)
+    public static double GetOriginalLineAngle(this SkeletonLine line)
         => line.ToVector2().GetOrigianlLineAngle();
 
     public static SkeletonPoint GetMiddlePoint(this SkeletonLine line)
@@ -46,34 +46,15 @@ public static class SkeletonLineExtension
         var b = point.Position.y - Mathf.Tan(randomAngle) * point.Position.x;
         var secondPoint = new SkeletonPoint(new Vector2(point.Position.x + 100, Mathf.Tan(randomAngle) * (point.Position.x + 100) + b));
         var ray = new SkeletonLine(point, secondPoint);
+        
+        var intersectionsCount = perimeter.Count(_ => FindIntersection(_, ray).HasValue);
 
-        //var attempts = 0;
-
-        //while (attempts < GeneratorConstants.MaxGenerationAttemts && perimeter.Any(_ => (ray.GetDistanceBetweenLineAndPoint(_.Points.pointA) == -1 ? 0 : ray.GetDistanceBetweenLineAndPoint(_.Points.pointA)) < 0.1 || (ray.GetDistanceBetweenLineAndPoint(_.Points.pointB) == -1 ? 0 : ray.GetDistanceBetweenLineAndPoint(_.Points.pointB)) < 0.1))
-        //{
-        //    attempts++;
-        //    randomAngle = Random.Range(0, 90);
-        //    b = point.Position.y - Mathf.Tan(randomAngle) * point.Position.x;
-        //    secondPoint = new SkeletonPoint(new Vector2(point.Position.x + 100, Mathf.Tan(randomAngle) * (point.Position.x + 100) + b));
-        //    ray = new SkeletonLine(point, secondPoint);
-        //}
-
-        //if (attempts >= GeneratorConstants.MaxGenerationAttemts)
-        //    throw new Exception("Too many attempts");
-
-        var intesectionsCount = perimeter.Where(_ => _.FindIntersection(ray).HasValue).Count();
-
-        return intesectionsCount % 2 == 0 ? false : true;
+        return intersectionsCount % 2 != 0;
     }
 
     public static bool IsSkeletonPointBelongs(this List<SkeletonLine> perimeter, SkeletonPoint point)
-    {
-        if (perimeter.Any(l => l.ContainsSkeletonPoint(point)))
-            return true;
-
-        return perimeter.IsSkeletonPointInside(point);
-    }
-
+      => perimeter.Any(l => l.ContainsSkeletonPoint(point)) || perimeter.IsSkeletonPointInside(point);
+    
     public static double GetPathLength(this List<SkeletonLine> path) => path.Sum(_ => _.Length);
 
     public static bool IsCycleEquals(this List<SkeletonLine> cycleA, List<SkeletonLine> cycleB)
@@ -91,75 +72,76 @@ public static class SkeletonLineExtension
 
         return result;
     }
-
-    // Returns true if given point(x,y) is inside the given line segment
-    private static bool IsInsideLine(SkeletonLine line, double x, double y)
-    {
-        return (x >= line.Points.pointA.Position.x && x <= line.Points.pointB.Position.x
-                    || x >= line.Points.pointB.Position.x && x <= line.Points.pointA.Position.x)
-               && (y >= line.Points.pointA.Position.y && y <= line.Points.pointB.Position.y
-                    || y >= line.Points.pointB.Position.y && y <= line.Points.pointA.Position.y);
-    }
-
+    
     //  Returns Point of intersection if do intersect otherwise default Point (null)
     public static Vector2? FindIntersection(this SkeletonLine lineA, SkeletonLine lineB)
         => lineA.ToVector2().FindIntersection(lineB.ToVector2());
 
     public static IEnumerable<LevelWall> GetLevelWalls(this SkeletonLine skeletonLine)
     {
-        var width = 0.15f;
+        const float width = 0.15f;
 
         if (skeletonLine.Type.Name == EntityTypeConstants.Floor.Name || skeletonLine.Type.Name == EntityTypeConstants.Elevator.Name)
         {
-            var (WallA, WallB) = GetWalls(skeletonLine, width);
+            var (wallA, wallB) = GetWalls(skeletonLine, width);
 
-            return new List<LevelWall> { WallA, WallB };
-        } else if (skeletonLine.Type == EntityTypeConstants.EmptySpaceFloor)
+            return new List<LevelWall> { wallA, wallB };
+        }
+
+        if (skeletonLine.Type == EntityTypeConstants.EmptySpaceFloor)
         {
-            var (WallA, WallB) = GetWalls(skeletonLine, width);
-            var wall = WallA.Points.pointA.y < WallB.Points.pointA.y
-                ? WallA
-                : WallB;
+            var (wallA, wallB) = GetWalls(skeletonLine, width);
+            var wall = wallA.Points.pointA.y < wallB.Points.pointA.y
+                ? wallA
+                : wallB;
 
             return new List<LevelWall> { wall };
-        } else if (skeletonLine.Type == EntityTypeConstants.EmptySpaceTop)
+        }
+
+        if (skeletonLine.Type == EntityTypeConstants.EmptySpaceTop)
         {
-            var (WallA, WallB) = GetWalls(skeletonLine, width);
-            var wall = WallA.Points.pointA.y > WallB.Points.pointA.y
-                ? WallA
-                : WallB;
+            var (wallA, wallB) = GetWalls(skeletonLine, width);
+            var wall = wallA.Points.pointA.y > wallB.Points.pointA.y
+                ? wallA
+                : wallB;
 
-            var airPlatform = WallA.Points.pointA.y <= WallB.Points.pointA.y
-                ? WallA
-                : WallB;
+            var airPlatform = wallA.Points.pointA.y <= wallB.Points.pointA.y
+                ? wallA
+                : wallB;
 
-            airPlatform.Type = EntityTypeConstants.AirPlartform;
+            airPlatform.Type = EntityTypeConstants.AirPlatform;
 
             return new List<LevelWall> { wall, airPlatform };
-        } else if (skeletonLine.Type == EntityTypeConstants.EmptySpaceElevatorLeft)
+        }
+
+        if (skeletonLine.Type == EntityTypeConstants.EmptySpaceElevatorLeft)
         {
-            var (WallA, WallB) = GetWalls(skeletonLine, width);
-            var wall = WallA.Points.pointA.x < WallB.Points.pointA.x
-                ? WallA
-                : WallB;
+            var (wallA, wallB) = GetWalls(skeletonLine, width);
+            var wall = wallA.Points.pointA.x < wallB.Points.pointA.x
+                ? wallA
+                : wallB;
 
             return new List<LevelWall> { wall };
-        } else if (skeletonLine.Type == EntityTypeConstants.EmptySpaceElevatorRight)
+        }
+
+        if (skeletonLine.Type == EntityTypeConstants.EmptySpaceElevatorRight)
         {
-            var (WallA, WallB) = GetWalls(skeletonLine, width);
-            var wall = WallA.Points.pointA.x > WallB.Points.pointA.x
-                ? WallA
-                : WallB;
+            var (wallA, wallB) = GetWalls(skeletonLine, width);
+            var wall = wallA.Points.pointA.x > wallB.Points.pointA.x
+                ? wallA
+                : wallB;
 
             return new List<LevelWall> { wall };
-        } else if (skeletonLine.Type == EntityTypeConstants.InsideFloor)
-        {
-            var (WallA, WallB) = GetWalls(skeletonLine, width);
-            var wall = WallA.Points.pointA.y < WallB.Points.pointA.y
-                ? WallA
-                : WallB;
+        }
 
-            wall.Type = EntityTypeConstants.AirPlartform;
+        if (skeletonLine.Type == EntityTypeConstants.InsideFloor)
+        {
+            var (wallA, wallB) = GetWalls(skeletonLine, width);
+            var wall = wallA.Points.pointA.y < wallB.Points.pointA.y
+                ? wallA
+                : wallB;
+
+            wall.Type = EntityTypeConstants.AirPlatform;
             return new List<LevelWall> { wall };
         }
 
@@ -167,24 +149,19 @@ public static class SkeletonLineExtension
     }
 
     public static LevelWall GetLevelElevator(this SkeletonLine skeletonLine)
-    {
-        if (skeletonLine.Type.Name.Contains("Elevator"))
-        {
-            return new LevelWall(skeletonLine.Points.pointA.Position, skeletonLine.Points.pointB.Position, EntityTypeConstants.Elevator);
-        }
-
-        return null;
-    }
-
+     => skeletonLine.Type.Name.Contains("Elevator") 
+         ? new LevelWall(skeletonLine.Points.pointA.Position, skeletonLine.Points.pointB.Position, EntityTypeConstants.Elevator) 
+         : null;
+    
     public static (Vector2 pointA, Vector2 pointB) ToVector2(this SkeletonLine skeletonLine) 
         => (skeletonLine.Points.pointA.Position, skeletonLine.Points.pointB.Position);
 
     private static (LevelWall WallA, LevelWall WallB) GetWalls(this SkeletonLine skeletonLine, float width)
     {
-        var lineAngle = (float)skeletonLine.GetOrigianlLineAngle() * Mathf.Deg2Rad;
+        var lineAngle = (float)skeletonLine.GetOriginalLineAngle() * Mathf.Deg2Rad;
         lineAngle += (float)Math.PI / 2;
 
-        var originalAngle = (float)skeletonLine.GetOrigianlLineAngle() * Mathf.Deg2Rad;
+        var originalAngle = (float)skeletonLine.GetOriginalLineAngle() * Mathf.Deg2Rad;
 
         var firstWallX1 = (float)(skeletonLine.Points.pointA.Position.x + width * Math.Cos(lineAngle));
         var firstWallX2 = (float)(skeletonLine.Points.pointB.Position.x + width * Math.Cos(lineAngle));

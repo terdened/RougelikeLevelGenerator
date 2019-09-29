@@ -4,22 +4,19 @@ using System.Linq;
 
 public class Vertex<T>
 {
-    private readonly List<Edge<T>> _edges;
-    private readonly T _data;
-
     public Vertex(T data)
     {
         Id = Guid.NewGuid().ToId();
-        _edges = new List<Edge<T>>();
-        _data = data;
+        Edges = new List<Edge<T>>();
+        Data = data;
         Color = VertexColor.White;
     }
 
     public Vertex(string id, T data)
     {
         Id = id;
-        _edges = new List<Edge<T>>();
-        _data = data;
+        Edges = new List<Edge<T>>();
+        Data = data;
         Color = VertexColor.White;
     }
 
@@ -27,21 +24,21 @@ public class Vertex<T>
 
     public VertexColor Color { get; set; }
 
-    public int Degree => _edges.Count;
+    public int Degree => Edges.Count;
 
-    public List<Edge<T>> Edges => _edges;
+    public List<Edge<T>> Edges { get; }
 
-    public T Data => _data;
+    public T Data { get; }
 
-    public List<Vertex<T>> NearVertexes => _edges.Select(_ => _.VertexA == this ? _.VertexB : _.VertexA).ToList();
+    public List<Vertex<T>> NearVertexes => Edges.Select(_ => _.VertexA == this ? _.VertexB : _.VertexA).ToList();
 
     public void AddEdge(Edge<T> edge)
     {
-        _edges.Add(edge);
+        Edges.Add(edge);
     }
 
     public void RemoveEdge(Edge<T> edge)
     {
-        _edges.Remove(edge);
+        Edges.Remove(edge);
     }
 }

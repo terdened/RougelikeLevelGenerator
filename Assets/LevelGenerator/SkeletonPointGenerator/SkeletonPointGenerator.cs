@@ -9,7 +9,7 @@ public class SkeletonPointGenerator : BaseGenerator<SkeletonPoint, SkeletonPoint
 
     protected override SkeletonPoint Generate()
     {
-        var randomPosition = new Vector2(Random.Range(_params.MinimalX, _params.MaximalX), Random.Range(_params.MinimalY, _params.MaximalY));
+        var randomPosition = new Vector2(Random.Range(Params.MinimalX, Params.MaximalX), Random.Range(Params.MinimalY, Params.MaximalY));
         return new SkeletonPoint(randomPosition, new EntityType(Color.yellow, "Room"));
     }
 }

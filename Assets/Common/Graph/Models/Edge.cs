@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 public class Edge<T>
 {
-    private (Vertex<T> vertexA, Vertex<T> vertexB) _vertexes;
+    private readonly (Vertex<T> vertexA, Vertex<T> vertexB) _vertexes;
 
     public Edge(Vertex<T> vertexA, Vertex<T> vertexB, float length)
     {

@@ -18,13 +18,10 @@ public static class GraphExtension
 
     public static Graph<T> AlgorithmByPrim<T>(this Graph<T> graph)
     {
-        int numberV = graph.Vertexes.Count;
+        var numberV = graph.Vertexes.Count;
 
         var result = new Graph<T>();
-        result.AddVertexes(graph.Vertexes.ToList().Select(_ =>
-        {
-            return new Vertex<T>(_.Id, _.Data);
-        }));
+        result.AddVertexes(graph.Vertexes.ToList().Select(_ => new Vertex<T>(_.Id, _.Data)));
 
         //неиспользованные ребра
         var notUsedE = graph.Edges.ToList();
@@ -39,9 +36,9 @@ public static class GraphExtension
 
         while (notUsedV.Count > 0)
         {
-            int minE = -1; //номер наименьшего ребра
+            var minE = -1; //номер наименьшего ребра
                            //поиск наименьшего ребра
-            for (int i = 0; i < notUsedE.Count; i++)
+            for (var i = 0; i < notUsedE.Count; i++)
             {
                 if (usedV.Any(_ => _ == notUsedE[i].VertexA) && notUsedV.Any(_ => _ == notUsedE[i].VertexB) ||
                     usedV.Any(_ => _ == notUsedE[i].VertexB) && notUsedV.Any(_ => _ == notUsedE[i].VertexA))
@@ -78,11 +75,11 @@ public static class GraphExtension
 
     public static List<List<Edge<T>>> GetCycles<T>(this Graph<T> graph)
     {
-        var result = dfs<T>(graph.Vertexes.First(), graph, null, null);
+        var result = Dfs<T>(graph.Vertexes.First(), graph, null, null);
         return result;
     }
 
-    private static List<List<Edge<T>>> dfs<T>(Vertex<T> vertex, Graph<T> graph, List<Edge<T>> currentCycle, List<List<Edge<T>>> result)
+    private static List<List<Edge<T>>> Dfs<T>(Vertex<T> vertex, Graph<T> graph, List<Edge<T>> currentCycle, List<List<Edge<T>>> result)
     {
         if (result == null)
             result = new List<List<Edge<T>>>();
@@ -116,31 +113,8 @@ public static class GraphExtension
                 var newCurrentCycle = currentCycle.Select(_ => _).ToList();
                 newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
 
-                dfs<T>(nearVertex, graph, newCurrentCycle, result);
+                Dfs<T>(nearVertex, graph, newCurrentCycle, result);
             }
-
-            //if (nearVertex.Color == VertexColor.White)
-            //{
-            //    var newCurrentCycle = currentCycle.Select(_ => _).ToList();
-            //    newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
-                
-            //    dfs<T>(nearVertex, graph, newCurrentCycle, result);
-            //}
-            //else if (nearVertex.Color == VertexColor.Grey)
-            //{
-            //    var newCurrentCycle = currentCycle.Select(_ => _).ToList();
-            //    var firstVertexIndex = currentCycle.IndexOf(currentCycle.First(_ => _.ContainsVertex(nearVertex)));
-                
-            //    newCurrentCycle = newCurrentCycle.Skip(firstVertexIndex).ToList();
-            //    newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
-
-            //    var notCycleEdge = newCurrentCycle.Where(_ => 
-            //                                                 newCurrentCycle.Count(a => a.ContainsVertex(_.VertexA)) < 2 
-            //                                                 || newCurrentCycle.Count(a => a.ContainsVertex(_.VertexB)) < 2);
-            //    newCurrentCycle.RemoveAll(_ => notCycleEdge.Contains(_));
-
-            //    result.Add(newCurrentCycle);
-            //}
         }
 
         vertex.Color = VertexColor.Black;

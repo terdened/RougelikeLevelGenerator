@@ -6,16 +6,13 @@ public class AvoidNearSkeletonPointGeneratorCriteria : IGeneratorCriteria<Skelet
 {
     private readonly List<SkeletonPoint> _initialPoints;
 
-    public AvoidNearSkeletonPointGeneratorCriteria(List<SkeletonPoint> InitialPoints)
+    public AvoidNearSkeletonPointGeneratorCriteria(List<SkeletonPoint> initialPoints)
     {
-        _initialPoints = InitialPoints;
+        _initialPoints = initialPoints;
     }
 
     public bool Verify(SkeletonPoint model)
     {
-        if (_initialPoints.Any(_ => Vector2.Distance(_.Position, model.Position) < 1f))
-            return false;
-
-        return true;
+        return !_initialPoints.Any(_ => Vector2.Distance(_.Position, model.Position) < 1f);
     }
 }

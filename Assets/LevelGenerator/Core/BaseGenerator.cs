@@ -5,12 +5,12 @@ using UnityEngine;
 
 public abstract class BaseGenerator<T, TParams>
 {
-    protected TParams _params;
-    protected IEnumerable<IGeneratorCriteria<T>> _generatorCriteria;
+    protected TParams Params;
+    protected IEnumerable<IGeneratorCriteria<T>> GeneratorCriteria;
 
-    public BaseGenerator(TParams generatorParams, IEnumerable<IGeneratorCriteria<T>> generatorCriteria = null) {
-        _params = generatorParams;
-        _generatorCriteria = generatorCriteria;
+    protected BaseGenerator(TParams generatorParams, IEnumerable<IGeneratorCriteria<T>> generatorCriteria = null) {
+        Params = generatorParams;
+        GeneratorCriteria = generatorCriteria;
     }
 
     protected abstract T Generate();
@@ -22,7 +22,7 @@ public abstract class BaseGenerator<T, TParams>
         {
             result = Generate();
 
-            if (result != null && _generatorCriteria == null)
+            if (result != null && GeneratorCriteria == null)
             {
                 Debug.Log($"[Success] generation of: {typeof(T)}; attempts count: 1");
                 return result;
@@ -33,7 +33,7 @@ public abstract class BaseGenerator<T, TParams>
         }
 
         var attemptCount = 1;
-        while ((result == null || (_generatorCriteria != null && _generatorCriteria.Any(_ => !_.Verify(result)))) && attemptCount <= GeneratorConstants.MaxGenerationAttemts)
+        while ((result == null || (GeneratorCriteria != null && GeneratorCriteria.Any(_ => !_.Verify(result)))) && attemptCount <= GeneratorConstants.MaxGenerationAttempts)
         {
             try
             {
@@ -48,7 +48,7 @@ public abstract class BaseGenerator<T, TParams>
             }
         }
 
-        if (attemptCount > GeneratorConstants.MaxGenerationAttemts)
+        if (attemptCount > GeneratorConstants.MaxGenerationAttempts)
         {
             Debug.Log($"[Warning] Too many attempts to generate {GetType().ToString()}");
             return default;

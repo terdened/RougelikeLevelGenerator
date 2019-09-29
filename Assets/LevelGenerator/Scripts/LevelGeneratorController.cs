@@ -57,14 +57,14 @@ public class LevelGeneratorController : MonoBehaviour
             return;
         }
 
-        var levelSkeletomBiomsGeneratorParams = new LevelSkeletonBiomsGeneratorParams()
+        var levelSkeletonBiomsGeneratorParams = new LevelSkeletonBiomsGeneratorParams
         {
             LevelSkeleton = _levelSkeleton,
             MinOpenSpacePerimeter = levelSkeletonGeneratorParams.MinOpenSpacePerimeter,
             MaxOpenSpacePerimeter = levelSkeletonGeneratorParams.MaxOpenSpacePerimeter
         };
 
-        var levelSkeletonBiomsGenerator = new LevelSkeletonBiomsGenerator(levelSkeletomBiomsGeneratorParams);
+        var levelSkeletonBiomsGenerator = new LevelSkeletonBiomsGenerator(levelSkeletonBiomsGeneratorParams);
 
         _levelSkeletonWithBioms = levelSkeletonBiomsGenerator.Execute();
 
@@ -92,7 +92,7 @@ public class LevelGeneratorController : MonoBehaviour
         Redraw();
     }
 
-    public void RegenerateBioms(float MinES, float MaxES)
+    public void RegenerateBioms(float minEs, float maxEs)
     {
         _levelSkeletonWithBioms = null;
         _level = null;
@@ -103,18 +103,18 @@ public class LevelGeneratorController : MonoBehaviour
             return;
         }
 
-        var levelSkeletomBiomsGeneratorParams = new LevelSkeletonBiomsGeneratorParams()
+        var levelSkeletonBiomsGeneratorParams = new LevelSkeletonBiomsGeneratorParams()
         {
             LevelSkeleton = _levelSkeleton
         };
 
-        if (MinES > 0)
-            levelSkeletomBiomsGeneratorParams.MinOpenSpacePerimeter = MinES;
+        if (minEs > 0)
+            levelSkeletonBiomsGeneratorParams.MinOpenSpacePerimeter = minEs;
 
-        if (MaxES > 0)
-            levelSkeletomBiomsGeneratorParams.MaxOpenSpacePerimeter = MaxES;
+        if (maxEs > 0)
+            levelSkeletonBiomsGeneratorParams.MaxOpenSpacePerimeter = maxEs;
 
-        var levelSkeletonBiomsGenerator = new LevelSkeletonBiomsGenerator(levelSkeletomBiomsGeneratorParams);
+        var levelSkeletonBiomsGenerator = new LevelSkeletonBiomsGenerator(levelSkeletonBiomsGeneratorParams);
 
         _levelSkeletonWithBioms = levelSkeletonBiomsGenerator.Execute();
 
@@ -170,7 +170,7 @@ public class LevelGeneratorController : MonoBehaviour
         Redraw();
     }
 
-    void Redraw()
+    private void Redraw()
     {
         if (ShowSkeleton.isOn && _levelSkeletonWithBioms != null)
         {

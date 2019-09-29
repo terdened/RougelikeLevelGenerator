@@ -3,15 +3,13 @@ using UnityEngine;
 
 public class LevelWall
 {
-    private EntityType _type;
-
     private (Vector2 pointA, Vector2 pointB) _points;
 
     public LevelWall(Vector2 pointA, Vector2 pointB, EntityType type = default)
     {
         Id = Guid.NewGuid().ToId();
         _points = (pointA, pointB);
-        _type = type;
+        Type = type;
     }
 
     public string Id { get; }
@@ -20,15 +18,7 @@ public class LevelWall
     
     public (Vector2 pointA, Vector2 pointB) Points => _points;
 
-    public EntityType Type
-    {
-        get => _type;
-
-        set
-        {
-            _type = value;
-        }
-    }
+    public EntityType Type { get; set; }
 
     public void SetPointA(Vector2 pointA)
     {

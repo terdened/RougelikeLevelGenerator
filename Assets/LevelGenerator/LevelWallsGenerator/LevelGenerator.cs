@@ -12,7 +12,7 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
     {
         var level = new Level();
 
-        if (_params.LevelSkeleton != null && _params.LevelSkeleton.Lines != null)
+        if (Params.LevelSkeleton?.Lines != null)
         {
             var isChanges = true;
 
@@ -20,51 +20,52 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
             {
                 isChanges = false;
                 var duplicate = new List<SkeletonLine>();
-                foreach(var line in _params.LevelSkeleton.Lines)
+                foreach(var line in Params.LevelSkeleton.Lines)
                 {
-                    var duplicates = _params.LevelSkeleton.Lines.Where(l => line != l).Where(l => l.ContainsSkeletonPoint(line.Points.pointA.Position) && l.ContainsSkeletonPoint(line.Points.pointB.Position));
+                    var duplicates = Params.LevelSkeleton.Lines.Where(l => line != l)
+                        .Where(l => l.ContainsSkeletonPoint(line.Points.pointA.Position) 
+                                    && l.ContainsSkeletonPoint(line.Points.pointB.Position));
 
-                    if(duplicate.Count > 0)
-                    {
-                        duplicate.AddRange(duplicates);
-                        break;
-                    }
+                    if (duplicate.Count <= 0) continue;
+
+                    duplicate.AddRange(duplicates);
+                    break;
 
                 }
 
-                if (duplicate.Count > 0)
-                {
-                    _params.LevelSkeleton.RemoveLines(duplicate);
-                    isChanges = true;
-                }
+                if (duplicate.Count <= 0) continue;
+
+                Params.LevelSkeleton.RemoveLines(duplicate);
+                isChanges = true;
             }
 
             var skeletonLinesWithWalls = new List<(SkeletonLine line, LevelWall wallA, LevelWall wallB)>();
-            foreach (var line in _params.LevelSkeleton.Lines)
+            foreach (var line in Params.LevelSkeleton.Lines)
             {
                 var walls = line.GetLevelWalls().ToArray();
 
-                var wallA = walls.Where(_ => _.Type == EntityTypeConstants.Unknown).Count() > 0 ? walls[0] : null;
-                var wallB = walls.Where(_ => _.Type == EntityTypeConstants.Unknown).Count() > 1 ? walls[1] : null;
+                var wallA = walls.Any(_ => _.Type == EntityTypeConstants.Unknown) ? walls[0] : null;
+                var wallB = walls.Count(_ => _.Type == EntityTypeConstants.Unknown) > 1 ? walls[1] : null;
 
                 skeletonLinesWithWalls.Add((line, wallA, wallB));
-
-                if (walls != null)
-                    level.AddWalls(walls);
+                level.AddWalls(walls);
             }
 
-            foreach (var point in _params.LevelSkeleton.Points.Where(_ => _params.LevelSkeleton.LinesForPoint(_).Count >= 2))
+            foreach (var point in Params.LevelSkeleton.Points.Where(_ => Params.LevelSkeleton.LinesForPoint(_).Count >= 2))
             {
                 var skeletonLinesWithWallsForPoint = skeletonLinesWithWalls
                     .Where(_ => _.line.ContainsSkeletonPoint(point))
-                    .Select(_ =>
-                    {
-                        if(point == _.line.Points.pointA)
-                        {
-                            var a = 0;
-                        }
-                        return (line: new SkeletonLine(point == _.line.Points.pointA ? _.line.Points.pointA : _.line.Points.pointB, point == _.line.Points.pointA ? _.line.Points.pointB : _.line.Points.pointA), _.wallA, _.wallB);
-                    }).ToArray();
+                    .Select(_ => (
+                        line: new SkeletonLine(
+                            point == _.line.Points.pointA 
+                                    ? _.line.Points.pointA 
+                                    : _.line.Points.pointB, 
+                            point == _.line.Points.pointA 
+                                ? _.line.Points.pointB 
+                                : _.line.Points.pointA),
+                        _.wallA, 
+                        _.wallB))
+                    .ToArray();
 
                 skeletonLinesWithWalls.ForEach(_ =>
                 {
@@ -88,10 +89,12 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
 
                 skeletonLinesWithWallsForPoint = skeletonLinesWithWallsForPoint.OrderBy(_ => GetAngle(point.Position, _.line.Points.pointB.Position)).ToArray();
 
-                for(int i = 0; i < skeletonLinesWithWallsForPoint.Count(); i++)
+                for(var i = 0; i < skeletonLinesWithWallsForPoint.Count(); i++)
                 {
                     var angle = GetAngle(point.Position, skeletonLinesWithWallsForPoint[i].line.Points.pointB.Position);
-                    var wallAAngle = skeletonLinesWithWallsForPoint[i].wallA != null ? GetAngle(point.Position, skeletonLinesWithWallsForPoint[i].wallA.Points.pointB) : (float?)null;
+                    var wallAAngle = skeletonLinesWithWallsForPoint[i].wallA != null 
+                        ? GetAngle(point.Position, skeletonLinesWithWallsForPoint[i].wallA.Points.pointB) 
+                        : (float?)null;
 
                     if (wallAAngle.HasValue)
                     {
@@ -103,32 +106,30 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
                                 angle -= 360;
                         }
 
-                        if (angle >= wallAAngle)
-                        {
-                            var wall = skeletonLinesWithWallsForPoint[i].wallB;
-                            skeletonLinesWithWallsForPoint[i].wallB = skeletonLinesWithWallsForPoint[i].wallA;
-                            skeletonLinesWithWallsForPoint[i].wallA = wall;
-                        }
+                        if (!(angle >= wallAAngle)) continue;
+
+                        var wall = skeletonLinesWithWallsForPoint[i].wallB;
+                        skeletonLinesWithWallsForPoint[i].wallB = skeletonLinesWithWallsForPoint[i].wallA;
+                        skeletonLinesWithWallsForPoint[i].wallA = wall;
                     } else
                     {
                         var wallBAngle = skeletonLinesWithWallsForPoint[i].wallA != null ? GetAngle(point.Position, skeletonLinesWithWallsForPoint[i].wallB.Points.pointB) : (float?)null;
-                        if (wallBAngle.HasValue)
-                        {
-                            if (Mathf.Abs(wallBAngle.Value - angle) > 180)
-                            {
-                                if (wallBAngle > angle)
-                                    wallBAngle -= 360;
-                                else
-                                    angle -= 360;
-                            }
 
-                            if (angle < wallBAngle)
-                            {
-                                var wall = skeletonLinesWithWallsForPoint[i].wallB;
-                                skeletonLinesWithWallsForPoint[i].wallB = skeletonLinesWithWallsForPoint[i].wallA;
-                                skeletonLinesWithWallsForPoint[i].wallA = wall;
-                            }
+                        if (!wallBAngle.HasValue) continue;
+
+                        if (Mathf.Abs(wallBAngle.Value - angle) > 180)
+                        {
+                            if (wallBAngle > angle)
+                                wallBAngle -= 360;
+                            else
+                                angle -= 360;
                         }
+
+                        if (!(angle < wallBAngle)) continue;
+
+                        var wall = skeletonLinesWithWallsForPoint[i].wallB;
+                        skeletonLinesWithWallsForPoint[i].wallB = skeletonLinesWithWallsForPoint[i].wallA;
+                        skeletonLinesWithWallsForPoint[i].wallA = wall;
                     }
 
                 }
@@ -139,26 +140,26 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
                     var wallB = i < skeletonLinesWithWallsForPoint.Count() - 1
                                     ? skeletonLinesWithWallsForPoint[i + 1].wallB
                                     : skeletonLinesWithWallsForPoint[0].wallB;
-                    if (wallA != null && wallB != null)
-                    {
-                        var intersection = wallA.FindIntersection(wallB);
 
-                        if (intersection.HasValue)
-                        {
-                            wallA.SetPointA(intersection.Value);
-                            wallB.SetPointA(intersection.Value);
-                        }
-                        else if (Mathf.Abs(wallA.Points.pointA.x - wallB.Points.pointA.x) < 0.01 || Mathf.Abs(wallA.Points.pointA.y - wallB.Points.pointA.y) < 0.01)
-                        {
-                            var middlePoint = new Vector2((wallA.Points.pointA.x + wallB.Points.pointA.x) / 2, (wallA.Points.pointA.y + wallB.Points.pointA.y) / 2);
-                            wallA.SetPointA(middlePoint);
-                            wallB.SetPointA(middlePoint);
-                        }
+                    if (wallA == null || wallB == null) continue;
+
+                    var intersection = wallA.FindIntersection(wallB);
+
+                    if (intersection.HasValue)
+                    {
+                        wallA.SetPointA(intersection.Value);
+                        wallB.SetPointA(intersection.Value);
+                    }
+                    else if (Mathf.Abs(wallA.Points.pointA.x - wallB.Points.pointA.x) < 0.01 || Mathf.Abs(wallA.Points.pointA.y - wallB.Points.pointA.y) < 0.01)
+                    {
+                        var middlePoint = new Vector2((wallA.Points.pointA.x + wallB.Points.pointA.x) / 2, (wallA.Points.pointA.y + wallB.Points.pointA.y) / 2);
+                        wallA.SetPointA(middlePoint);
+                        wallB.SetPointA(middlePoint);
                     }
                 }
             }
 
-            foreach (var line in _params.LevelSkeleton.Lines)
+            foreach (var line in Params.LevelSkeleton.Lines)
             {
                 var elevator = line.GetLevelElevator();
 
@@ -167,15 +168,15 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
             }
         }
 
-        if (_params.LevelSkeleton != null && _params.LevelSkeleton.Lines != null)
+        if (Params.LevelSkeleton?.Lines != null)
         {
-            level.AddRooms(_params.LevelSkeleton.Points.Select(_ => _.Position));
+            level.AddRooms(Params.LevelSkeleton.Points.Select(_ => _.Position));
         }
 
         return level;
     }
 
-    private float GetAngle(Vector2 vectorA, Vector2 vectorB)
+    private static float GetAngle(Vector2 vectorA, Vector2 vectorB)
     {
         var diffX = vectorB.x - vectorA.x;
         var diffY = vectorB.y - vectorA.y;

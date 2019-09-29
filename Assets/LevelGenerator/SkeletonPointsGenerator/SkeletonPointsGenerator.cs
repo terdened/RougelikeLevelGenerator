@@ -11,24 +11,24 @@ public class SkeletonPointsGenerator : BaseGenerator<List<SkeletonPoint>, Skelet
     {
         var result = new List<SkeletonPoint>();
 
-        _params.InitialPoints?.ForEach(_ => result.Add(new SkeletonPoint(_, new EntityType(Color.green, "Initial"))));
+        Params.InitialPoints?.ForEach(_ => result.Add(new SkeletonPoint(_, new EntityType(Color.green, "Initial"))));
 
-        for (var i = 0; i < _params.RandomPointsCount; i++)
+        for (var i = 0; i < Params.RandomPointsCount; i++)
         {
-            var criterias = new List<IGeneratorCriteria<SkeletonPoint>>
+            var criteria = new List<IGeneratorCriteria<SkeletonPoint>>
             {
                 new AvoidNearSkeletonPointGeneratorCriteria(result)
             };
 
             var skeletonPointGeneratorParams = new SkeletonPointGeneratorParams
             {
-                MaximalX = _params.MaximalX,
-                MinimalX = _params.MinimalX,
-                MaximalY = _params.MaximalY,
-                MinimalY = _params.MinimalY
+                MaximalX = Params.MaximalX,
+                MinimalX = Params.MinimalX,
+                MaximalY = Params.MaximalY,
+                MinimalY = Params.MinimalY
             };
 
-            var skeletonPointGenerator = new SkeletonPointGenerator(skeletonPointGeneratorParams, criterias);
+            var skeletonPointGenerator = new SkeletonPointGenerator(skeletonPointGeneratorParams, criteria);
             var newPoint = skeletonPointGenerator.Execute();
 
             if (newPoint == null)

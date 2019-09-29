@@ -28,25 +28,20 @@ public class LevelSkeletonRenderer : MonoBehaviour
             _pointGameObjects.Add(pointGameObject);
         });
     }
-
     public void Clear()
     {
-        if (_lineRendererGameObjects != null)
-            _lineRendererGameObjects.ForEach(_ => Destroy(_));
-
-
-        if (_pointGameObjects != null)
-            _pointGameObjects.ForEach(_ => Destroy(_));
+        _lineRendererGameObjects?.ForEach(Destroy);
+        _pointGameObjects?.ForEach(Destroy);
     }
 
     private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition, EntityType type, string entityId)
     {
         var lineRendererGameObject = Instantiate(LineRendererPrefab, Vector3.zero, Quaternion.identity, gameObject.transform);
 
-        EntityIdHolder idHolder = lineRendererGameObject.AddComponent<EntityIdHolder>();
+        var idHolder = lineRendererGameObject.AddComponent<EntityIdHolder>();
         idHolder.SetId(entityId);
 
-        LineRenderer lineRenderer = lineRendererGameObject.AddComponent<LineRenderer>();
+        var lineRenderer = lineRendererGameObject.AddComponent<LineRenderer>();
         lineRenderer.startWidth = 0.05f;
         lineRenderer.endWidth = 0.05f;
         lineRenderer.material.color = type.Color;
@@ -63,7 +58,7 @@ public class LevelSkeletonRenderer : MonoBehaviour
         var pointSpriteRenderer = pointPrefab.GetComponent<SpriteRenderer>();
         pointSpriteRenderer.color = point.Type.Color;
 
-        EntityIdHolder idHolder = pointPrefab.AddComponent<EntityIdHolder>();
+        var idHolder = pointPrefab.AddComponent<EntityIdHolder>();
         idHolder.SetId(entityId);
 
         return pointPrefab;

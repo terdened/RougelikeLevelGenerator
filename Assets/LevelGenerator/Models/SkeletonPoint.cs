@@ -4,25 +4,15 @@ using UnityEngine;
 
 public class SkeletonPoint
 {
-    private Vector2 _position;
-    private EntityType _type;
-
     public SkeletonPoint(Vector2 position, EntityType type = default)
     {
         Id = Guid.NewGuid().ToId();
-        _position = position;
-        _type = type;
+        Position = position;
+        Type = type;
     }
     public string Id { get; }
 
-    public Vector2 Position => _position;
-    public EntityType Type
-    {
-        get => _type;
+    public Vector2 Position { get; }
 
-        set
-        {
-            _type = value;
-        }
-    }
+    public EntityType Type { get; set; }
 }

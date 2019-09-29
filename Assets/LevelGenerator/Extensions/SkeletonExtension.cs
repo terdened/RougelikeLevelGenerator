@@ -117,18 +117,12 @@ public static class SkeletonExtension
 
     public static bool IsDuplicateLines(this LevelSkeleton skeleton)
     {
-        var result = false;
-
-        foreach (var line in skeleton.Lines)
-        {
-            var otherLines = skeleton.Lines.Except(new List<SkeletonLine> { line });
-            if (otherLines.Any(_ => _.ContainsSkeletonPoint(line.Points.pointA.Position) && _.ContainsSkeletonPoint(line.Points.pointB.Position)))
-            {
-                result = true;
-                break;
-            }
-        }
-
-        return result;
+        return (from line in skeleton.Lines
+                let otherLines = skeleton.Lines.Except(new List<SkeletonLine> {line})
+                where otherLines.Any(_ =>
+                    _.ContainsSkeletonPoint(line.Points.pointA.Position) &&
+                    _.ContainsSkeletonPoint(line.Points.pointB.Position))
+                select line)
+            .Any();
     }
 }

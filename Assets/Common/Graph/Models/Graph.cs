@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 public class Graph<T> 
 {
@@ -38,9 +39,10 @@ public class Graph<T>
 
     public void AddEdges(IEnumerable<Edge<T>> newEdges)
     {
-        _edges.AddRange(newEdges);
+        var edges = newEdges as Edge<T>[] ?? newEdges.ToArray();
+        _edges.AddRange(edges);
 
-        foreach(var edge in newEdges)
+        foreach(var edge in edges)
         {
             foreach(var vertex in edge.Vertexes)
             {

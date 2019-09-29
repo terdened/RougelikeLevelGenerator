@@ -22,9 +22,8 @@ public class UiControllerScript : MonoBehaviour
         GenerateButton.onClick.AddListener(GenerateOnClick);
     }
 
-    void GenerateOnClick()
+    private void GenerateOnClick()
     {
-
         if(RegenerateSkeleton.isOn)
         {
             var levelSkeletonGeneratorParams = new LevelSkeletonGeneratorParams();

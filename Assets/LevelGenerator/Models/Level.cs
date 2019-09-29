@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using UnityEngine;
 
 public class Level
@@ -22,11 +21,6 @@ public class Level
     public void AddWalls(IEnumerable<LevelWall> newWalls)
     {
         _walls.AddRange(newWalls);
-    }
-
-    public void RemoveWalls(IEnumerable<LevelWall> walls)
-    {
-        _walls.RemoveAll(_ => walls.Any(l => _.Id == l.Id));
     }
 
     public void AddRooms(IEnumerable<Vector2> newRooms)

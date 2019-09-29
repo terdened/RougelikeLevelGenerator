@@ -25,21 +25,18 @@ public class LevelRenderer : MonoBehaviour
 
     public void Clear()
     {
-        if (_lineRendererGameObjects != null)
-            _lineRendererGameObjects.ForEach(_ => Destroy(_));
-        
-        if (_roomRendererGameObjects != null)
-            _roomRendererGameObjects.ForEach(_ => Destroy(_));
+        _lineRendererGameObjects?.ForEach(Destroy);
+        _roomRendererGameObjects?.ForEach(Destroy);
     }
 
     private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition, EntityType type, string entityId)
     {
         var lineRendererGameObject = Instantiate(LineRendererPrefab, Vector3.zero, Quaternion.identity, gameObject.transform);
 
-        EntityIdHolder idHolder = lineRendererGameObject.AddComponent<EntityIdHolder>();
+        var idHolder = lineRendererGameObject.AddComponent<EntityIdHolder>();
         idHolder.SetId(entityId);
 
-        LineRenderer lineRenderer = lineRendererGameObject.AddComponent<LineRenderer>();
+        var lineRenderer = lineRendererGameObject.AddComponent<LineRenderer>();
         lineRenderer.startWidth = 0.05f;
         lineRenderer.endWidth = 0.05f;
         lineRenderer.material.color = type.Color;
@@ -48,26 +45,5 @@ public class LevelRenderer : MonoBehaviour
         lineRenderer.SetPosition(1, pointBPosition);
 
         return lineRendererGameObject;
-    }
-
-    private GameObject CreatePoint(Vector2 room)
-    {
-        var pointPrefab = Instantiate(PointPrefab, room, Quaternion.identity, gameObject.transform);
-        pointPrefab.transform.localScale = new Vector3(3,3,3);
-        var pointSpriteRenderer = pointPrefab.GetComponent<SpriteRenderer>();
-        pointSpriteRenderer.color = Color.gray;
-
-        return pointPrefab;
-    }
-
-    private GameObject CreatePoint2(Vector2 room)
-    {
-        var pointPrefab = Instantiate(PointPrefab, room, Quaternion.identity, gameObject.transform);
-        pointPrefab.transform.localScale = new Vector3(2f, 2f, 2f);
-        pointPrefab.transform.Translate(new Vector3(0,0,-1));
-        var pointSpriteRenderer = pointPrefab.GetComponent<SpriteRenderer>();
-        pointSpriteRenderer.color = new Color(0.35f, 0.35f, 0.35f);
-
-        return pointPrefab;
     }
 }

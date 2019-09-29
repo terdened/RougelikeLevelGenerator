@@ -21,5 +21,5 @@ public static class EntityTypeConstants
     // Level
     public static EntityType LevelWall => new EntityType(Color.grey, "Level Wall");
     public static EntityType LevelElevator => new EntityType(new Color(0.33f, 0.24f, 0.21f), "Level Elevator");
-    public static EntityType AirPlartform => new EntityType(Color.yellow, "Air Plartform");
+    public static EntityType AirPlatform => new EntityType(Color.yellow, "Air Plartform");
 }
