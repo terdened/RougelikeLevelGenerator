@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class LevelGeneratorController : MonoBehaviour
@@ -6,6 +7,8 @@ public class LevelGeneratorController : MonoBehaviour
     private LevelSkeleton _levelSkeleton;
     private LevelSkeleton _levelSkeletonWithBioms;
     private Level _level;
+
+    private List<GameObject> _colliders;
 
     private LevelSkeletonRenderer _skeletonRenderer;
     private LevelRenderer _levelRenderer;
@@ -188,6 +191,14 @@ public class LevelGeneratorController : MonoBehaviour
         if (ShowWalls.isOn && _level != null)
         {
             _levelRenderer.Draw(_level);
+
+            _colliders?.ForEach(Destroy);
+            _colliders = new List<GameObject>();
+
+            foreach (var levelWall in _level.Walls)
+            {
+                _colliders.Add(levelWall.ToPlatform());
+            }
         }
         else
         {

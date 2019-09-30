@@ -148,9 +148,9 @@ public static class SkeletonLineExtension
         return new List<LevelWall>();
     }
 
-    public static LevelWall GetLevelElevator(this SkeletonLine skeletonLine)
+    public static LevelElevator GetLevelElevator(this SkeletonLine skeletonLine)
      => skeletonLine.Type.Name.Contains("Elevator") 
-         ? new LevelWall(skeletonLine.Points.pointA.Position, skeletonLine.Points.pointB.Position, EntityTypeConstants.Elevator) 
+         ? new LevelElevator(skeletonLine.Points.pointA.Position, skeletonLine.Points.pointB.Position, EntityTypeConstants.Elevator) 
          : null;
     
     public static (Vector2 pointA, Vector2 pointB) ToVector2(this SkeletonLine skeletonLine) 

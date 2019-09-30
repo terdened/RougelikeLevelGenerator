@@ -202,4 +202,13 @@ public static class Vector2Extension
         //return default null (no intersection)
         return null;
     }
+
+    public static float GetAngle(this Vector2 pointA, Vector2 pointB)
+    {
+        var diffX = pointB.x - pointA.x;
+        var diffY = pointB.y - pointA.y;
+
+        var result = Mathf.Atan2(diffY, diffX) * Mathf.Rad2Deg;
+        return result;
+    }
 }

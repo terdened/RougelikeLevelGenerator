@@ -21,6 +21,12 @@ public class LevelRenderer : MonoBehaviour
             var lineRendererGameObject = CreateLine(_.Points.pointA, _.Points.pointB, _.Type, _.Id);
             _lineRendererGameObjects.Add(lineRendererGameObject);
         });
+
+        level.Elevators.ToList().ForEach(_ =>
+        {
+            var lineRendererGameObject = CreateLine(_.Points.pointA, _.Points.pointB, _.Type, _.Id);
+            _lineRendererGameObjects.Add(lineRendererGameObject);
+        });
     }
 
     public void Clear()
