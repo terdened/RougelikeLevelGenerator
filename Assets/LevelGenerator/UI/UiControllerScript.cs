@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UiControllerScript : MonoBehaviour
@@ -17,9 +18,12 @@ public class UiControllerScript : MonoBehaviour
     public Button GenerateButton;
     public GameObject LevelGeneratorController;
 
+    public Button GoButton;
+
     void Start()
     {
         GenerateButton.onClick.AddListener(GenerateOnClick);
+        GoButton.onClick.AddListener(LoadExploreSceneOnClick);
     }
 
     private void GenerateOnClick()
@@ -61,6 +65,10 @@ public class UiControllerScript : MonoBehaviour
         {
             LevelGeneratorController.GetComponent<LevelGeneratorController>().RegenerateLevel();
         }
-        
+    }
+
+    private void LoadExploreSceneOnClick()
+    {
+        SceneManager.LoadScene("ExploreScene", LoadSceneMode.Single);
     }
 }

@@ -18,6 +18,7 @@ public static class LevelWallExtension
             wall.Points.pointA,
             wall.Points.pointB,
         };
+        result.layer = LayerMask.NameToLayer("Ground");
 
         return result;
     }

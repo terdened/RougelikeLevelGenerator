@@ -9,9 +9,11 @@ public class LevelRenderer : MonoBehaviour
 
     private List<GameObject> _lineRendererGameObjects;
     private List<GameObject> _roomRendererGameObjects;
+    private float _lineWidth;
 
-    public void Draw(Level level)
+    public void Draw(Level level, float lineWidth = 0.05f)
     {
+        _lineWidth = lineWidth;
         Clear();
         _lineRendererGameObjects = new List<GameObject>();
         _roomRendererGameObjects = new List<GameObject>();
@@ -43,8 +45,8 @@ public class LevelRenderer : MonoBehaviour
         idHolder.SetId(entityId);
 
         var lineRenderer = lineRendererGameObject.AddComponent<LineRenderer>();
-        lineRenderer.startWidth = 0.05f;
-        lineRenderer.endWidth = 0.05f;
+        lineRenderer.startWidth = _lineWidth;
+        lineRenderer.endWidth = _lineWidth;
         lineRenderer.material.color = type.Color;
 
         lineRenderer.SetPosition(0, pointAPosition);
