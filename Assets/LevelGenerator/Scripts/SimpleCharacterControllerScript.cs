@@ -9,6 +9,8 @@ public class SimpleCharacterControllerScript : MonoBehaviour
     public float speed = 6.0f;
     public float jumpSpeed = 8.0f;
 
+    public float maxVelocity = 10.0f;
+
     private Vector3 moveDirection = Vector3.zero;
 
     void Start()
@@ -18,9 +20,6 @@ public class SimpleCharacterControllerScript : MonoBehaviour
 
     void Update()
     {
-        // We are grounded, so recalculate
-        // move direction directly from axes
-
         moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
         moveDirection *= speed;
 
@@ -29,7 +28,9 @@ public class SimpleCharacterControllerScript : MonoBehaviour
             moveDirection.y = jumpSpeed;
         }
 
-        // Move the controller
-        rigidbody2.AddForce(moveDirection * Time.deltaTime);
+        if (Mathf.Abs(rigidbody2.velocity.x) < maxVelocity && rigidbody2.velocity.y < maxVelocity)
+        {
+            rigidbody2.AddForce(moveDirection * Time.deltaTime);
+        }
     }
 }
