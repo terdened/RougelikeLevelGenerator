@@ -20,7 +20,7 @@ public class ExploreSceneController : MonoBehaviour
         }
 
         // Draw walls
-        _levelRenderer.Draw(LevelHolder.Level, 0.005f);
+        _levelRenderer.Draw(LevelHolder.Level, 0.02f);
         
         // Create wall colliders
         foreach (var levelWall in LevelHolder.Level.Walls)

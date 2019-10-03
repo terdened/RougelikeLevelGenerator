@@ -2,35 +2,47 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PlatformerMotor2D))]
 public class SimpleCharacterControllerScript : MonoBehaviour
 {
-    Rigidbody2D rigidbody2;
+    private PlatformerMotor2D _platformerMotor2D;
+    private float _originalGroundSpeed;
+    private float _originalAirSpeed;
+    private float _originalSlopeAngle;
 
-    public float speed = 6.0f;
-    public float jumpSpeed = 8.0f;
-
-    public float maxVelocity = 10.0f;
-
-    private Vector3 moveDirection = Vector3.zero;
+    public float RunMultiplier = 1.5f;
+    public float SlopeAngle = 30f;
 
     void Start()
     {
-        rigidbody2 = GetComponent<Rigidbody2D>();
+        _platformerMotor2D = GetComponent<PlatformerMotor2D>();
+        _originalGroundSpeed = _platformerMotor2D.groundSpeed;
+        _originalAirSpeed = _platformerMotor2D.airSpeed;
+        _originalSlopeAngle = _platformerMotor2D.angleAllowedForMoving;
     }
 
     void Update()
     {
-        moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
-        moveDirection *= speed;
-
-        if (Input.GetButton("Jump"))
+        if (Input.GetButtonDown("Run"))
         {
-            moveDirection.y = jumpSpeed;
+            _platformerMotor2D.groundSpeed = _originalGroundSpeed * RunMultiplier;
+            _platformerMotor2D.airSpeed = _originalAirSpeed * RunMultiplier;
         }
 
-        if (Mathf.Abs(rigidbody2.velocity.x) < maxVelocity && rigidbody2.velocity.y < maxVelocity)
+        if (Input.GetButtonUp("Run"))
         {
-            rigidbody2.AddForce(moveDirection * Time.deltaTime);
+            _platformerMotor2D.groundSpeed = _originalGroundSpeed * RunMultiplier;
+            _platformerMotor2D.airSpeed = _originalAirSpeed * RunMultiplier;
+        }
+
+        if (Input.GetButtonDown("Crawl"))
+        {
+            _platformerMotor2D.angleAllowedForMoving = SlopeAngle;
+        }
+
+        if (Input.GetButtonUp("Crawl"))
+        {
+            _platformerMotor2D.angleAllowedForMoving = _originalSlopeAngle;
         }
     }
 }
