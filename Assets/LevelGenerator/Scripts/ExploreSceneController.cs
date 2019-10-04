@@ -7,6 +7,7 @@ public class ExploreSceneController : MonoBehaviour
 {
     private LevelRenderer _levelRenderer;
     public Button BackButton;
+    public GameObject ElevatorPrefab;
 
     void Start()
     {
@@ -27,6 +28,11 @@ public class ExploreSceneController : MonoBehaviour
         {
             levelWall.ToPlatform();
         }
+
+       foreach (var levelElevator in LevelHolder.Level.Elevators)
+       {
+           levelElevator.ToElevator(ElevatorPrefab);
+       }
     }
 
     private void LoadLevelGeneratorScene()
