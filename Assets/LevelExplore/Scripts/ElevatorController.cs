@@ -2,24 +2,30 @@
 
 public class ElevatorController : MonoBehaviour
 {
-    public GameObject ElevatorPlatform;
-    public float Speed;
+    private MovingPlatformMotor2D _mpMotor;
 
+    public float Speed;
     private LevelElevator _elevator;
     private bool _fromAtoB;
 
+    // Use this for initialization
+    void Start()
+    {
+    }
+
     public void Init(LevelElevator elevator)
     {
+        _mpMotor = GetComponent<MovingPlatformMotor2D>();
+        _mpMotor.velocity = Vector2.zero;
         _elevator = elevator;
-        transform.position = new Vector3(elevator.Points.pointA.x, elevator.Points.pointA.y, 0);
+        _mpMotor.position = elevator.Points.pointA;
     }
-    
-    void Update()
-    {
-        if(ElevatorPlatform == null)
-            return;
 
-        var platformPosition = new Vector2(ElevatorPlatform.transform.position.x, ElevatorPlatform.transform.position.y);
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+
+        var platformPosition = _mpMotor.position;
 
         if (platformPosition == _elevator.Points.pointA)
         {
@@ -31,9 +37,11 @@ public class ElevatorController : MonoBehaviour
             _fromAtoB = false;
         }
 
-        var newPosition = Vector2.MoveTowards(platformPosition,
+        var newPosition = Vector2.MoveTowards(_mpMotor.position,
             _fromAtoB ? _elevator.Points.pointB : _elevator.Points.pointA, Speed * Time.deltaTime);
+        var newVelocity = newPosition - _mpMotor.position;
 
-        ElevatorPlatform.transform.position = new Vector3(newPosition.x, newPosition.y, 0);
+        _mpMotor.velocity = newVelocity;
+        _mpMotor.transform.position = newPosition;
     }
 }
