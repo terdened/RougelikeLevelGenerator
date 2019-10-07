@@ -20,8 +20,16 @@ public class LevelGeneratorController : MonoBehaviour
             Redraw();
         });
 
-        var levelSkeletonGeneratorParams = new LevelSkeletonGeneratorParams();
-        Regenerate(levelSkeletonGeneratorParams);
+
+        if (LevelHolder.Level == null)
+        {
+            var levelSkeletonGeneratorParams = new LevelSkeletonGeneratorParams();
+            Regenerate(levelSkeletonGeneratorParams);
+        }
+        else
+        {
+            Redraw();
+        }
     }
 
     void Init()

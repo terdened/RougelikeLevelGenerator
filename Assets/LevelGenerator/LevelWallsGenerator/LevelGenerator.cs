@@ -60,7 +60,7 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
 
     private void MergeWalls(Level level, List<(SkeletonLine line, LevelWall wallA, LevelWall wallB)> skeletonLinesWithWalls)
     {
-        foreach (var point in Params.LevelSkeleton.Points.Where(_ => Params.LevelSkeleton.LinesForPoint(_).Count >= 2))
+        foreach (var point in Params.LevelSkeleton.Points.Where(_ => Params.LevelSkeleton.LinesForPoint(_).Count >= 1))
         {
             var skeletonLinesWithWallsForPoint = skeletonLinesWithWalls
                 .Where(_ => _.line.ContainsSkeletonPoint(point))
@@ -92,6 +92,17 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
                     _.wallB.SetPointB(pointA);
                 }
             });
+
+            if (skeletonLinesWithWallsForPoint.Count() == 1)
+            {
+                if (skeletonLinesWithWallsForPoint.First().wallA != null &&
+                    skeletonLinesWithWallsForPoint.First().wallB != null)
+                {
+                    level.AddWall(new LevelWall(skeletonLinesWithWallsForPoint.First().wallA.Points.pointA,
+                        skeletonLinesWithWallsForPoint.First().wallB.Points.pointA,
+                        EntityTypeConstants.Deadlock));
+                }
+            }
 
             if (skeletonLinesWithWallsForPoint.Count() < 2)
                 continue;

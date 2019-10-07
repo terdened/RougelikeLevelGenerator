@@ -644,7 +644,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1774232942}
+  - component: {fileID: 1774232943}
   - component: {fileID: 1774232941}
   m_Layer: 0
   m_Name: New Sprite
@@ -699,22 +699,27 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 2
   m_SpriteSortPoint: 0
---- !u!4 &1774232942
-Transform:
+--- !u!224 &1774232943
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1774232940}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.3, y: 0.56906724, z: 0.12890625}
+  m_LocalPosition: {x: 0, y: 0, z: 0.12890625}
   m_LocalScale: {x: 0.77699995, y: 0.59812504, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -0.3, y: 0.56906724}
+  m_SizeDelta: {x: 31.269999, y: 23.674997}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1809788290 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: f53f0e5cd92ba5148aace93d59b06aaf,
