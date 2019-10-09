@@ -1,57 +1,55 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class LevelRenderer : MonoBehaviour
 {
-    public GameObject LineRendererPrefab;
-    public GameObject PointPrefab;
+    public SpriteShape _spriteShapeProfile;
+    public GameObject _spriteShape;
 
-    private List<GameObject> _lineRendererGameObjects;
-    private List<GameObject> _roomRendererGameObjects;
-    private float _lineWidth;
-
-    public void Draw(Level level, float lineWidth = 0.05f)
+    public void Draw(Level level)
     {
-        _lineWidth = lineWidth;
-        Clear();
-        _lineRendererGameObjects = new List<GameObject>();
-        _roomRendererGameObjects = new List<GameObject>();
-
-        level.Walls.ToList().ForEach(_ =>
-        {
-            var lineRendererGameObject = CreateLine(_.Points.pointA, _.Points.pointB, _.Type, _.Id);
-            _lineRendererGameObjects.Add(lineRendererGameObject);
-        });
-
-        level.Elevators.ToList().ForEach(_ =>
-        {
-            var lineRendererGameObject = CreateLine(_.Points.pointA, _.Points.pointB, _.Type, _.Id);
-            _lineRendererGameObjects.Add(lineRendererGameObject);
-        });
+        CreateSpriteShape(level);
     }
 
-    public void Clear()
+    private void CreateSpriteShape(Level level)
     {
-        _lineRendererGameObjects?.ForEach(Destroy);
-        _roomRendererGameObjects?.ForEach(Destroy);
-    }
+        var graph = level.ToGraph();
+        var cycles = graph.GetCycles();
+        var maxCycle = cycles.OrderBy(_ => _.Count).FirstOrDefault();
 
-    private GameObject CreateLine(Vector3 pointAPosition, Vector3 pointBPosition, EntityType type, string entityId)
-    {
-        var lineRendererGameObject = Instantiate(LineRendererPrefab, Vector3.zero, Quaternion.identity, gameObject.transform);
+        if (maxCycle == null)
+            return;
 
-        var idHolder = lineRendererGameObject.AddComponent<EntityIdHolder>();
-        idHolder.SetId(entityId);
+        var vertices = new List<Vector3>();
 
-        var lineRenderer = lineRendererGameObject.AddComponent<LineRenderer>();
-        lineRenderer.startWidth = _lineWidth;
-        lineRenderer.endWidth = _lineWidth;
-        lineRenderer.material.color = type.Color;
+        foreach (var edge in maxCycle)
+        {
+            var vA = new Vector3(edge.VertexA.Data.x, edge.VertexA.Data.y, 0);
+            if (!vertices.Contains(vA))
+            {
+                vertices.Add(vA);
+            }
+            var vB = new Vector3(edge.VertexB.Data.x, edge.VertexB.Data.y, 0);
+            if (!vertices.Contains(vB))
+            {
+                vertices.Add(vB);
+            }
+        }
 
-        lineRenderer.SetPosition(0, pointAPosition);
-        lineRenderer.SetPosition(1, pointBPosition);
+        if (_spriteShape != null)
+            Destroy(_spriteShape);
 
-        return lineRendererGameObject;
+        _spriteShape = new GameObject("LevelMask");
+        var spriteShapeController = _spriteShape.AddComponent<SpriteShapeController>();
+
+        for (var i = 0; i < vertices.Count; i++)
+        {
+            spriteShapeController.spline.InsertPointAt(i, vertices[i]);
+        }
+
+        spriteShapeController.splineDetail = 16;
+        spriteShapeController.spriteShape = _spriteShapeProfile;
     }
 }

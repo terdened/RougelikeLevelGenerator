@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class LevelGeneratorController : MonoBehaviour
 {
     private LevelSkeletonRenderer _skeletonRenderer;
-    private LevelRenderer _levelRenderer;
+    private LevelMapRenderer _levelMapRenderer;
 
     public Toggle ShowSkeleton;
     public Toggle ShowWalls;
@@ -39,9 +39,9 @@ public class LevelGeneratorController : MonoBehaviour
             _skeletonRenderer = GetComponent<LevelSkeletonRenderer>();
         }
 
-        if (_levelRenderer == null)
+        if (_levelMapRenderer == null)
         {
-            _levelRenderer = GetComponent<LevelRenderer>();
+            _levelMapRenderer = GetComponent<LevelMapRenderer>();
         }
     }
 
@@ -191,11 +191,11 @@ public class LevelGeneratorController : MonoBehaviour
 
         if (ShowWalls.isOn && LevelHolder.Level != null)
         {
-            _levelRenderer.Draw(LevelHolder.Level);
+            _levelMapRenderer.Draw(LevelHolder.Level);
         }
         else
         {
-            _levelRenderer.Clear();
+            _levelMapRenderer.Clear();
         }
     }
 }
