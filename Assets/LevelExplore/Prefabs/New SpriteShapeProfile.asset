@@ -26,23 +26,28 @@ MonoBehaviour:
   - m_Start: 67.5
     m_End: 112.5
     m_Order: 4
-    m_Sprites: []
+    m_Sprites:
+    - {fileID: 21300000, guid: aedf3545944ead8468fbc3c65056356b, type: 3}
   - m_Start: 112.5
     m_End: 157.5
     m_Order: 2
-    m_Sprites: []
+    m_Sprites:
+    - {fileID: 21300000, guid: aedf3545944ead8468fbc3c65056356b, type: 3}
   - m_Start: 157.5
     m_End: 202.5
     m_Order: 8
-    m_Sprites: []
+    m_Sprites:
+    - {fileID: 21300000, guid: aedf3545944ead8468fbc3c65056356b, type: 3}
   - m_Start: -157.5
     m_End: -112.5
     m_Order: 1
-    m_Sprites: []
+    m_Sprites:
+    - {fileID: 21300000, guid: aedf3545944ead8468fbc3c65056356b, type: 3}
   - m_Start: -112.5
     m_End: -67.5
     m_Order: 3
-    m_Sprites: []
+    m_Sprites:
+    - {fileID: 21300000, guid: aedf3545944ead8468fbc3c65056356b, type: 3}
   - m_Start: -67.5
     m_End: -22.5
     m_Order: 5

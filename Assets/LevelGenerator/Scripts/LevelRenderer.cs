@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
+using UnityEngine.Experimental.U2D;
 using UnityEngine.U2D;
 
 public class LevelRenderer : MonoBehaviour
 {
     public SpriteShape _spriteShapeProfile;
-    public GameObject _spriteShape;
+    public List<GameObject> _spriteShapes;
 
     public void Draw(Level level)
     {
@@ -16,40 +19,88 @@ public class LevelRenderer : MonoBehaviour
     private void CreateSpriteShape(Level level)
     {
         var graph = level.ToGraph();
-        var cycles = graph.GetCycles();
-        var maxCycle = cycles.OrderBy(_ => _.Count).FirstOrDefault();
+        _spriteShapes?.ForEach(Destroy);
 
-        if (maxCycle == null)
-            return;
+        var attempts = 0;
 
-        var vertices = new List<Vector3>();
-
-        foreach (var edge in maxCycle)
+        while (attempts < GeneratorConstants.MaxGenerationAttempts && graph.Vertexes.Count > 0)
         {
-            var vA = new Vector3(edge.VertexA.Data.x, edge.VertexA.Data.y, 0);
-            if (!vertices.Contains(vA))
+            attempts++;
+
+            var cycles = graph.GetCycles();
+
+            if (cycles == null)
+                return;
+            
+            var cycleWeight = new Dictionary<List<Edge<Vector2>>, int>();
+
+            foreach (var cycle in cycles)
             {
-                vertices.Add(vA);
+                var otherCycles = cycles.Where(_ => !_.IsCycleEquals(cycle)).ToList();
+                var pointACounts = otherCycles.SelectMany(_ => _).Count(_ => cycle.IsPointBelongs(_.VertexA));
+                var pointBCounts = otherCycles.SelectMany(_ => _).Count(_ => cycle.IsPointBelongs(_.VertexB));
+
+                cycleWeight.Add(cycle, pointACounts + pointBCounts);
             }
-            var vB = new Vector3(edge.VertexB.Data.x, edge.VertexB.Data.y, 0);
-            if (!vertices.Contains(vB))
+
+            if (!cycleWeight.Any())
+                return; 
+
+            var maxCycle = cycles.OrderBy(_ => cycleWeight[_]).Last();
+
+            if (maxCycle == null)
+                return;
+
+            graph.RemoveEdge(maxCycle.First().VertexA, maxCycle.First().VertexB);
+            var vertices = graph.FindWay(maxCycle.First().VertexA, maxCycle.First().VertexB);
+
+            if (vertices == null)
+                return;
+
+            if (attempts == 1)
             {
-                vertices.Add(vB);
+                var maxYIndex = vertices.FindIndex(v => Math.Abs(v.Data.y - vertices.Max(_ => _.Data.y)) < 0.001);
+
+                var outerRect = new List<Vertex<Vector2>>
+                {
+                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x, 6)),
+                    new Vertex<Vector2>(new Vector2(12, 6)),
+                    new Vertex<Vector2>(new Vector2(12, -6)),
+                    new Vertex<Vector2>(new Vector2(-12, -6)),
+                    new Vertex<Vector2>(new Vector2(-12, 6)),
+                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x, 6)),
+                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x, vertices[maxYIndex].Data.y))
+                };
+
+                vertices.InsertRange(maxYIndex + 1, outerRect);
             }
+
+            VertexToSpriteShape(vertices);
+            vertices.ForEach(graph.RemoveVertex);
+        }
+    }
+
+    private void VertexToSpriteShape(IEnumerable<Vertex<Vector2>> vertices)
+    {
+        var spriteShape = new GameObject("LevelMask");
+        var spriteShapeController = spriteShape.AddComponent<SpriteShapeController>();
+
+        spriteShapeController.spline.isOpenEnded = true;
+
+        vertices = vertices.Reverse();
+        foreach (var vertex in vertices)
+        {
+            spriteShapeController.spline.InsertPointAt(0, new Vector3(vertex.Data.x, vertex.Data.y));
         }
 
-        if (_spriteShape != null)
-            Destroy(_spriteShape);
-
-        _spriteShape = new GameObject("LevelMask");
-        var spriteShapeController = _spriteShape.AddComponent<SpriteShapeController>();
-
-        for (var i = 0; i < vertices.Count; i++)
-        {
-            spriteShapeController.spline.InsertPointAt(i, vertices[i]);
-        }
+        spriteShapeController.spline.isOpenEnded = false;
 
         spriteShapeController.splineDetail = 16;
         spriteShapeController.spriteShape = _spriteShapeProfile;
+
+        var spriteShapeRenderer = spriteShape.GetComponent<SpriteShapeRenderer>();
+        spriteShapeRenderer.sortingOrder = _spriteShapes.Count;
+
+        _spriteShapes.Add(spriteShape);
     }
 }

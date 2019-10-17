@@ -41,19 +41,10 @@ public static class SkeletonLineExtension
     }
 
     public static bool IsSkeletonPointInside(this List<SkeletonLine> perimeter, SkeletonPoint point)
-    {
-        var randomAngle = Random.Range(0f, 1.5708f);
-        var b = point.Position.y - Mathf.Tan(randomAngle) * point.Position.x;
-        var secondPoint = new SkeletonPoint(new Vector2(point.Position.x + 100, Mathf.Tan(randomAngle) * (point.Position.x + 100) + b));
-        var ray = new SkeletonLine(point, secondPoint);
-        
-        var intersectionsCount = perimeter.Count(_ => FindIntersection(_, ray).HasValue);
-
-        return intersectionsCount % 2 != 0;
-    }
+        => perimeter.Select(_ => _.ToVector2()).ToList().IsPointBelongs(point.Position);
 
     public static bool IsSkeletonPointBelongs(this List<SkeletonLine> perimeter, SkeletonPoint point)
-      => perimeter.Any(l => l.ContainsSkeletonPoint(point)) || perimeter.IsSkeletonPointInside(point);
+      => perimeter.Any(l => l.ToVector2().ContainsPoint(point.Position)) || perimeter.Select(_ => _.ToVector2()).ToList().IsPointInside(point.Position);
     
     public static double GetPathLength(this List<SkeletonLine> path) => path.Sum(_ => _.Length);
 

@@ -75,11 +75,49 @@ public static class GraphExtension
 
     public static List<List<Edge<T>>> GetCycles<T>(this Graph<T> graph)
     {
-        var result = Dfs<T>(graph.Vertexes.First(), graph, null, null);
+        var result = Dfs<T>(graph, graph.Vertexes.First(), (List<Edge<T>>)null, (List<List<Edge<T>>>)null);
         return result;
     }
 
-    private static List<List<Edge<T>>> Dfs<T>(Vertex<T> vertex, Graph<T> graph, List<Edge<T>> currentCycle, List<List<Edge<T>>> result)
+    public static (Vector2 pointA, Vector2 pointB) ToVector2(this Edge<Vector2> edge)
+        => (edge.VertexA.Data, edge.VertexB.Data);
+
+    public static bool IsVertexInside(this List<Edge<Vector2>> perimeter, Vertex<Vector2> point)
+        => perimeter.IsPointBelongs(point);
+
+    public static bool IsPointBelongs(this List<Edge<Vector2>> perimeter, Vertex<Vector2> point)
+        => perimeter.Any(l => l.ToVector2().ContainsPoint(point.Data)) || perimeter.Select(_ => _.ToVector2()).ToList().IsPointInside(point.Data);
+
+    public static bool IsCycleEquals(this List<Edge<Vector2>> cycleA, List<Edge<Vector2>> cycleB)
+    {
+        if (cycleA.Count() != cycleB.Count())
+            return false;
+
+        var result = true;
+
+        cycleA.ForEach(_ =>
+        {
+            if (!cycleB.Contains(_))
+                result = false;
+        });
+
+        return result;
+    }
+
+    public static List<Vertex<T>> FindWay<T>(this Graph<T> graph, Vertex<T> fromVertex, Vertex<T> toVertex)
+    {
+        // Reset vertexes colors
+        // TODO: Move to graph
+        foreach (var graphVertex in graph.Vertexes)
+        {
+            graphVertex.Color = VertexColor.White;
+        }
+
+        var result = Dfs<T>(graph, fromVertex, toVertex, null);
+        return result;
+    }
+
+    private static List<List<Edge<T>>> Dfs<T>(Graph<T> graph, Vertex<T> vertex, List<Edge<T>> currentCycle, List<List<Edge<T>>> result)
     {
         if (result == null)
             result = new List<List<Edge<T>>>();
@@ -89,7 +127,7 @@ public static class GraphExtension
 
         vertex.Color = VertexColor.Grey;
 
-        foreach (var nearVertex in vertex.NearVertexes)
+        foreach (var nearVertex in graph.NearVertexes(vertex))
         {
             if (currentCycle.Count > 0 && (currentCycle.Last().ContainsVertex(nearVertex)))
                 continue;
@@ -113,11 +151,36 @@ public static class GraphExtension
                 var newCurrentCycle = currentCycle.Select(_ => _).ToList();
                 newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
 
-                Dfs<T>(nearVertex, graph, newCurrentCycle, result);
+                Dfs<T>(graph, nearVertex, newCurrentCycle, result);
             }
         }
 
         vertex.Color = VertexColor.Black;
         return result;
+    }
+
+    private static List<Vertex<T>> Dfs<T>(Graph<T> graph, Vertex<T> currentVertex, Vertex<T> goalVertex, List<Vertex<T>> path)
+    {
+        if(path == null)
+            path = new List<Vertex<T>>{ currentVertex };
+
+        currentVertex.Color = VertexColor.Grey;
+        var near = graph.NearVertexes(currentVertex).Where(_ => _.Color != VertexColor.Grey);
+
+        foreach (var nearVertex in near)
+        {
+            if (goalVertex == nearVertex)
+            {
+                path.Add(nearVertex);
+                return path;
+            }
+
+            var newPath = path.ToList();
+            newPath.Add(nearVertex);
+
+            return Dfs<T>(graph, nearVertex, goalVertex, newPath);
+        }
+
+        return null;
     }
 }

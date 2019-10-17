@@ -30,8 +30,6 @@ public class Vertex<T>
 
     public T Data { get; }
 
-    public List<Vertex<T>> NearVertexes => Edges.Select(_ => _.VertexA == this ? _.VertexB : _.VertexA).ToList();
-
     public void AddEdge(Edge<T> edge)
     {
         Edges.Add(edge);

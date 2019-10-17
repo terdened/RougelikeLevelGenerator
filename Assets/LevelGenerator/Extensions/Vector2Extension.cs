@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public static class Vector2Extension
 {
@@ -211,4 +214,22 @@ public static class Vector2Extension
         var result = Mathf.Atan2(diffY, diffX) * Mathf.Rad2Deg;
         return result;
     }
+
+    public static bool IsPointInside(this List<(Vector2 pointA, Vector2 pointB)> perimeter, Vector2 point)
+    {
+        var randomAngle = Random.Range(0f, 1.5708f);
+        var b = point.y - Mathf.Tan(randomAngle) * point.x;
+        var secondPoint = new Vector2(point.x + 100, Mathf.Tan(randomAngle) * (point.x + 100) + b);
+        var ray = (point, secondPoint);
+
+        var intersectionsCount = perimeter.Count(_ => FindIntersection(_, ray).HasValue);
+
+        return intersectionsCount % 2 != 0;
+    }
+    
+    public static bool ContainsPoint(this (Vector2 pointA, Vector2 pointB) line, Vector2 point) 
+        => line.pointA == point || line.pointB == point;
+
+    public static bool IsPointBelongs(this List<(Vector2 pointA, Vector2 pointB)> perimeter, Vector2 point)
+        => perimeter.Any(l => l.ContainsPoint(point)) || perimeter.IsPointInside(point);
 }

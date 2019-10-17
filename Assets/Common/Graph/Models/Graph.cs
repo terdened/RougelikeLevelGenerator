@@ -5,7 +5,6 @@ using System.Linq;
 public class Graph<T> 
 {
     private readonly List<Edge<T>> _edges;
-
     private readonly List<Vertex<T>> _vertexes;
 
     public Graph()
@@ -37,6 +36,17 @@ public class Graph<T>
         AddEdges(new List<Edge<T>> { newEdge });
     }
 
+    public void RemoveEdge(Vertex<T> vertexA, Vertex<T> vertexB)
+    {
+        _edges.RemoveAll(_ => _.ContainsVertex(vertexA) && _.ContainsVertex(vertexB));
+    }
+
+    public void RemoveVertex(Vertex<T> vertex)
+    {
+        _edges.RemoveAll(_ => _.ContainsVertex(vertex));
+        _vertexes.Remove(vertex);
+    }
+
     public void AddEdges(IEnumerable<Edge<T>> newEdges)
     {
         var edges = newEdges as Edge<T>[] ?? newEdges.ToArray();
@@ -57,4 +67,11 @@ public class Graph<T>
     public IReadOnlyCollection<Vertex<T>> Vertexes => new ReadOnlyCollection<Vertex<T>>(_vertexes);
 
     public IReadOnlyCollection<Edge<T>> Edges => new ReadOnlyCollection<Edge<T>>(_edges);
+
+    public IReadOnlyCollection<Edge<T>> EdgesForVertex(Vertex<T> vertex)
+        => new ReadOnlyCollection<Edge<T>>(_edges.Where(_ => _.ContainsVertex(vertex)).ToList());
+
+    public IReadOnlyCollection<Vertex<T>> NearVertexes(Vertex<T> vertex)
+        => new ReadOnlyCollection<Vertex<T>>(_edges.Where(_ => _.ContainsVertex(vertex))
+            .Select(_ => _.VertexA == vertex ? _.VertexB : _.VertexA).ToList());
 }
