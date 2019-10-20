@@ -431,6 +431,10 @@ PrefabInstance:
       propertyPath: numOfIterations
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 21239396, guid: f53f0e5cd92ba5148aace93d59b06aaf, type: 3}
+      propertyPath: m_SortingOrder
+      value: 100
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f53f0e5cd92ba5148aace93d59b06aaf, type: 3}
 --- !u!4 &730680652 stripped
@@ -715,7 +719,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 1809788290}
-  ParallaxPower: 0.2
+  ParallaxPower: 0.5
 --- !u!224 &1774232943
 RectTransform:
   m_ObjectHideFlags: 0

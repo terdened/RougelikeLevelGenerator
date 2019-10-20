@@ -232,4 +232,18 @@ public static class Vector2Extension
 
     public static bool IsPointBelongs(this List<(Vector2 pointA, Vector2 pointB)> perimeter, Vector2 point)
         => perimeter.Any(l => l.ContainsPoint(point)) || perimeter.IsPointInside(point);
+
+    public static float AngleBetweenVector2A(this Vector2 vectorA, Vector2 vectorB)
+    {
+        var difference = vectorB - vectorA;
+        var sign = (vectorB.y < vectorA.y) ? -1.0f : 1.0f;
+        return Vector2.Angle(Vector2.right, difference) * sign;
+    }
+
+    public static float AngleBetweenVector2(this Vector2 vectorA, Vector2 vectorB)
+    {
+        var vector3A = new Vector3(vectorA.x, vectorA.y, 0);
+        var vector3B = new Vector3(vectorB.x, vectorB.y, 0);
+        return Vector3.SignedAngle(vector3A, vector3B, Vector3.forward);
+    }
 }

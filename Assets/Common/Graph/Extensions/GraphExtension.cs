@@ -138,7 +138,7 @@ public static class GraphExtension
                 var firstVertexIndex = currentCycle.IndexOf(currentCycle.First(_ => _.ContainsVertex(nearVertex)));
 
                 newCurrentCycle = newCurrentCycle.Skip(firstVertexIndex).ToList();
-                newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
+                newCurrentCycle.Add(graph.EdgesForVertex(vertex).First(_ => _.ContainsVertex(nearVertex)));
 
                 var notCycleEdge = newCurrentCycle.Where(_ =>
                                                              newCurrentCycle.Count(a => a.ContainsVertex(_.VertexA)) < 2
@@ -149,7 +149,7 @@ public static class GraphExtension
             } else
             {
                 var newCurrentCycle = currentCycle.Select(_ => _).ToList();
-                newCurrentCycle.Add(vertex.Edges.First(_ => _.ContainsVertex(nearVertex)));
+                newCurrentCycle.Add(graph.EdgesForVertex(vertex).First(_ => _.ContainsVertex(nearVertex)));
 
                 Dfs<T>(graph, nearVertex, newCurrentCycle, result);
             }

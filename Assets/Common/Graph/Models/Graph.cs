@@ -58,8 +58,6 @@ public class Graph<T>
             {
                 if (!_vertexes.Contains(vertex))
                     AddVertex(vertex);
-
-                vertex.AddEdge(edge);
             }
         }
     }
