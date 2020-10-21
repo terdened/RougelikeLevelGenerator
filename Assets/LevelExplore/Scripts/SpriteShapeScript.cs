@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.Experimental.U2D;
+
 using UnityEngine.U2D;
 
 [RequireComponent(typeof(SpriteShapeController))]
@@ -13,7 +13,7 @@ public class SpriteShapeScript : MonoBehaviour
     {
         _spriteShapeController = GetComponent<SpriteShapeController>();
 
-        var a = new UnityEngine.Experimental.U2D.ShapeControlPoint();
+        var a = new UnityEngine.U2D.ShapeControlPoint();
     }
 
     // Update is called once per frame
