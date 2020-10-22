@@ -219,7 +219,7 @@ public static class Vector2Extension
     {
         var randomAngle = Random.Range(0f, 1.5708f);
         var b = point.y - Mathf.Tan(randomAngle) * point.x;
-        var secondPoint = new Vector2(point.x + 100, Mathf.Tan(randomAngle) * (point.x + 100) + b);
+        var secondPoint = new Vector2(point.x + 1000, Mathf.Tan(randomAngle) * (point.x + 1000) + b);
         var ray = (point, secondPoint);
 
         var intersectionsCount = perimeter.Count(_ => FindIntersection(_, ray).HasValue);

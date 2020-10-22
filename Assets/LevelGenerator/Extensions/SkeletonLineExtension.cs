@@ -70,7 +70,7 @@ public static class SkeletonLineExtension
 
     public static IEnumerable<LevelWall> GetLevelWalls(this SkeletonLine skeletonLine)
     {
-        const float width = 0.3f;
+        const float width = 3f;
 
         if (skeletonLine.Type.Name == EntityTypeConstants.Floor.Name || skeletonLine.Type.Name == EntityTypeConstants.Elevator.Name)
         {

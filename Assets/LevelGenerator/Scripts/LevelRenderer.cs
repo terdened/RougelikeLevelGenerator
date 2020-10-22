@@ -119,13 +119,13 @@ public class LevelRenderer : MonoBehaviour
 
                 var outerRect = new List<Vertex<Vector2>>
                 {
-                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x, 6)),
+                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x, 60)),
 
-                    new Vertex<Vector2>(new Vector2(-12, 6)),
-                    new Vertex<Vector2>(new Vector2(-12, -6)),
-                    new Vertex<Vector2>(new Vector2(12, -6)),
-                    new Vertex<Vector2>(new Vector2(12, 6)),
-                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x, 6)),
+                    new Vertex<Vector2>(new Vector2(-120, 60)),
+                    new Vertex<Vector2>(new Vector2(-120, -60)),
+                    new Vertex<Vector2>(new Vector2(120, -60)),
+                    new Vertex<Vector2>(new Vector2(120, 60)),
+                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x, 60)),
                     new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x, vertices[maxYIndex].Data.y))
                 };
 

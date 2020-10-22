@@ -25,13 +25,13 @@ public class LevelSkeletonGeneratorParams
         SkeletonPointsGeneratorParams = new SkeletonPointsGeneratorParams
         {
             RandomPointsCount = 25,
-            MinimalX = -10,
-            MaximalX = 10,
-            MinimalY = -5,
-            MaximalY = 5,
+            MinimalX = -100,
+            MaximalX = 100,
+            MinimalY = -50,
+            MaximalY = 50,
             InitialPoints = new List<Vector2> {
-                new Vector2(11, 2),
-                new Vector2(-11, -3)
+                new Vector2(110, 20),
+                new Vector2(-110, -30)
             }
         };
     }

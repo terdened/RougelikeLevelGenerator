@@ -11,7 +11,7 @@ public class LevelMapRenderer : MonoBehaviour
     private List<GameObject> _roomRendererGameObjects;
     private float _lineWidth;
 
-    public void Draw(Level level, float lineWidth = 0.05f)
+    public void Draw(Level level, float lineWidth = 0.5f)
     {
         _lineWidth = lineWidth;
         Clear();

@@ -7,12 +7,13 @@ namespace Assets.PC.Scripts
         public GameObject LineRendererPrefab;
 
         private Vector2 _mousePosition;
-        private DistanceJoint2D _joint;
+        private SpringJoint2D _joint;
         private GameObject _lineRenderer;
 
         private void Update()
         {
             HandleMousePosition();
+            HandleUp();
 
             if (Input.GetMouseButtonDown(1))
             {
@@ -31,11 +32,12 @@ namespace Assets.PC.Scripts
             if (_joint != null)
                 return;
 
-            transform.gameObject.AddComponent(typeof(DistanceJoint2D));
+            transform.gameObject.AddComponent(typeof(SpringJoint2D));
 
-            _joint = GetComponent<DistanceJoint2D>();
+            _joint = GetComponent<SpringJoint2D>();
             _joint.connectedAnchor = _mousePosition;
-            
+            _joint.dampingRatio = 1f;
+
             CreateLine();
         }
 
@@ -80,6 +82,17 @@ namespace Assets.PC.Scripts
         private void HandleMousePosition()
         {
             _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
+
+        private void HandleUp()
+        {
+            if (_joint == null)
+                return;
+
+            if(Input.GetMouseButton(1))
+            {
+                _joint.distance -= 0.1f;
+            }
         }
     }
 }
