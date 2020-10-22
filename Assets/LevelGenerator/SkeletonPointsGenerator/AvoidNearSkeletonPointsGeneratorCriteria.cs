@@ -8,7 +8,7 @@ public class AvoidNearSkeletonPointsGeneratorCriteria : IGeneratorCriteria<List<
     {
         foreach (var point in model)
         {
-            if (model.Any(_ => _ != point && Vector2.Distance(_.Position, point.Position) < 1f))
+            if (model.Any(_ => _ != point && Vector2.Distance(_.Position, point.Position) < 10f))
                 return false;
         }
 

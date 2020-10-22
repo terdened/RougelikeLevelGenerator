@@ -119,14 +119,14 @@ public class LevelRenderer : MonoBehaviour
 
                 var outerRect = new List<Vertex<Vector2>>
                 {
-                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x, 60)),
+                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x - 0.1f, 60)),
 
                     new Vertex<Vector2>(new Vector2(-120, 60)),
                     new Vertex<Vector2>(new Vector2(-120, -60)),
                     new Vertex<Vector2>(new Vector2(120, -60)),
                     new Vertex<Vector2>(new Vector2(120, 60)),
-                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x, 60)),
-                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x, vertices[maxYIndex].Data.y))
+                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x + 0.1f, 60)),
+                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x + 0.1f, vertices[maxYIndex].Data.y))
                 };
 
                 vertices.InsertRange(maxYIndex + 1, outerRect);
@@ -153,6 +153,10 @@ public class LevelRenderer : MonoBehaviour
     {
         var spriteShape = new GameObject("LevelMask");
         var spriteShapeController = spriteShape.AddComponent<SpriteShapeController>();
+        var polygonCollider = spriteShape.AddComponent<PolygonCollider2D>();
+
+        var rigidbody = spriteShape.AddComponent<Rigidbody2D>();
+        rigidbody.bodyType = RigidbodyType2D.Static;
 
         spriteShapeController.spline.isOpenEnded = true;
 
@@ -160,6 +164,8 @@ public class LevelRenderer : MonoBehaviour
         {
             spriteShapeController.spline.InsertPointAt(0, new Vector3(vertex.Data.x, vertex.Data.y));
         }
+
+        polygonCollider.SetPath(0, vertices.Select(_ => _.Data).ToArray());
 
         spriteShapeController.spline.isOpenEnded = false;
 
