@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public float JumpForce = 700f;
     public float MoveForce = 10f;
     
-    [Range(0, .3f)]
+    [Range(0, .9f)]
     [SerializeField]
     private float m_MovementSmoothing = .05f;
     private Vector3 m_Velocity = Vector3.zero;

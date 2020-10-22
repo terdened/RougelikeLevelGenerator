@@ -28,6 +28,7 @@ public class LevelSkeletonRenderer : MonoBehaviour
             _pointGameObjects.Add(pointGameObject);
         });
     }
+
     public void Clear()
     {
         _lineRendererGameObjects?.ForEach(Destroy);
