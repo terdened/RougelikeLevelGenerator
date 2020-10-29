@@ -98,9 +98,100 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
                 if (skeletonLinesWithWallsForPoint.First().wallA != null &&
                     skeletonLinesWithWallsForPoint.First().wallB != null)
                 {
-                    level.AddWall(new LevelWall(skeletonLinesWithWallsForPoint.First().wallA.Points.pointA,
-                        skeletonLinesWithWallsForPoint.First().wallB.Points.pointA,
-                        EntityTypeConstants.Deadlock));
+                    var angle = point.Position.GetAngle(skeletonLinesWithWallsForPoint.First().line.Points.pointB.Position);
+
+                    if (angle == 0)
+                    {
+                        AddLeftRoom(level, point, skeletonLinesWithWallsForPoint.First());
+                    }
+                    else if (angle == 180 || angle == -180)
+                    {
+                        AddRightRoom(level, point, skeletonLinesWithWallsForPoint.First());
+                    }
+                    else if (angle == -90)
+                    {
+                        AddUpRoom(level, point, skeletonLinesWithWallsForPoint.First());
+                    } else if (angle == 90)
+                    {
+                        AddDownRoom(level, point, skeletonLinesWithWallsForPoint.First());
+                    }
+                    else if ((angle >= 45 && angle < 135) || (angle <= -45 && angle > -135))
+                    {
+                        var left = skeletonLinesWithWallsForPoint.First().wallA.Points.pointA.x > skeletonLinesWithWallsForPoint.First().wallB.Points.pointA.x
+                            ? skeletonLinesWithWallsForPoint.First().wallA
+                            : skeletonLinesWithWallsForPoint.First().wallB;
+
+                        var right = skeletonLinesWithWallsForPoint.First().wallA.Points.pointA.x > skeletonLinesWithWallsForPoint.First().wallB.Points.pointA.x
+                            ? skeletonLinesWithWallsForPoint.First().wallB
+                            : skeletonLinesWithWallsForPoint.First().wallA;
+
+                        var deadlockProjection = new LevelWall(
+                            left.Points.pointA,
+                            new Vector2(-100, left.Points.pointA.y),
+                            EntityTypeConstants.Deadlock);
+
+                        var intersection = deadlockProjection.FindIntersection(right);
+
+                        if (intersection.HasValue)
+                        {
+                            right.SetPointA(intersection.Value);
+
+                            if (angle >= 45 && angle < 135)
+                            {
+                                AddDownRoom(level, point, skeletonLinesWithWallsForPoint.First());
+                            }
+                            else
+                            {
+                                AddUpRoom(level, point, skeletonLinesWithWallsForPoint.First());
+                            }
+                        }
+                        else
+                        {
+                            level.AddWall(
+                                new LevelWall(skeletonLinesWithWallsForPoint.First().wallA.Points.pointA,
+                                skeletonLinesWithWallsForPoint.First().wallB.Points.pointA,
+                                EntityTypeConstants.Deadlock));
+                        }
+                    }
+                    else if ((angle < 45 && angle > -45) || angle > 135 || angle < -135)
+                    {
+                        var up = skeletonLinesWithWallsForPoint.First().wallA.Points.pointA.y > skeletonLinesWithWallsForPoint.First().wallB.Points.pointA.y
+                            ? skeletonLinesWithWallsForPoint.First().wallA
+                            : skeletonLinesWithWallsForPoint.First().wallB;
+
+                        var down = skeletonLinesWithWallsForPoint.First().wallA.Points.pointA.y > skeletonLinesWithWallsForPoint.First().wallB.Points.pointA.y
+                            ? skeletonLinesWithWallsForPoint.First().wallB
+                            : skeletonLinesWithWallsForPoint.First().wallA;
+
+                        var deadlockProjection = new LevelWall(
+                            up.Points.pointA,
+                            new Vector2(up.Points.pointA.x, -100),
+                            EntityTypeConstants.Deadlock);
+
+
+                        var intersection = deadlockProjection.FindIntersection(down);
+
+                        if (intersection.HasValue)
+                        {
+                            down.SetPointA(intersection.Value);
+
+                            if (angle < 45 && angle > -45)
+                            {
+                                AddLeftRoom(level, point, skeletonLinesWithWallsForPoint.First());
+                            }
+                            else
+                            {
+                                AddRightRoom(level, point, skeletonLinesWithWallsForPoint.First());
+                            }
+                        }
+                        else
+                        {
+                            level.AddWall(
+                                new LevelWall(skeletonLinesWithWallsForPoint.First().wallA.Points.pointA,
+                                skeletonLinesWithWallsForPoint.First().wallB.Points.pointA,
+                                EntityTypeConstants.Deadlock));
+                        }
+                    }
                 }
             }
 
@@ -179,5 +270,129 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
                 }
             }
         }
+    }
+
+    private void AddLeftRoom(Level level, SkeletonPoint point, (SkeletonLine, LevelWall wallA, LevelWall wallB) skeletonLineWithWallsForPoint)
+    {
+        var roomWidth = 20;
+        var roomHeight = 15;
+
+        var up = skeletonLineWithWallsForPoint.wallA.Points.pointA.y > skeletonLineWithWallsForPoint.wallB.Points.pointA.y
+                            ? skeletonLineWithWallsForPoint.wallA
+                            : skeletonLineWithWallsForPoint.wallB;
+
+        var down = skeletonLineWithWallsForPoint.wallA.Points.pointA.y > skeletonLineWithWallsForPoint.wallB.Points.pointA.y
+            ? skeletonLineWithWallsForPoint.wallB
+            : skeletonLineWithWallsForPoint.wallA;
+
+
+        var downWall = new LevelWall(down.Points.pointA, down.Points.pointA + Vector2.left * roomWidth, EntityTypeConstants.Deadlock);
+        var leftWall = new LevelWall(downWall.Points.pointB, downWall.Points.pointB + Vector2.up * roomHeight, EntityTypeConstants.Deadlock);
+        var topWall = new LevelWall(leftWall.Points.pointB, leftWall.Points.pointB + Vector2.right * roomWidth, EntityTypeConstants.Deadlock);
+        var rightWall = new LevelWall(topWall.Points.pointB, topWall.Points.pointB + Vector2.down * roomHeight, EntityTypeConstants.Deadlock);
+
+        var intersection = up.FindIntersection(rightWall);
+
+        if (intersection.HasValue)
+        {
+            rightWall.SetPointB(intersection.Value);
+        }
+
+        level.AddWall(downWall);
+        level.AddWall(leftWall);
+        level.AddWall(topWall);
+        level.AddWall(rightWall);
+
+        level.AddRoom(new Vector2((float)(down.Points.pointA.x - roomWidth / 2f), (float)(down.Points.pointA.y + roomHeight / 2)));
+    }
+
+    private void AddRightRoom(Level level, SkeletonPoint point, (SkeletonLine, LevelWall wallA, LevelWall wallB) skeletonLineWithWallsForPoint)
+    {
+        var roomWidth = 20;
+        var roomHeight = 15;
+
+        var up = skeletonLineWithWallsForPoint.wallA.Points.pointA.y > skeletonLineWithWallsForPoint.wallB.Points.pointA.y
+                            ? skeletonLineWithWallsForPoint.wallA
+                            : skeletonLineWithWallsForPoint.wallB;
+
+        var down = skeletonLineWithWallsForPoint.wallA.Points.pointA.y > skeletonLineWithWallsForPoint.wallB.Points.pointA.y
+            ? skeletonLineWithWallsForPoint.wallB
+            : skeletonLineWithWallsForPoint.wallA;
+
+
+        var downWall = new LevelWall(down.Points.pointA, down.Points.pointA + Vector2.right * roomWidth, EntityTypeConstants.Deadlock);
+        var rightWall = new LevelWall(downWall.Points.pointB, downWall.Points.pointB + Vector2.up * roomHeight, EntityTypeConstants.Deadlock);
+        var topWall = new LevelWall(rightWall.Points.pointB, rightWall.Points.pointB + Vector2.left * roomWidth, EntityTypeConstants.Deadlock);
+        var leftWall = new LevelWall(topWall.Points.pointB, topWall.Points.pointB + Vector2.down * roomHeight, EntityTypeConstants.Deadlock);
+
+        var intersection = up.FindIntersection(leftWall);
+
+        if (intersection.HasValue)
+        {
+            leftWall.SetPointB(intersection.Value);
+        }
+
+        level.AddWall(downWall);
+        level.AddWall(rightWall);
+        level.AddWall(topWall);
+        level.AddWall(leftWall);
+
+        level.AddRoom(new Vector2((float)(down.Points.pointA.x + roomWidth / 2f), (float)(down.Points.pointA.y + roomHeight / 2)));
+    }
+
+    private void AddUpRoom(Level level, SkeletonPoint point, (SkeletonLine, LevelWall wallA, LevelWall wallB) skeletonLineWithWallsForPoint)
+    {
+        var corridorWidth = 3f;
+        var roomWidth = 20;
+        var roomHeight = 15;
+
+        var left = skeletonLineWithWallsForPoint.wallA.Points.pointA.x < skeletonLineWithWallsForPoint.wallB.Points.pointA.x
+                            ? skeletonLineWithWallsForPoint.wallA
+                            : skeletonLineWithWallsForPoint.wallB;
+
+        var right = skeletonLineWithWallsForPoint.wallA.Points.pointA.x < skeletonLineWithWallsForPoint.wallB.Points.pointA.x
+            ? skeletonLineWithWallsForPoint.wallB
+            : skeletonLineWithWallsForPoint.wallA;
+
+
+        var downWall1 = new LevelWall(left.Points.pointA, left.Points.pointA + Vector2.left * (roomWidth / 2 - corridorWidth), EntityTypeConstants.Deadlock);
+        var rightWall = new LevelWall(downWall1.Points.pointB, downWall1.Points.pointB + Vector2.up * roomHeight, EntityTypeConstants.Deadlock);
+        var topWall = new LevelWall(rightWall.Points.pointB, rightWall.Points.pointB + Vector2.right * roomWidth, EntityTypeConstants.Deadlock);
+        var leftWall = new LevelWall(topWall.Points.pointB, topWall.Points.pointB + Vector2.down * roomHeight, EntityTypeConstants.Deadlock);
+        var downWall2 = new LevelWall(leftWall.Points.pointB, right.Points.pointA, EntityTypeConstants.Deadlock);
+
+        level.AddWall(downWall1);
+        level.AddWall(rightWall);
+        level.AddWall(topWall);
+        level.AddWall(leftWall);
+        level.AddWall(downWall2);
+    }
+
+    private void AddDownRoom(Level level, SkeletonPoint point, (SkeletonLine, LevelWall wallA, LevelWall wallB) skeletonLineWithWallsForPoint)
+    {
+        var corridorWidth = 3f;
+        var roomWidth = 20;
+        var roomHeight = 15;
+
+        var left = skeletonLineWithWallsForPoint.wallA.Points.pointA.x < skeletonLineWithWallsForPoint.wallB.Points.pointA.x
+                            ? skeletonLineWithWallsForPoint.wallA
+                            : skeletonLineWithWallsForPoint.wallB;
+
+        var right = skeletonLineWithWallsForPoint.wallA.Points.pointA.x < skeletonLineWithWallsForPoint.wallB.Points.pointA.x
+            ? skeletonLineWithWallsForPoint.wallB
+            : skeletonLineWithWallsForPoint.wallA;
+
+
+        var upWall1 = new LevelWall(left.Points.pointA, left.Points.pointA + Vector2.left * (roomWidth / 2 - corridorWidth), EntityTypeConstants.Deadlock);
+        var rightWall = new LevelWall(upWall1.Points.pointB, upWall1.Points.pointB + Vector2.down * roomHeight, EntityTypeConstants.Deadlock);
+        var downWall = new LevelWall(rightWall.Points.pointB, rightWall.Points.pointB + Vector2.right * roomWidth, EntityTypeConstants.Deadlock);
+        var leftWall = new LevelWall(downWall.Points.pointB, downWall.Points.pointB + Vector2.up * roomHeight, EntityTypeConstants.Deadlock);
+        var upWall2 = new LevelWall(leftWall.Points.pointB, right.Points.pointA, EntityTypeConstants.Deadlock);
+
+        level.AddWall(upWall1);
+        level.AddWall(rightWall);
+        level.AddWall(downWall);
+        level.AddWall(leftWall);
+        level.AddWall(upWall2);
     }
 }

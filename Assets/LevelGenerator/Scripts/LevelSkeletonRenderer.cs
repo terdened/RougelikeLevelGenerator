@@ -43,8 +43,8 @@ public class LevelSkeletonRenderer : MonoBehaviour
         idHolder.SetId(entityId);
 
         var lineRenderer = lineRendererGameObject.AddComponent<LineRenderer>();
-        lineRenderer.startWidth = 0.05f;
-        lineRenderer.endWidth = 0.05f;
+        lineRenderer.startWidth = 0.5f;
+        lineRenderer.endWidth = 0.5f;
         lineRenderer.material.color = type.Color;
 
         lineRenderer.SetPosition(0, pointAPosition);

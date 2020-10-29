@@ -40,6 +40,16 @@ public class Level
         _rooms.AddRange(newRooms);
     }
 
+    public void AddRoom(Vector2 newRoom)
+    {
+        _rooms.Add(newRoom);
+    }
+
+    public void RemoveWall(string wallId)
+    {
+        _walls.RemoveAll(_ => _.Id == wallId);
+    }
+
     public IReadOnlyCollection<LevelWall> Walls => new ReadOnlyCollection<LevelWall>(_walls);
     public IReadOnlyCollection<LevelElevator> Elevators => new ReadOnlyCollection<LevelElevator>(_elevators);
     public IReadOnlyCollection<Vector2> Rooms => new ReadOnlyCollection<Vector2>(_rooms);

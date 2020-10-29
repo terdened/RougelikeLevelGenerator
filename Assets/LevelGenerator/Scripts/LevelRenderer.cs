@@ -11,6 +11,7 @@ public class LevelRenderer : MonoBehaviour
     public SpriteShape _spriteShapeProfile;
     public List<GameObject> _spriteShapes;
     private List<GameObject> _lineRendererGameObjects;
+    public GameObject RoomPrefab;
 
     public GameObject LineRendererPrefab;
     private float _lineWidth;
@@ -18,16 +19,15 @@ public class LevelRenderer : MonoBehaviour
     public void Draw(Level level)
     {
         CreateSpriteShape(level);
-        
-        //_lineRendererGameObjects = new List<GameObject>();
-        //level.Walls.ToList()
-        //    .Where(_ => _.Type == EntityTypeConstants.AirPlatform)
-        //    .ToList()
-        //    .ForEach(_ =>
-        //    {
-        //        var lineRendererGameObject = CreateLine(_.Points.pointA, _.Points.pointB, _.Type, _.Id);
-        //        _lineRendererGameObjects.Add(lineRendererGameObject);
-        //    });
+        CreateRooms(level);
+    }
+
+    private void CreateRooms(Level level)
+    {
+        level.Rooms.ToList().ForEach(_ =>
+        {
+            Instantiate(RoomPrefab, _, Quaternion.identity);
+        });
     }
 
     private void CreateSpriteShape(Level level)
@@ -107,8 +107,8 @@ public class LevelRenderer : MonoBehaviour
                 }
             }
 
-            
-
+            var outerRectWidth = 150;
+            var outerRectHeight = 100;
 
             if (attempts == 1)
             {
@@ -119,13 +119,13 @@ public class LevelRenderer : MonoBehaviour
 
                 var outerRect = new List<Vertex<Vector2>>
                 {
-                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x - 0.1f, 60)),
+                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x - 0.1f, 100)),
 
-                    new Vertex<Vector2>(new Vector2(-120, 60)),
-                    new Vertex<Vector2>(new Vector2(-120, -60)),
-                    new Vertex<Vector2>(new Vector2(120, -60)),
-                    new Vertex<Vector2>(new Vector2(120, 60)),
-                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x + 0.1f, 60)),
+                    new Vertex<Vector2>(new Vector2(-150, 100)),
+                    new Vertex<Vector2>(new Vector2(-150, -100)),
+                    new Vertex<Vector2>(new Vector2(150, -100)),
+                    new Vertex<Vector2>(new Vector2(150, 100)),
+                    new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x + 0.1f, 100)),
                     new Vertex<Vector2>(new Vector2(vertices[maxYIndex].Data.x + 0.1f, vertices[maxYIndex].Data.y))
                 };
 
@@ -146,7 +146,10 @@ public class LevelRenderer : MonoBehaviour
         var levelMapRenderer = new GameObject();
         var renderer = levelMapRenderer.AddComponent<LevelMapRenderer>();
         renderer.LineRendererPrefab = LineRendererPrefab;
-        renderer.Draw(level);
+
+        var airLevel = new Level();
+        airLevel.AddWalls(level.Walls.Where(_ => _.Type == EntityTypeConstants.AirPlatform));
+        renderer.Draw(airLevel);
     }
 
     private void VertexToSpriteShape(IEnumerable<Vertex<Vector2>> vertices)

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874d237484e5bbc4b891cdcb315b6c07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 0.3
+  Speed: 3
 --- !u!114 &468375837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37,6 +37,10 @@ PrefabInstance:
       value: Elevator Variant
       objectReference: {fileID: 0}
     - target: {fileID: 115964, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 178174, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
@@ -86,11 +90,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 497554, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 497554, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.02
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 21267002, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
       propertyPath: m_SortingOrder
@@ -107,10 +111,6 @@ PrefabInstance:
     - target: {fileID: 25162558, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
       propertyPath: m_SideArc
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 178174, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
-      propertyPath: m_Layer
-      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}

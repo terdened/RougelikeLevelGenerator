@@ -111,7 +111,7 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
 
             foreach (var point in skeleton.Points)
             {
-                var lineToRemove = skeleton.Lines.Where(l => !l.ContainsSkeletonPoint(point) && l.GetDistanceBetweenLineAndPoint(point) < 0.5)
+                var lineToRemove = skeleton.Lines.Where(l => !l.ContainsSkeletonPoint(point) && l.GetDistanceBetweenLineAndPoint(point) < 5)
                     .FirstOrDefault();
 
                 if (lineToRemove != null)
@@ -170,7 +170,7 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
 
             foreach (var point in skeleton.Points)
             {
-                var otherPoint = skeleton.Points.Where(_ => _.Id != point.Id).FirstOrDefault(_ => Vector2.Distance(point.Position, _.Position) < 0.5f);
+                var otherPoint = skeleton.Points.Where(_ => _.Id != point.Id).FirstOrDefault(_ => Vector2.Distance(point.Position, _.Position) < 5f);
 
                 if (otherPoint == null) continue;
 

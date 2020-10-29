@@ -6,7 +6,7 @@
 
     public LevelSkeletonBiomsGeneratorParams()
     {
-        MaxOpenSpacePerimeter = 45;
-        MinOpenSpacePerimeter = 8;
+        MaxOpenSpacePerimeter = 450;
+        MinOpenSpacePerimeter = 80;
     }
 }
