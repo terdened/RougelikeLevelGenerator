@@ -366,6 +366,8 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
         level.AddWall(topWall);
         level.AddWall(leftWall);
         level.AddWall(downWall2);
+
+        level.AddRoom(new Vector2((float)(downWall2.Points.pointA.x + roomWidth / 2f), (float)(downWall2.Points.pointA.y + roomHeight / 2)));
     }
 
     private void AddDownRoom(Level level, SkeletonPoint point, (SkeletonLine, LevelWall wallA, LevelWall wallB) skeletonLineWithWallsForPoint)
@@ -394,5 +396,7 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
         level.AddWall(downWall);
         level.AddWall(leftWall);
         level.AddWall(upWall2);
+
+        level.AddRoom(new Vector2((float)(downWall.Points.pointA.x + roomWidth / 2f), (float)(downWall.Points.pointA.y + roomHeight / 2)));
     }
 }

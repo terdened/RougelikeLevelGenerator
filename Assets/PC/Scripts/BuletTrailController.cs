@@ -13,6 +13,11 @@ public class BuletTrailController : MonoBehaviour
     private float _observationError = 0.001f;
     private float _damageValue = 30f;
 
+    void Start()
+    {
+        this.transform.Translate(Vector3.back);
+    }
+
     void Update()
     {
         if (_distanceCounter >= _maxDistance)
@@ -35,6 +40,7 @@ public class BuletTrailController : MonoBehaviour
         {
             var hitPoint = hit.point - (_currentDestVector * _observationError);
             transform.SetPositionAndRotation(hitPoint, transform.rotation);
+            transform.Translate(Vector3.back);
             _distanceCounter += hit.distance;
 
             var normalAngle = Vector2.zero.GetAngle(hit.normal);

@@ -490,6 +490,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2792187316518428813, guid: cd755b70a7bd3614b9bae66b3b165a72,
+        type: 3}
+      propertyPath: BuletDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2792187317080371779, guid: cd755b70a7bd3614b9bae66b3b165a72,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2792187318161455184, guid: cd755b70a7bd3614b9bae66b3b165a72,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -559,6 +569,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2792187318161455187, guid: cd755b70a7bd3614b9bae66b3b165a72,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2792187318161455197, guid: cd755b70a7bd3614b9bae66b3b165a72,
         type: 3}

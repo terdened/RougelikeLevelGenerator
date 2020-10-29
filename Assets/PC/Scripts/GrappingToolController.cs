@@ -60,6 +60,7 @@ namespace Assets.PC.Scripts
             lineRenderer.startWidth = 0.05f;
             lineRenderer.endWidth = 0.05f;
             lineRenderer.material.color = Color.red;
+            lineRenderer.sortingOrder = 5;
         }
 
         private void DeleteLine()
@@ -75,8 +76,8 @@ namespace Assets.PC.Scripts
 
             var lineRenderer = _lineRenderer.GetComponent<LineRenderer>();
 
-            lineRenderer.SetPosition(0, transform.position);
-            lineRenderer.SetPosition(1, _joint.connectedAnchor);
+            lineRenderer.SetPosition(0, transform.position + Vector3.back);
+            lineRenderer.SetPosition(1, new Vector3(_joint.connectedAnchor.x, _joint.connectedAnchor.y, -1));
         }
 
         private void HandleMousePosition()
