@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class PlatformerMotor2D : MonoBehaviour
 {
-    #region Public
+    
 
     /// <summary>
     /// The static environment check mask. This should only be environment that doesn't move.
@@ -1045,7 +1045,6 @@ public class PlatformerMotor2D : MonoBehaviour
         return ((0x1 << obj.layer) & staticEnvLayerMask) != 0;
     }
 
-    #endregion
 
     #region Private
 

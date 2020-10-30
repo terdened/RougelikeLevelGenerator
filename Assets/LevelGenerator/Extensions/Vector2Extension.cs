@@ -246,4 +246,9 @@ public static class Vector2Extension
         var vector3B = new Vector3(vectorB.x, vectorB.y, 0);
         return Vector3.SignedAngle(vector3A, vector3B, Vector3.forward);
     }
+
+    public static string ToString2(this Vector2 vector)
+    {
+        return $"{vector.x} {vector.y}";
+    }
 }

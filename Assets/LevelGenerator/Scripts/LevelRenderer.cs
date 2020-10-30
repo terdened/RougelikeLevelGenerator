@@ -16,6 +16,7 @@ public class LevelRenderer : MonoBehaviour
     public GameObject LineRendererPrefab;
     private float _lineWidth;
 
+
     public void Draw(Level level)
     {
         CreateSpriteShape(level);
@@ -155,7 +156,11 @@ public class LevelRenderer : MonoBehaviour
     private void VertexToSpriteShape(IEnumerable<Vertex<Vector2>> vertices)
     {
         var spriteShape = new GameObject("LevelMask");
+
+
         var spriteShapeController = spriteShape.AddComponent<SpriteShapeController>();
+        spriteShapeController.autoUpdateCollider = false;
+        var spriteShapeRenderer = spriteShape.GetComponent<SpriteShapeRenderer>();
         var polygonCollider = spriteShape.AddComponent<PolygonCollider2D>();
 
         var rigidbody = spriteShape.AddComponent<Rigidbody2D>();
@@ -172,12 +177,12 @@ public class LevelRenderer : MonoBehaviour
 
         spriteShapeController.spline.isOpenEnded = false;
 
-        spriteShapeController.splineDetail = 16;
+        spriteShapeController.splineDetail = 4;
         spriteShapeController.spriteShape = _spriteShapeProfile;
-
-        var spriteShapeRenderer = spriteShape.GetComponent<SpriteShapeRenderer>();
+        
         spriteShapeRenderer.sortingOrder = _spriteShapes.Count;
-
+        spriteShapeController.RefreshSpriteShape();
+        spriteShapeController.BakeMesh();
         _spriteShapes.Add(spriteShape);
     }
 

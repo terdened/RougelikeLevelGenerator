@@ -127,7 +127,9 @@ public static class GraphExtension
 
         vertex.Color = VertexColor.Grey;
 
-        foreach (var nearVertex in graph.NearVertexes(vertex))
+        var nearVertexes = graph.NearVertexes(vertex);
+
+        foreach (var nearVertex in nearVertexes)
         {
             if (currentCycle.Count > 0 && (currentCycle.Last().ContainsVertex(nearVertex)))
                 continue;
