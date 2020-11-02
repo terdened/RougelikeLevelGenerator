@@ -24,6 +24,9 @@ public class ElevatorController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (_elevator == null)
+            return;
+
         var platformPosition = _mpMotor.position;
 
         if (platformPosition == _elevator.Points.pointA)

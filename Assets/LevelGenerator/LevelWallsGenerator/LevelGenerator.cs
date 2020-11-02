@@ -290,7 +290,7 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
         var leftWall = new LevelWall(downWall.Points.pointB, downWall.Points.pointB + Vector2.up * roomHeight, EntityTypeConstants.Deadlock);
         var topWall = new LevelWall(leftWall.Points.pointB, leftWall.Points.pointB + Vector2.right * roomWidth, EntityTypeConstants.Deadlock);
         var rightWall = new LevelWall(topWall.Points.pointB, topWall.Points.pointB + Vector2.down * roomHeight, EntityTypeConstants.Deadlock);
-
+        
         var intersection = up.FindIntersection(rightWall);
 
         if (intersection.HasValue)
@@ -298,10 +298,10 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
             rightWall.SetPointB(intersection.Value);
         }
 
-        var isDownWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(downWall, true).HasValue);
-        var isRightWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(rightWall, true).HasValue);
-        var isTopWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(topWall, true).HasValue);
-        var isLeftWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(leftWall, true).HasValue);
+        var isDownWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(downWall, true, true).HasValue);
+        var isRightWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(rightWall, true, true).HasValue);
+        var isTopWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(topWall, true, true).HasValue);
+        var isLeftWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(leftWall, true, true).HasValue);
 
         if (!isDownWallIntersectLevel && !isRightWallIntersectLevel && !isTopWallIntersectLevel && !isLeftWallIntersectLevel)
         {
@@ -310,7 +310,7 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
             level.AddWall(topWall);
             level.AddWall(leftWall);
 
-            level.AddRoom(new Vector2((float)(down.Points.pointA.x - roomWidth / 2f), (float)(down.Points.pointA.y + roomHeight / 2)));
+            level.AddRoom(new Vector2((float)(down.Points.pointA.x - roomWidth / 2f), (float)(down.Points.pointA.y + roomHeight / 2)), "Left");
         }
         else
         {
@@ -346,10 +346,10 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
         }
 
 
-        var isDownWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(downWall, true).HasValue);
-        var isRightWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(rightWall, true).HasValue);
-        var isTopWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(topWall, true).HasValue);
-        var isLeftWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(leftWall, true).HasValue);
+        var isDownWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(downWall, true, true).HasValue);
+        var isRightWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(rightWall, true, true).HasValue);
+        var isTopWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(topWall, true, true).HasValue);
+        var isLeftWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(leftWall, true, true).HasValue);
 
         if (!isDownWallIntersectLevel && !isRightWallIntersectLevel && !isTopWallIntersectLevel && !isLeftWallIntersectLevel)
         {
@@ -358,7 +358,7 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
             level.AddWall(topWall);
             level.AddWall(leftWall);
 
-            level.AddRoom(new Vector2((float)(down.Points.pointA.x + roomWidth / 2f), (float)(down.Points.pointA.y + roomHeight / 2)));
+            level.AddRoom(new Vector2((float)(down.Points.pointA.x + roomWidth / 2f), (float)(down.Points.pointA.y + roomHeight / 2)), "Right");
         } else
         {
             level.AddWall(new LevelWall(skeletonLineWithWallsForPoint.wallA.Points.pointA, skeletonLineWithWallsForPoint.wallB.Points.pointA, EntityTypeConstants.Deadlock));
@@ -386,11 +386,11 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
         var leftWall = new LevelWall(topWall.Points.pointB, topWall.Points.pointB + Vector2.down * roomHeight, EntityTypeConstants.Deadlock);
         var downWall2 = new LevelWall(leftWall.Points.pointB, right.Points.pointA, EntityTypeConstants.Deadlock);
 
-        var isDownWall1IntersectLevel = level.Walls.Any(_ => _.FindIntersection(downWall1, true).HasValue);
-        var isRightWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(rightWall, true).HasValue);
-        var isTopWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(topWall, true).HasValue);
-        var isLeftWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(leftWall, true).HasValue);
-        var isDownWall2IntersectLevel = level.Walls.Any(_ => _.FindIntersection(downWall2, true).HasValue);
+        var isDownWall1IntersectLevel = level.Walls.Any(_ => _.FindIntersection(downWall1, true, true).HasValue);
+        var isRightWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(rightWall, true, true).HasValue);
+        var isTopWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(topWall, true, true).HasValue);
+        var isLeftWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(leftWall, true, true).HasValue);
+        var isDownWall2IntersectLevel = level.Walls.Any(_ => _.FindIntersection(downWall2, true, true).HasValue);
 
         if (!isDownWall1IntersectLevel && !isRightWallIntersectLevel && !isTopWallIntersectLevel && !isLeftWallIntersectLevel && !isDownWall1IntersectLevel)
         {
@@ -400,7 +400,7 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
             level.AddWall(leftWall);
             level.AddWall(downWall2);
 
-            level.AddRoom(new Vector2((float)(downWall2.Points.pointA.x - roomWidth / 2f), (float)(downWall2.Points.pointA.y + roomHeight / 2)));
+            level.AddRoom(new Vector2((float)(downWall2.Points.pointA.x - roomWidth / 2f), (float)(downWall2.Points.pointA.y + roomHeight / 2)), "Up");
         }
         else
         {
@@ -429,11 +429,11 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
         var leftWall = new LevelWall(downWall.Points.pointB, downWall.Points.pointB + Vector2.up * roomHeight, EntityTypeConstants.Deadlock);
         var upWall2 = new LevelWall(leftWall.Points.pointB, right.Points.pointA, EntityTypeConstants.Deadlock);
 
-        var isUpWall1IntersectLevel = level.Walls.Any(_ => _.FindIntersection(upWall1, true).HasValue);
-        var isRightWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(rightWall, true).HasValue);
-        var isDownWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(downWall, true).HasValue);
-        var isLeftWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(leftWall, true).HasValue);
-        var isUpWall2IntersectLevel = level.Walls.Any(_ => _.FindIntersection(upWall2, true).HasValue);
+        var isUpWall1IntersectLevel = level.Walls.Any(_ => _.FindIntersection(upWall1, true, true).HasValue);
+        var isRightWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(rightWall, true, true).HasValue);
+        var isDownWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(downWall, true, true).HasValue);
+        var isLeftWallIntersectLevel = level.Walls.Any(_ => _.FindIntersection(leftWall, true, true).HasValue);
+        var isUpWall2IntersectLevel = level.Walls.Any(_ => _.FindIntersection(upWall2, true, true).HasValue);
 
         if (!isUpWall1IntersectLevel && !isRightWallIntersectLevel && !isDownWallIntersectLevel && !isLeftWallIntersectLevel && !isUpWall2IntersectLevel)
         {
@@ -443,7 +443,7 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
             level.AddWall(leftWall);
             level.AddWall(upWall2);
 
-            level.AddRoom(new Vector2((float)(downWall.Points.pointA.x + roomWidth / 2f), (float)(downWall.Points.pointA.y + roomHeight / 2)));
+            level.AddRoom(new Vector2((float)(downWall.Points.pointA.x + roomWidth / 2f), (float)(downWall.Points.pointA.y + roomHeight / 2)), "Down");
         }
         else
         {

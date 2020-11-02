@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.LevelGenerator.Models;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
@@ -6,13 +7,13 @@ public class Level
 {
     private readonly List<LevelWall> _walls;
     private readonly List<LevelElevator> _elevators;
-    private readonly List<Vector2> _rooms;
+    private readonly List<LevelRoom> _rooms;
 
     public Level()
     {
         _walls = new List<LevelWall>();
         _elevators = new List<LevelElevator>();
-        _rooms = new List<Vector2>();
+        _rooms = new List<LevelRoom>();
     }
 
     public void AddWall(LevelWall newWall)
@@ -35,14 +36,12 @@ public class Level
         _elevators.AddRange(newElevators);
     }
 
-    public void AddRooms(IEnumerable<Vector2> newRooms)
+    public void AddRoom(Vector2 position, string type)
     {
-        _rooms.AddRange(newRooms);
-    }
-
-    public void AddRoom(Vector2 newRoom)
-    {
-        _rooms.Add(newRoom);
+        _rooms.Add(new LevelRoom {
+            Position = position,
+            Type = type
+        });
     }
 
     public void RemoveWall(string wallId)
@@ -52,5 +51,5 @@ public class Level
 
     public IReadOnlyCollection<LevelWall> Walls => new ReadOnlyCollection<LevelWall>(_walls);
     public IReadOnlyCollection<LevelElevator> Elevators => new ReadOnlyCollection<LevelElevator>(_elevators);
-    public IReadOnlyCollection<Vector2> Rooms => new ReadOnlyCollection<Vector2>(_rooms);
+    public IReadOnlyCollection<LevelRoom> Rooms => new ReadOnlyCollection<LevelRoom>(_rooms);
 }

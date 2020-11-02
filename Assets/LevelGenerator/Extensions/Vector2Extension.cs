@@ -79,7 +79,7 @@ public static class Vector2Extension
     public static float Length(this (Vector2 pointA, Vector2 pointB) line) => Vector2.Distance(line.pointA, line.pointB);
 
     //  Returns Point of intersection if do intersect otherwise default Point (null)
-    public static Vector2? FindIntersection(this (Vector2 pointA, Vector2 pointB) lineA, (Vector2 pointA, Vector2 pointB) lineB, bool checkIsInLine = true)
+    public static Vector2? FindIntersection(this (Vector2 pointA, Vector2 pointB) lineA, (Vector2 pointA, Vector2 pointB) lineB, bool checkIsInLine = true, bool excludeLinePoints = false)
     {
         const double tolerance = 0.001;
 
@@ -199,7 +199,18 @@ public static class Vector2Extension
         if (IsInsideLine(lineA, x, y) &&
             IsInsideLine(lineB, x, y))
         {
-            return new Vector2((float)x, (float)y);
+            var result = new Vector2((float)x, (float)y);
+
+            if (excludeLinePoints && (Vector2.Distance(lineA.pointA, result) < 0.001f)
+                || (Vector2.Distance(lineA.pointA, result) < 0.001f)
+                || (Vector2.Distance(lineA.pointA, result) < 0.001f)
+                || (Vector2.Distance(lineA.pointA, result) < 0.001f))
+            {
+                return null;
+            } else
+            {
+                return result;
+            }
         }
 
         //return default null (no intersection)

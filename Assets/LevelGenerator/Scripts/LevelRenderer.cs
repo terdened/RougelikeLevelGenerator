@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.LevelExplore.AI.RoomAI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,9 @@ public class LevelRenderer : MonoBehaviour
     {
         level.Rooms.ToList().ForEach(_ =>
         {
-            Instantiate(RoomPrefab, _, Quaternion.identity);
+            var room = Instantiate(RoomPrefab, _.Position, Quaternion.identity);
+            var roomController = room.GetComponentInChildren<RoomController>();
+            roomController.Type = _.Type;
         });
     }
 
@@ -182,7 +185,6 @@ public class LevelRenderer : MonoBehaviour
         
         spriteShapeRenderer.sortingOrder = _spriteShapes.Count;
         spriteShapeController.RefreshSpriteShape();
-        spriteShapeController.BakeMesh();
         _spriteShapes.Add(spriteShape);
     }
 
