@@ -439,16 +439,16 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -48
-  m_Sprite: {fileID: 21300000, guid: 69266388e24d06343bc47a0e3b5e4139, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3efef4657b5061448894ba6ca77b2646, type: 3}
   m_Color: {r: 0.7607844, g: 0.7607844, b: 0.7607844, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
-  m_Size: {x: 62.539997, y: 47.349995}
+  m_Size: {x: 69.05, y: 42.72}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 2
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!114 &1774232942
 MonoBehaviour:
@@ -457,13 +457,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1774232940}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6344fa171973be54d8f158ec7dc274bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 2089338186}
-  ParallaxPower: 0.5
+  ParallaxPower: -0.25
 --- !u!224 &1774232943
 RectTransform:
   m_ObjectHideFlags: 0
@@ -490,6 +490,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2792187316335673912, guid: cd755b70a7bd3614b9bae66b3b165a72,
+        type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.4509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 2792187316335673912, guid: cd755b70a7bd3614b9bae66b3b165a72,
+        type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.4509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 2792187316335673912, guid: cd755b70a7bd3614b9bae66b3b165a72,
+        type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.4509804
+      objectReference: {fileID: 0}
     - target: {fileID: 2792187316518428813, guid: cd755b70a7bd3614b9bae66b3b165a72,
         type: 3}
       propertyPath: BuletDistance

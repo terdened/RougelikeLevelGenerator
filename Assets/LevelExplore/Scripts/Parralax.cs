@@ -10,6 +10,7 @@ public class Parralax : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Player = GameObject.Find("Player");
         _originalPosition = transform.position;
     }
 
@@ -19,8 +20,8 @@ public class Parralax : MonoBehaviour
         if (Player == null)
             return;
 
-        transform.position = new Vector3(_originalPosition.x + (Player.transform.position.x * ParallaxPower),
-            _originalPosition.y + (Player.transform.position.y * ParallaxPower),
+        transform.position = new Vector3(_originalPosition.x + ((_originalPosition.x - Player.transform.position.x) * ParallaxPower),
+            _originalPosition.y + ((_originalPosition.y - Player.transform.position.y) * ParallaxPower),
             _originalPosition.z);
     }
 }
