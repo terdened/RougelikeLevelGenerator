@@ -62,7 +62,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 4.34
+  m_Radius: 2.68
 --- !u!114 &6932484967253471395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,7 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bce62bbfc50e8744954ae5a17d2e48c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  JumpForce: 60
+  JumpForce: 300
 --- !u!1 &6944392252286816521
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,7 +117,7 @@ Transform:
   m_GameObject: {fileID: 6944392252286816521}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.77, y: -0.29, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 9, y: 9, z: 1}
   m_Children:
   - {fileID: 3672293904786107375}
   m_Father: {fileID: 0}
@@ -185,7 +185,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.1
+  m_Mass: 0.7
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -232,8 +232,8 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.03333333, y: -0.062333334}
-      - {x: 0.033999998, y: -0.053666666}
+    - - {x: 0.031196808, y: -0.06192245}
+      - {x: 0.03350698, y: -0.053666674}
       - {x: 0.036666665, y: -0.039}
       - {x: 0.038666666, y: -0.030333333}
       - {x: 0.039333332, y: -0.025666667}
@@ -260,11 +260,11 @@ PolygonCollider2D:
       - {x: -0.07, y: -0.032333333}
       - {x: -0.06866667, y: -0.038333334}
       - {x: -0.066, y: -0.04633333}
-      - {x: -0.059333332, y: -0.067666665}
-      - {x: -0.056666665, y: -0.071}
-      - {x: -0.048, y: -0.074999996}
-      - {x: -0.036, y: -0.07766666}
-      - {x: -0.0033333334, y: -0.07766666}
-      - {x: 0.01, y: -0.07633333}
-      - {x: 0.018666666, y: -0.073}
-      - {x: 0.029333333, y: -0.06633333}
+      - {x: -0.058651477, y: -0.06521207}
+      - {x: -0.055840813, y: -0.0665037}
+      - {x: -0.047357667, y: -0.066466175}
+      - {x: -0.033522423, y: -0.06648235}
+      - {x: -0.0048608254, y: -0.06639059}
+      - {x: 0.008623574, y: -0.06633134}
+      - {x: 0.018116105, y: -0.06639318}
+      - {x: 0.02604633, y: -0.066251166}
