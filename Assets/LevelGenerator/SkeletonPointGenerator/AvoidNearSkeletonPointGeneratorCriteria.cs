@@ -13,6 +13,6 @@ public class AvoidNearSkeletonPointGeneratorCriteria : IGeneratorCriteria<Skelet
 
     public bool Verify(SkeletonPoint model)
     {
-        return !_initialPoints.Any(_ => Vector2.Distance(_.Position, model.Position) < 10f);
+        return !_initialPoints.Any(_ => Vector2.Distance(_.Position, model.Position) < 20f);
     }
 }

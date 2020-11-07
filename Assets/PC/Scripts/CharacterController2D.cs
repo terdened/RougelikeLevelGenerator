@@ -6,8 +6,9 @@ namespace Assets.PC.Scripts
     [RequireComponent(typeof(Rigidbody2D))]
     class CharacterController2D : MonoBehaviour
     {
-        public float JumpForce;
-        public float MoveForce;
+        public float JumpForce = 700;
+        public float MoveForce = 1;
+        public Vector2? JumppadForce;
 
         const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
 
@@ -28,7 +29,7 @@ namespace Assets.PC.Scripts
 
             // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
             // This can be done using layers instead but Sample Assets will not overwrite your project settings.
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y - 0.5f), k_GroundedRadius);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll((Vector2)transform.position + Vector2.down * 0.5f, 0.5f, 1 << LayerMask.NameToLayer("Ground"));
             for (int i = 0; i < colliders.Length; i++)
             {
                 if (colliders[i].gameObject != gameObject)
@@ -43,7 +44,7 @@ namespace Assets.PC.Scripts
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && _grounded)
             {
                 _jumpPressed = true;
             }
@@ -55,7 +56,7 @@ namespace Assets.PC.Scripts
             {
                 _jumpPressed = false;
 
-                var vector = Vector2.up * JumpForce;
+                var vector = JumppadForce ?? Vector2.up * JumpForce;
                 _rigidbody2D.AddForce(vector);
             }
         }

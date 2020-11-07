@@ -13,6 +13,7 @@ public class LevelRenderer : MonoBehaviour
     public List<GameObject> _spriteShapes;
     private List<GameObject> _lineRendererGameObjects;
     public GameObject RoomPrefab;
+    public GameObject JumppadPrefab;
 
     public GameObject LineRendererPrefab;
     private float _lineWidth;
@@ -22,6 +23,7 @@ public class LevelRenderer : MonoBehaviour
     {
         CreateSpriteShape(level);
         CreateRooms(level);
+        CreateJumppads(level);
     }
 
     private void CreateRooms(Level level)
@@ -31,6 +33,14 @@ public class LevelRenderer : MonoBehaviour
             var room = Instantiate(RoomPrefab, _.Position, Quaternion.identity);
             var roomController = room.GetComponentInChildren<RoomController>();
             roomController.Type = _.Type;
+        });
+    }
+
+    private void CreateJumppads(Level level)
+    {
+        level.Jumppads.ToList().ForEach(_ =>
+        {
+            var jumppad = Instantiate(JumppadPrefab, _.Position, Quaternion.identity);
         });
     }
 

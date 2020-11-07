@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -27,6 +28,12 @@ public class LevelMapRenderer : MonoBehaviour
         level.Elevators.ToList().ForEach(_ =>
         {
             var lineRendererGameObject = CreateLine(_.Points.pointA, _.Points.pointB, _.Type, _.Id);
+            _lineRendererGameObjects.Add(lineRendererGameObject);
+        });
+
+        level.Jumppads.ToList().ForEach(_ =>
+        {
+            var lineRendererGameObject = CreateLine(_.Position + Vector2.left, _.Position + Vector2.right, EntityTypeConstants.Elevator, Guid.NewGuid().ToId());
             _lineRendererGameObjects.Add(lineRendererGameObject);
         });
     }

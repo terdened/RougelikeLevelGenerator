@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Assets.LevelGenerator.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -71,7 +73,8 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
                                 : _.line.Points.pointB,
                         point == _.line.Points.pointA
                             ? _.line.Points.pointB
-                            : _.line.Points.pointA),
+                            : _.line.Points.pointA,
+                        _.line.Type),
                     _.wallA,
                     _.wallB))
                 .ToArray();
@@ -248,6 +251,11 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
 
             for (var i = 0; i < skeletonLinesWithWallsForPoint.Count(); i++)
             {
+                var skeletonLineA = skeletonLinesWithWallsForPoint[i].line;
+                var skeletonLineB = i < skeletonLinesWithWallsForPoint.Count() - 1
+                                ? skeletonLinesWithWallsForPoint[i + 1].line
+                                : skeletonLinesWithWallsForPoint[0].line;
+
                 var wallA = skeletonLinesWithWallsForPoint[i].wallA;
                 var wallB = i < skeletonLinesWithWallsForPoint.Count() - 1
                                 ? skeletonLinesWithWallsForPoint[i + 1].wallB
@@ -268,8 +276,76 @@ public class LevelGenerator : BaseGenerator<Level, LevelGeneratorParams>
                     wallA.SetPointA(middlePoint);
                     wallB.SetPointA(middlePoint);
                 }
+
+                var a = wallB.Points.pointB - wallB.Points.pointA;
+                var b = wallA.Points.pointB - wallA.Points.pointA;
+
+                float angle = Vector3.Angle(a, b);
+
+                if(angle < 90 
+                    && (skeletonLineA.Type != EntityTypeConstants.Elevator && skeletonLineA.Type != EntityTypeConstants.EmptySpaceElevatorLeft && skeletonLineA.Type != EntityTypeConstants.EmptySpaceElevatorRight) 
+                    && (skeletonLineB.Type != EntityTypeConstants.Elevator && skeletonLineB.Type != EntityTypeConstants.EmptySpaceElevatorLeft && skeletonLineB.Type != EntityTypeConstants.EmptySpaceElevatorRight))
+                {
+                    var raycastVector = wallA.Points.pointA.x < wallA.Points.pointB.x ? new Vector2(-7f, -7f) : new Vector2(7f, -7f);
+
+                    var jumppadPosition = FindJumppadPosition(wallA.Points.pointA, raycastVector, level, wallA, wallB);
+
+                    if (!jumppadPosition.HasValue)
+                    {
+                        raycastVector = wallA.Points.pointA.x < wallA.Points.pointB.x ? new Vector2(-5f, -8.6f) : new Vector2(5f, -8.6f);
+                        jumppadPosition = FindJumppadPosition(wallA.Points.pointA, raycastVector, level, wallA, wallB);
+                    }
+
+                    if (!jumppadPosition.HasValue)
+                    {
+                        raycastVector = wallA.Points.pointA.x < wallA.Points.pointB.x ? new Vector2(-2.5f, -9.6f) : new Vector2(2.5f, -9.6f);
+                        jumppadPosition = FindJumppadPosition(wallA.Points.pointA, raycastVector, level, wallA, wallB);
+                    }
+
+                    if (jumppadPosition.HasValue)
+                    {
+                        level.AddJumppad(new LevelJumppad
+                        {
+                            Position = jumppadPosition.Value
+                        });
+                    } else
+                    {
+                        level.AddJumppad(new LevelJumppad
+                        {
+                            Position = wallB.Points.pointA
+                        });
+                    }
+                }
             }
         }
+    }
+
+    private Vector2? FindJumppadPosition(Vector2 point, Vector2 raycastVector, Level level, LevelWall wallA, LevelWall wallB)
+    {
+        var raycast = new LevelWall(point, point + raycastVector);
+
+        var otherWalls = level.Walls.Where(_ => _ != wallA && _ != wallB);
+
+        Vector2? nearestIntersection = null;
+
+        foreach (var otherWall in otherWalls)
+        {
+            var intersectionWithRaycast = raycast.FindIntersection(otherWall, true);
+
+            if (intersectionWithRaycast == null || intersectionWithRaycast.Value.y >= wallA.Points.pointA.y)
+                continue;
+
+            if (nearestIntersection == null)
+            {
+                nearestIntersection = intersectionWithRaycast;
+            }
+            else if (Vector2.Distance(wallA.Points.pointA, nearestIntersection.Value) > Vector2.Distance(wallA.Points.pointA, intersectionWithRaycast.Value))
+            {
+                nearestIntersection = intersectionWithRaycast;
+            }
+        }
+
+        return nearestIntersection;
     }
 
     private void AddLeftRoom(Level level, SkeletonPoint point, (SkeletonLine, LevelWall wallA, LevelWall wallB) skeletonLineWithWallsForPoint)

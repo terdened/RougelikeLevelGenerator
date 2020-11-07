@@ -8,12 +8,19 @@ public class Level
     private readonly List<LevelWall> _walls;
     private readonly List<LevelElevator> _elevators;
     private readonly List<LevelRoom> _rooms;
+    private readonly List<LevelJumppad> _jumppads;
 
     public Level()
     {
         _walls = new List<LevelWall>();
         _elevators = new List<LevelElevator>();
         _rooms = new List<LevelRoom>();
+        _jumppads = new List<LevelJumppad>();
+    }
+
+    public void AddJumppad(LevelJumppad newJumppad)
+    {
+        _jumppads.Add(newJumppad);
     }
 
     public void AddWall(LevelWall newWall)
@@ -52,4 +59,5 @@ public class Level
     public IReadOnlyCollection<LevelWall> Walls => new ReadOnlyCollection<LevelWall>(_walls);
     public IReadOnlyCollection<LevelElevator> Elevators => new ReadOnlyCollection<LevelElevator>(_elevators);
     public IReadOnlyCollection<LevelRoom> Rooms => new ReadOnlyCollection<LevelRoom>(_rooms);
+    public IReadOnlyCollection<LevelJumppad> Jumppads => new ReadOnlyCollection<LevelJumppad>(_jumppads);
 }
