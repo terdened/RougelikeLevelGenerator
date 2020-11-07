@@ -11,4 +11,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ExploreScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/PlayerControllerTest.unity
+    guid: 5bcc6415eaca8d843a37c0a103874be8
+  - enabled: 1
+    path: Assets/Scenes/HubScene.unity
+    guid: 05b0cfcbe47a4484daac525844709478
+  - enabled: 1
+    path: Assets/Scenes/ForgottenOneScene.unity
+    guid: b2b8e21b71daf2348be007904bf04e4e
   m_configObjects: {}
