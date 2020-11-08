@@ -80,8 +80,8 @@ public class LevelSkeletonBiomsGenerator : BaseGenerator<LevelSkeleton, LevelSke
         {
             _.Type = _.GetLineAngle() > 45 ? EntityTypeConstants.Elevator : EntityTypeConstants.Floor;
 
-            _.Points.pointA.Type = EntityTypeConstants.Floor;
-            _.Points.pointB.Type = EntityTypeConstants.Floor;
+            //_.Points.pointA.Type = EntityTypeConstants.Floor;
+            //_.Points.pointB.Type = EntityTypeConstants.Floor;
         });
 
         emptySpaces?.ForEach(c =>
@@ -109,8 +109,8 @@ public class LevelSkeletonBiomsGenerator : BaseGenerator<LevelSkeleton, LevelSke
                             : EntityTypeConstants.EmptySpaceTop;
                     }
                 });
-                l.Points.pointA.Type = EntityTypeConstants.EmptySpace;
-                l.Points.pointB.Type = EntityTypeConstants.EmptySpace;
+                //l.Points.pointA.Type = EntityTypeConstants.EmptySpace;
+                //l.Points.pointB.Type = EntityTypeConstants.EmptySpace;
             });
 
             var linesInEmptySpace = skeleton.Lines.Where(_ => !c.Any(l => l.ContainsSkeletonPoint(_.Points.pointA)) && c.IsSkeletonPointInsideStatistics(_.Points.pointA)
@@ -122,8 +122,8 @@ public class LevelSkeletonBiomsGenerator : BaseGenerator<LevelSkeleton, LevelSke
             linesInEmptySpace.ToList().ForEach(l =>
             {
                 l.Type = l.Type.Name == "Elevator" ? EntityTypeConstants.InsideElevator : EntityTypeConstants.InsideFloor;
-                l.Points.pointA.Type = EntityTypeConstants.InsideFloor;
-                l.Points.pointB.Type = EntityTypeConstants.InsideFloor;
+                //l.Points.pointA.Type = EntityTypeConstants.InsideFloor;
+                //l.Points.pointB.Type = EntityTypeConstants.InsideFloor;
             });
         });
     }

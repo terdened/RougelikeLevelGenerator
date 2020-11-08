@@ -3,4 +3,5 @@
     public static LevelSkeleton LevelSkeleton;
     public static LevelSkeleton LevelSkeletonWithBioms;
     public static Level Level;
+    public static int? PortalIndex;
 }

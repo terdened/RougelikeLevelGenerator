@@ -14,6 +14,7 @@ public class LevelSkeletonGeneratorParams
 
     public double MaxOpenSpacePerimeter { get; set; }
     public double MinOpenSpacePerimeter { get; set; }
+    public List<(Vector2 a, Vector2 b, int doorIndex, int doorIndexTo, string scene)> InitialLines { get; set; }
 
     public LevelSkeletonGeneratorParams()
     {
@@ -33,6 +34,11 @@ public class LevelSkeletonGeneratorParams
                 new Vector2(110, 20),
                 new Vector2(-110, -30)
             }
+        };
+        InitialLines = new List<(Vector2 a, Vector2 b, int doorIndex, int doorIndexTo, string scene)>
+        {
+            (new Vector2(115, 20), new Vector2(110, 20), 1, 0, "ForgottenOneScene"),
+            (new Vector2(-115, -30), new Vector2(-110, -30), 0, 0, "HubScene")
         };
     }
 }

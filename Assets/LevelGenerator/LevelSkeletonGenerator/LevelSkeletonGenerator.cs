@@ -50,6 +50,12 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
             MergeNearByPointLines(result);
         }
 
+        //7. Add initial lines
+        if (Params.InitialLines != null && Params.InitialLines.Count > 0)
+        {
+            AddInitialLines(result);
+        }
+
         if (result.IsLinesIntersects())
             return null;
 
@@ -189,6 +195,29 @@ public class LevelSkeletonGenerator : BaseGenerator<LevelSkeleton, LevelSkeleton
                 skeleton.AddLines(newLines);
                 isMerged = true;
             }
+        }
+    }
+
+    private void AddInitialLines(LevelSkeleton skeleton)
+    {
+        foreach (var initialLine in Params.InitialLines)
+        {
+            var point = skeleton.Points.FirstOrDefault(_ => _.Position == initialLine.b);
+
+            if (point == null)
+            {
+                Debug.LogError("Unable to find exit");
+                continue;
+            }
+
+            var exitPoint = new SkeletonPoint(initialLine.a, EntityTypeConstants.Exit)
+            {
+                Index = initialLine.doorIndex,
+                IndexTo = initialLine.doorIndexTo,
+                Scene = initialLine.scene
+            };
+
+            skeleton.AddLine(new SkeletonLine(exitPoint, point));
         }
     }
 }

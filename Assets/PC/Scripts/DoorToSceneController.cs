@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Assets.PC.Scripts
@@ -13,6 +8,8 @@ namespace Assets.PC.Scripts
     public class DoorToSceneController : MonoBehaviour
     {
         public string TargetScene = "HubScene";
+        public int Index = 0;
+        public int IndexTo = 0;
         private bool _onPlayerEntered = false;
         private SpriteRenderer _spriteRenderer;
 
@@ -26,6 +23,7 @@ namespace Assets.PC.Scripts
             if (Input.GetKeyDown(KeyCode.F) && _onPlayerEntered)
             {
                 SceneManager.LoadScene(TargetScene, LoadSceneMode.Single);
+                LevelHolder.PortalIndex = IndexTo;
             }
         }
 
@@ -35,7 +33,9 @@ namespace Assets.PC.Scripts
             if(characterController != null)
             {
                 _onPlayerEntered = true;
-                _spriteRenderer.color = new Color(0.74f, 0.55f, 0.37f);
+
+                if(_spriteRenderer != null)
+                    _spriteRenderer.color = new Color(0.74f, 0.55f, 0.37f);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using Assets.LevelExplore.AI.RoomAI;
+using Assets.PC.Scripts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ public class LevelRenderer : MonoBehaviour
     private List<GameObject> _lineRendererGameObjects;
     public GameObject RoomPrefab;
     public GameObject JumppadPrefab;
+    public GameObject ExitPrefab;
 
     public GameObject LineRendererPrefab;
     private float _lineWidth;
@@ -24,6 +26,7 @@ public class LevelRenderer : MonoBehaviour
         CreateSpriteShape(level);
         CreateRooms(level);
         CreateJumppads(level);
+        CreateExits(level);
     }
 
     private void CreateRooms(Level level)
@@ -41,6 +44,16 @@ public class LevelRenderer : MonoBehaviour
         level.Jumppads.ToList().ForEach(_ =>
         {
             var jumppad = Instantiate(JumppadPrefab, _.Position, Quaternion.identity);
+        });
+    }
+
+    private void CreateExits(Level level)
+    {
+        level.Exits.ToList().ForEach(_ =>
+        {
+            var exit = Instantiate(ExitPrefab, _.Position, Quaternion.identity);
+            var exitController = exit.GetComponent<ExitController>();
+            exitController.Init(_.Index, _.IndexTo, _.Scene);
         });
     }
 

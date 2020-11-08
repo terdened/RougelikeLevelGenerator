@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SkeletonPoint
@@ -13,6 +12,12 @@ public class SkeletonPoint
     public string Id { get; }
 
     public Vector2 Position { get; }
+
+    public int? Index { get; set; }
+
+    public int? IndexTo { get; set; }
+
+    public string Scene { get; set; }
 
     public EntityType Type { get; set; }
 }
