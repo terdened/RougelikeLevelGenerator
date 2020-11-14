@@ -91,22 +91,27 @@ public class PhysicsObject : MonoBehaviour
 
                 if (platformEffector != null && platformEffector.useOneWay)
                 {
-                    Debug.DrawLine(hitBufferList[i].point, hitBufferList[i].point + currentNormal);
 
                     if (!yMovement)
                     {
                         continue;
                     }
-                        
+
+                    var isRaycastTop = RaycastOnTransform(hitBufferList[i].point + Vector2.down * 0.01f, Vector2.down, 0.01f, hitBufferList[i].transform);
+                    var isRaycastBottom = RaycastOnTransform(hitBufferList[i].point + Vector2.up * 0.5f, Vector2.down, 1.0f, hitBufferList[i].transform);
+
+                    if (isRaycastTop == null || isRaycastBottom == null)
+                    {
+                        continue;
+                    }
+
+
+
                     var deltaAngle = ((Vector2)platformEffector.transform.position).GetAngle((Vector2)platformEffector.transform.position + move);
 
                     var playerBottomPosition = (Vector2)transform.position + collider.offset + Vector2.down * (collider.size.y/2);
 
-                    var platformCollider = platformEffector.transform.GetComponent<BoxCollider2D>();
-
-                    var platformTopPosition = (Vector2)platformEffector.transform.position + platformCollider.offset + Vector2.up * (platformEffector.transform.localScale.y * platformCollider.size.y / 2);
-
-                    if (deltaAngle == 90 || playerBottomPosition.y < platformTopPosition.y)
+                    if (deltaAngle == 90 || playerBottomPosition.y < isRaycastBottom.Value.point.y)
                     {
                         continue;
                     }
@@ -142,5 +147,19 @@ public class PhysicsObject : MonoBehaviour
         }
 
         rb2d.position = rb2d.position + move.normalized * distance;
+    }
+
+    private RaycastHit2D? RaycastOnTransform(Vector2 origin, Vector2 direction, float distance, Transform transform)
+    {
+        var hitBuffer = new RaycastHit2D[16];
+        Physics2D.RaycastNonAlloc(origin, direction, hitBuffer, distance);
+
+        foreach(var hit in hitBuffer)
+        {
+            if (hit.transform == transform)
+                return hit;
+        }
+
+        return null;
     }
 }
