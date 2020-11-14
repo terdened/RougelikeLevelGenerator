@@ -21,6 +21,12 @@ public class CharacterController : PhysicsObject
 
         move.x = Input.GetAxis("Horizontal");
 
+        if (Input.GetAxis("Vertical") < 0 && groundedOneDirected)
+        {
+            transform.position = (Vector2)transform.position + Vector2.down * 0.01f; 
+            velocity.y = -3;
+        }
+
         if (Input.GetButtonDown("Jump") && grounded)
         {
             velocity.y = jumpTakeOffSpeed;

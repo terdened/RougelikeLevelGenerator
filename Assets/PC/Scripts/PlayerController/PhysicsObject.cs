@@ -2,6 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class PhysicsObject : MonoBehaviour
 {
     public float minGroundNormalY = .65f;
@@ -9,12 +10,15 @@ public class PhysicsObject : MonoBehaviour
 
     protected Vector2 targetVelocity;
     protected bool grounded;
+    protected bool groundedOneDirected;
     protected Vector2 groundNormal;
     protected Rigidbody2D rb2d;
     protected Vector2 velocity;
     protected ContactFilter2D contactFilter;
     protected RaycastHit2D[] hitBuffer = new RaycastHit2D[16];
     protected List<RaycastHit2D> hitBufferList = new List<RaycastHit2D>(16);
+
+    protected BoxCollider2D collider;
 
 
     protected const float minMoveDistance = 0.001f;
@@ -23,6 +27,7 @@ public class PhysicsObject : MonoBehaviour
     void OnEnable()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        collider = GetComponent<BoxCollider2D>();
     }
 
     void Start()
@@ -49,6 +54,7 @@ public class PhysicsObject : MonoBehaviour
         velocity.x = targetVelocity.x;
 
         grounded = false;
+        groundedOneDirected = false;
 
         Vector2 deltaPosition = velocity * Time.deltaTime;
 
@@ -79,9 +85,42 @@ public class PhysicsObject : MonoBehaviour
             for (int i = 0; i < hitBufferList.Count; i++)
             {
                 Vector2 currentNormal = hitBufferList[i].normal;
+
+
+                var platformEffector = hitBufferList[i].transform.GetComponent<PlatformEffector2D>();
+
+                if (platformEffector != null && platformEffector.useOneWay)
+                {
+                    Debug.DrawLine(hitBufferList[i].point, hitBufferList[i].point + currentNormal);
+
+                    if (!yMovement)
+                    {
+                        continue;
+                    }
+                        
+                    var deltaAngle = ((Vector2)platformEffector.transform.position).GetAngle((Vector2)platformEffector.transform.position + move);
+
+                    var playerBottomPosition = (Vector2)transform.position + collider.offset + Vector2.down * (collider.size.y/2);
+
+                    var platformCollider = platformEffector.transform.GetComponent<BoxCollider2D>();
+
+                    var platformTopPosition = (Vector2)platformEffector.transform.position + platformCollider.offset + Vector2.up * (platformEffector.transform.localScale.y * platformCollider.size.y / 2);
+
+                    if (deltaAngle == 90 || playerBottomPosition.y < platformTopPosition.y)
+                    {
+                        continue;
+                    }
+                }
+
                 if (currentNormal.y > minGroundNormalY)
                 {
                     grounded = true;
+
+                    if (platformEffector != null)
+                    {
+                        groundedOneDirected = true;
+                    }
+
                     if (yMovement)
                     {
                         groundNormal = currentNormal;
