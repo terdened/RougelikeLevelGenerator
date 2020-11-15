@@ -2,10 +2,11 @@
 
 public class ElevatorController : MonoBehaviour
 {
-    private MovingPlatformMotor2D _mpMotor;
 
     public float Speed;
-    private LevelElevator _elevator;
+    public Vector2 PointA;
+    public Vector2 PointB;
+
     private bool _fromAtoB;
 
     // Use this for initialization
@@ -15,35 +16,29 @@ public class ElevatorController : MonoBehaviour
 
     public void Init(LevelElevator elevator)
     {
-        _mpMotor = GetComponent<MovingPlatformMotor2D>();
-        _mpMotor.velocity = Vector2.zero;
-        _elevator = elevator;
-        _mpMotor.position = elevator.Points.pointA;
+        PointA = elevator.Points.pointA;
+        PointB = elevator.Points.pointB;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (_elevator == null)
+        if (PointA == Vector2.zero || PointB == Vector2.zero)
             return;
 
-        var platformPosition = _mpMotor.position;
-
-        if (platformPosition == _elevator.Points.pointA)
+        if (Vector2.Distance(transform.position, PointA) < 0.01f)
         {
             _fromAtoB = true;
         }
 
-        if (platformPosition == _elevator.Points.pointB)
+        if (Vector2.Distance(transform.position, PointB) < 0.01f)
         {
             _fromAtoB = false;
         }
 
-        var newPosition = Vector2.MoveTowards(_mpMotor.position,
-            _fromAtoB ? _elevator.Points.pointB : _elevator.Points.pointA, Speed * Time.deltaTime);
-        var newVelocity = newPosition - _mpMotor.position;
+        var newPosition = Vector2.MoveTowards(transform.position,
+            _fromAtoB ? PointB : PointA, Speed * Time.deltaTime);
 
-        _mpMotor.velocity = newVelocity;
-        _mpMotor.transform.position = newPosition;
+        transform.position = newPosition;
     }
 }
