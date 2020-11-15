@@ -92,10 +92,10 @@ public class PhysicsObject : MonoBehaviour
                 if (platformEffector != null && platformEffector.useOneWay)
                 {
 
-                    if (!yMovement)
-                    {
-                        continue;
-                    }
+                    //if (!yMovement)
+                    //{
+                    //    continue;
+                    //}
 
                     var isRaycastTop = RaycastOnTransform(hitBufferList[i].point + Vector2.down * 0.01f, Vector2.down, 0.01f, hitBufferList[i].transform);
                     var isRaycastBottom = RaycastOnTransform(hitBufferList[i].point + Vector2.up * 0.5f, Vector2.down, 1.0f, hitBufferList[i].transform);
@@ -111,7 +111,7 @@ public class PhysicsObject : MonoBehaviour
 
                     var playerBottomPosition = (Vector2)transform.position + collider.offset + Vector2.down * (collider.size.y/2);
 
-                    if (deltaAngle == 90 || playerBottomPosition.y < isRaycastBottom.Value.point.y)
+                    if (deltaAngle == 90 || playerBottomPosition.y + 0.05f < isRaycastBottom.Value.point.y)
                     {
                         continue;
                     }
