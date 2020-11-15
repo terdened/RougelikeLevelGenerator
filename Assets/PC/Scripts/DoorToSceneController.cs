@@ -29,24 +29,24 @@ namespace Assets.PC.Scripts
 
         void OnTriggerEnter2D(Collider2D col)
         {
-            var characterController = col.GetComponent<CharacterController2D>();
-            if(characterController != null)
-            {
+            //var characterController = col.GetComponent<CharacterController2D>();
+            //if(characterController != null)
+            //{
                 _onPlayerEntered = true;
 
                 if(_spriteRenderer != null)
                     _spriteRenderer.color = new Color(0.74f, 0.55f, 0.37f);
-            }
+            //}
         }
 
         void OnTriggerExit2D(Collider2D col)
         {
-            var characterController = col.GetComponent<CharacterController2D>();
-            if (characterController != null)
-            {
+            //var characterController = col.GetComponent<CharacterController2D>();
+            //if (characterController != null)
+            //{
                 _onPlayerEntered = false;
                 _spriteRenderer.color = Color.white;
-            }
+            //}
         }
     }
 }

@@ -34,7 +34,7 @@ public class BuletTrailController : MonoBehaviour
         }
 
         // Cast a ray straight down.
-        var hit = Physics2D.Raycast(transform.position, _currentDestVector, _buletSpeed, 1 << LayerMask.NameToLayer("Ground"));
+        var hit = Physics2D.Raycast(transform.position, _currentDestVector, _buletSpeed, (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Enemy")));
 
         if (hit.collider != null)
         {
@@ -69,7 +69,6 @@ public class BuletTrailController : MonoBehaviour
                 return;
             }
 
-            Debug.Log($"normalAngleDiff: {normalAngleDiff}; k: {((90 - normalAngleDiff) / 90)}");
             if (rigidbody2D != null)
             {
                 rigidbody2D.AddForce(_currentDestVector * _damageValue * ((90 - normalAngleDiff) / 90));

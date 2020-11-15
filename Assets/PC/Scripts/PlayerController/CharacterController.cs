@@ -2,17 +2,42 @@
 
 public class CharacterController : PhysicsObject
 {
-    public float maxSpeed = 7;
-    public float jumpTakeOffSpeed = 7;
+    public float MaxSpeed = 7;
+    public float JumpTakeOffSpeed = 7;
+    public float? JumppadTakeOffSpeed;
+    public int GroundedDelay = 5;
 
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+
+    private bool _isJumpAllowed;
+    private int _groundedCounter;
 
     // Use this for initialization
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+    }
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+
+        if (grounded)
+        {
+            _groundedCounter = 0;
+            _isJumpAllowed = true;
+        }
+        else if (_groundedCounter < GroundedDelay)
+        {
+            _groundedCounter++;
+
+            if (_groundedCounter >= GroundedDelay)
+            {
+                _isJumpAllowed = false;
+            }
+        }
     }
 
     protected override void ComputeVelocity()
@@ -27,9 +52,9 @@ public class CharacterController : PhysicsObject
             velocity.y = -3;
         }
 
-        if (Input.GetButtonDown("Jump") && grounded)
+        if (Input.GetButtonDown("Jump") && _isJumpAllowed)
         {
-            velocity.y = jumpTakeOffSpeed;
+            velocity.y = JumppadTakeOffSpeed ?? JumpTakeOffSpeed;
         }
         else if (Input.GetButtonUp("Jump"))
         {
@@ -49,6 +74,6 @@ public class CharacterController : PhysicsObject
         animator.SetFloat("velocityX", Mathf.Abs(velocity.x));
         animator.SetFloat("velocityY", velocity.y);
 
-        targetVelocity = move * maxSpeed;
+        targetVelocity = move * MaxSpeed;
     }
 }

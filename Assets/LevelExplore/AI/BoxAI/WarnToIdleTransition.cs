@@ -28,7 +28,7 @@ namespace Assets.LevelExplore.AI.BoxAI
 
         private void OnTriggeredHandler(Collider2D col)
         {
-            if (col.gameObject.tag == "Player")
+            if (col.gameObject.layer == LayerMask.NameToLayer("Player"))
                 _isTriggered = true;
         }
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3335020502377901838}
   - component: {fileID: 3335020502377901825}
   - component: {fileID: 3335020502377901824}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: DoorToScene
   m_TagString: Respawn
   m_Icon: {fileID: 0}
@@ -113,3 +113,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetScene: HubScene
   Index: 0
+  IndexTo: 0

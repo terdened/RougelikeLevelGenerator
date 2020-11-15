@@ -18,8 +18,8 @@ TagManager:
   - Ground
   - Elevator
   - Jumppad
-  - 
-  - 
+  - Enemy
+  - Interactable
   - 
   - 
   - 

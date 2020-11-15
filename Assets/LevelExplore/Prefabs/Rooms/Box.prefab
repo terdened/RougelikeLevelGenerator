@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 6944392252286816519}
   - component: {fileID: 6944392252286816514}
   - component: {fileID: 8568882830000458257}
-  m_Layer: 10
+  m_Layer: 13
   m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,8 +159,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1605893655
+  m_SortingLayer: 4
   m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: a7c370d9bcbdfab4a912dcdd0915a558, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -207,6 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Durability: 100
+  Sprites: []
 --- !u!60 &8568882830000458257
 PolygonCollider2D:
   m_ObjectHideFlags: 0

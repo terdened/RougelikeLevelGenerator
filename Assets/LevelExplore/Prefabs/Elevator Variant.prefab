@@ -96,6 +96,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 6103348, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
+      propertyPath: m_UsedByEffector
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 21267002, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
       propertyPath: m_SortingOrder
       value: 1
@@ -111,6 +115,10 @@ PrefabInstance:
     - target: {fileID: 25162558, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
       propertyPath: m_SideArc
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 25162558, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5ae8f3cd5109d648ae6ea4e444162a0, type: 3}
