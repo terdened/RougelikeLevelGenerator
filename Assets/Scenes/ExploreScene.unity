@@ -194,6 +194,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5155051240183032145, guid: 80c3608ef30931d4893405ca7da7ec52,
+        type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.4509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 5155051240183032145, guid: 80c3608ef30931d4893405ca7da7ec52,
+        type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.4509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 5155051240183032145, guid: 80c3608ef30931d4893405ca7da7ec52,
+        type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.4509804
+      objectReference: {fileID: 0}
     - target: {fileID: 5155051240443045491, guid: 80c3608ef30931d4893405ca7da7ec52,
         type: 3}
       propertyPath: m_Name
@@ -828,7 +843,7 @@ PrefabInstance:
         type: 3}
       propertyPath: ElevatorPrefab
       value: 
-      objectReference: {fileID: 5640886670478073285, guid: ef35db444477a7242ac9ad7e1e2d4905,
+      objectReference: {fileID: 2552678374777923018, guid: d28f70d39356fcc409ca325b61988f14,
         type: 3}
     - target: {fileID: 3971166893638020342, guid: 0ff5ac64987a45a4da0f08e65a097243,
         type: 3}

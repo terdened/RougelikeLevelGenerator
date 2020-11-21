@@ -17,6 +17,7 @@ public class PhysicsObject : MonoBehaviour
     protected ContactFilter2D contactFilter;
     protected RaycastHit2D[] hitBuffer = new RaycastHit2D[16];
     protected List<RaycastHit2D> hitBufferList = new List<RaycastHit2D>(16);
+    protected ElevatorController _elevatorController;
 
     protected BoxCollider2D collider;
 
@@ -55,6 +56,7 @@ public class PhysicsObject : MonoBehaviour
 
         grounded = false;
         groundedOneDirected = false;
+        _elevatorController = null;
 
         Vector2 deltaPosition = velocity * Time.deltaTime;
 
@@ -62,11 +64,14 @@ public class PhysicsObject : MonoBehaviour
 
         Vector2 move = moveAlongGround * deltaPosition.x;
 
+
         Movement(move, false);
 
         move = Vector2.up * deltaPosition.y;
 
         Movement(move, true);
+
+        HandleElevatorMovement();
     }
 
     void Movement(Vector2 move, bool yMovement)
@@ -82,21 +87,17 @@ public class PhysicsObject : MonoBehaviour
                 hitBufferList.Add(hitBuffer[i]);
             }
 
+
             for (int i = 0; i < hitBufferList.Count; i++)
             {
                 Vector2 currentNormal = hitBufferList[i].normal;
 
 
                 var platformEffector = hitBufferList[i].transform.GetComponent<PlatformEffector2D>();
+                var elevatorController = hitBufferList[i].transform.GetComponent<ElevatorController>();
 
                 if (platformEffector != null && platformEffector.useOneWay)
                 {
-
-                    //if (!yMovement)
-                    //{
-                    //    continue;
-                    //}
-
                     var isRaycastTop = RaycastOnTransform(hitBufferList[i].point + Vector2.down * 0.01f, Vector2.down, 0.01f, hitBufferList[i].transform);
                     var isRaycastBottom = RaycastOnTransform(hitBufferList[i].point + Vector2.up * 0.5f, Vector2.down, 1.0f, hitBufferList[i].transform);
 
@@ -111,7 +112,7 @@ public class PhysicsObject : MonoBehaviour
 
                     var playerBottomPosition = (Vector2)transform.position + collider.offset + Vector2.down * (collider.size.y/2);
 
-                    if (deltaAngle == 90 || playerBottomPosition.y + 0.05f < isRaycastBottom.Value.point.y)
+                    if (deltaAngle == 90 || playerBottomPosition.y + 0.15f < isRaycastBottom.Value.point.y)
                     {
                         continue;
                     }
@@ -140,13 +141,28 @@ public class PhysicsObject : MonoBehaviour
                 }
 
                 float modifiedDistance = hitBufferList[i].distance - shellRadius;
-                distance = modifiedDistance < distance ? modifiedDistance : distance;
+
+                if (modifiedDistance < distance)
+                {
+                    distance = modifiedDistance;
+
+                    if(elevatorController != null)
+                    {
+                        _elevatorController = elevatorController;
+                    }
+                }
             }
-
-
         }
 
         rb2d.position = rb2d.position + move.normalized * distance;
+    }
+
+    private void HandleElevatorMovement()
+    {
+        if (_elevatorController == null)
+            return;
+
+        rb2d.position += _elevatorController.CurrentVelocity;
     }
 
     private RaycastHit2D? RaycastOnTransform(Vector2 origin, Vector2 direction, float distance, Transform transform)

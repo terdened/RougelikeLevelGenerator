@@ -48,7 +48,7 @@ public class CharacterController : PhysicsObject
 
         if (Input.GetAxis("Vertical") < 0 && groundedOneDirected)
         {
-            transform.position = (Vector2)transform.position + Vector2.down * 0.01f; 
+            transform.position = (Vector2)transform.position + Vector2.down * 0.1f; 
             velocity.y = -3;
         }
 
