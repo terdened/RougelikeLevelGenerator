@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.PC.Scripts;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ public class ExploreSceneController : MonoBehaviour
     private LevelRenderer _levelRenderer;
     public Button BackButton;
     public GameObject ElevatorPrefab;
+    public GameObject Player;
 
     void Start()
     {
@@ -23,16 +25,40 @@ public class ExploreSceneController : MonoBehaviour
         // Draw walls
         _levelRenderer.Draw(LevelHolder.Level);
         
-        // Create wall colliders
-        foreach (var levelWall in LevelHolder.Level.Walls)
+        //// Create wall colliders
+        //foreach (var levelWall in LevelHolder.Level.Walls)
+        //{
+        //    levelWall.ToPlatform();
+        //}
+
+        foreach (var levelElevator in LevelHolder.Level.Elevators)
         {
-            levelWall.ToPlatform();
+            levelElevator.ToElevator(ElevatorPrefab);
         }
 
-       foreach (var levelElevator in LevelHolder.Level.Elevators)
-       {
-           levelElevator.ToElevator(ElevatorPrefab);
-       }
+        SpawnPlayer();
+    }
+
+    private void SpawnPlayer()
+    {
+        if (LevelHolder.PortalIndex == null)
+            return;
+
+        var portals = GameObject.FindGameObjectsWithTag("Respawn");
+
+        foreach (var portal in portals)
+        {
+            var doorToSceneController = portal.GetComponent<DoorToSceneController>();
+
+            if (doorToSceneController == null)
+                continue;
+
+            if (doorToSceneController.Index == LevelHolder.PortalIndex)
+            {
+                Player.transform.position = portal.transform.position;
+                LevelHolder.PortalIndex = null;
+            }
+        }
     }
 
     private void LoadLevelGeneratorScene()

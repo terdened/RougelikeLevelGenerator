@@ -183,6 +183,7 @@ public class LevelRenderer : MonoBehaviour
     {
         var spriteShape = new GameObject("LevelMask");
 
+        spriteShape.layer = LayerMask.NameToLayer("Ground");
 
         var spriteShapeController = spriteShape.AddComponent<SpriteShapeController>();
         spriteShapeController.autoUpdateCollider = false;
