@@ -4,6 +4,7 @@ public class EnemyController : PhysicsObject
 {
     public float MaxSpeed = 1f;
     public float HorizontalMovement;
+    public bool IsAttacking;
 
     private SpriteRenderer spriteRenderer;
     private Animator animator;
@@ -28,7 +29,7 @@ public class EnemyController : PhysicsObject
         }
 
         animator.SetFloat("velocityX", Mathf.Abs(velocity.x));
-
+        animator.SetBool("isAttacking", IsAttacking);
         targetVelocity = move * MaxSpeed;
     }
 }

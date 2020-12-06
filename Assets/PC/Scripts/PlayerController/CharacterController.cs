@@ -60,7 +60,9 @@ public class CharacterController : PhysicsObject
         {
             if (velocity.y > 0)
             {
-                velocity.y = velocity.y * 0.5f;
+                velocity.y = Mathf.Abs(JumpTakeOffSpeed * 0.5f) < Mathf.Abs(velocity.y)
+                    ? velocity.y * 0.75f 
+                    : velocity.y * 0.5f;
             }
         }
 

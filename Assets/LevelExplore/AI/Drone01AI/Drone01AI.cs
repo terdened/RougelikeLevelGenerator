@@ -16,15 +16,17 @@ namespace Assets.LevelExplore.AI.Drone01AI
 
             _stateMachineAI = new StateMachineAI();
 
-            var patrolLeftState = new PatrolLeftState(enemyController);
-            var patrolRightState = new PatrolRightState(enemyController);
-            var standLeftState = new StandLeftState(enemyController);
-            var standRightState = new StandRightState(enemyController);
+            var patrolLeftState = new PatrolLeftState(transform.gameObject, enemyController);
+            var patrolRightState = new PatrolRightState(transform.gameObject, enemyController);
+            var standLeftState = new StandLeftState(transform.gameObject, enemyController);
+            var standRightState = new StandRightState(transform.gameObject, enemyController);
+            var attackState = new AttackState(transform.gameObject, enemyController);
 
             _stateMachineAI.States.Add(patrolLeftState);
             _stateMachineAI.States.Add(patrolRightState);
             _stateMachineAI.States.Add(standLeftState);
             _stateMachineAI.States.Add(standRightState);
+            _stateMachineAI.States.Add(attackState);
 
             _stateMachineAI.SetCurrentState("PatrolLeft");
         }

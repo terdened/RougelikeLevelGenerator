@@ -1,6 +1,7 @@
 ﻿using Assets.Common.AI;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.LevelExplore.AI.Drone01AI
 {
@@ -12,11 +13,14 @@ namespace Assets.LevelExplore.AI.Drone01AI
 
         private EnemyController _enemyController;
 
-        public PatrolLeftState(EnemyController enemyController)
+        public PatrolLeftState(GameObject self, EnemyController enemyController)
         {
             _enemyController = enemyController;
 
             Transitions = new List<BaseTransition>();
+
+            var patrolLeftToStandLeftTransition = new PatrolLeftToStandLeftTransition(self);
+            Transitions.Add(patrolLeftToStandLeftTransition);
         }
 
         public void HandleState()
